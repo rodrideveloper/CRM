@@ -29,9 +29,7 @@ class DesignTokens {
   static const statusClosedLost = Color(0xFFF87171);
 
   // ── Gradients ────────────────────────────────────────────
-  static const primaryGradient = LinearGradient(
-    colors: [primary, primaryDark],
-  );
+  static const primaryGradient = LinearGradient(colors: [primary, primaryDark]);
 
   static const bgGradient = LinearGradient(
     begin: Alignment.topLeft,

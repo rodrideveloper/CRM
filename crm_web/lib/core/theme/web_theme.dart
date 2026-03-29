@@ -40,10 +40,7 @@ class WebTheme {
       colorSchemeSeed: primaryColor,
       scaffoldBackgroundColor: darkBg,
       textTheme: GoogleFonts.interTextTheme(ThemeData.dark().textTheme),
-      appBarTheme: const AppBarTheme(
-        backgroundColor: darkBg,
-        elevation: 0,
-      ),
+      appBarTheme: const AppBarTheme(backgroundColor: darkBg, elevation: 0),
       elevatedButtonTheme: ElevatedButtonThemeData(
         style: ElevatedButton.styleFrom(
           backgroundColor: primaryColor,
