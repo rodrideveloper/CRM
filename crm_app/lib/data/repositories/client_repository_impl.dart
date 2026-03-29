@@ -11,11 +11,12 @@ class ClientRepositoryImpl implements ClientRepository {
   String get _userId => _client.auth.currentUser!.id;
 
   @override
-  Future<List<Client>> getClients() async {
+  Future<List<Client>> getClients({int offset = 0, int limit = 50}) async {
     final data = await _client
         .from('clients')
         .select()
-        .order('created_at', ascending: false);
+        .order('created_at', ascending: false)
+        .range(offset, offset + limit - 1);
     return data.map((json) => ClientModel.fromJson(json)).toList();
   }
 
@@ -46,11 +47,24 @@ class ClientRepositoryImpl implements ClientRepository {
   }
 
   @override
-  Future<Client> createClient({required String name, String? phone}) async {
+  Future<Client> createClient({
+    required String name,
+    String? phone,
+    String? email,
+    String? company,
+    String? source,
+  }) async {
     final data = await _client
         .from('clients')
         .insert(
-          ClientModel.toInsertJson(userId: _userId, name: name, phone: phone),
+          ClientModel.toInsertJson(
+            userId: _userId,
+            name: name,
+            phone: phone,
+            email: email,
+            company: company,
+            source: source,
+          ),
         )
         .select()
         .single();
@@ -62,11 +76,17 @@ class ClientRepositoryImpl implements ClientRepository {
     String id, {
     String? name,
     String? phone,
+    String? email,
+    String? company,
+    String? source,
     ClientStatus? status,
   }) async {
     final updates = ClientModel.toUpdateJson(
       name: name,
       phone: phone,
+      email: email,
+      company: company,
+      source: source,
       status: status,
     );
     if (updates.isEmpty) return getClient(id);
@@ -85,5 +105,10 @@ class ClientRepositoryImpl implements ClientRepository {
         .from('clients')
         .update({'deleted_at': DateTime.now().toIso8601String()})
         .eq('id', id);
+  }
+
+  @override
+  Future<void> restoreClient(String id) async {
+    await _client.rpc('restore_client', params: {'p_client_id': id});
   }
 }

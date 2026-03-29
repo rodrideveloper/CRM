@@ -16,4 +16,5 @@ abstract class TaskRepository {
   });
   Future<Task> toggleComplete(String id);
   Future<void> softDeleteTask(String id);
+  Future<void> restoreTask(String id);
 }

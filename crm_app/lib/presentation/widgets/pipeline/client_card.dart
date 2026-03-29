@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:url_launcher/url_launcher.dart';
 import 'package:go_router/go_router.dart';
+import '../../../core/utils/phone_utils.dart';
 import '../../../domain/entities/client.dart';
 
 class ClientCard extends StatelessWidget {
@@ -17,8 +18,7 @@ class ClientCard extends StatelessWidget {
       return;
     }
     // Remove non-digit chars for WhatsApp URL
-    final phone = client.phone!.replaceAll(RegExp(r'[^\d+]'), '');
-    final uri = Uri.parse('https://wa.me/$phone');
+    final uri = whatsAppUri(client.phone!);
     if (await canLaunchUrl(uri)) {
       await launchUrl(uri, mode: LaunchMode.externalApplication);
     }
@@ -60,6 +60,16 @@ class ClientCard extends StatelessWidget {
                       maxLines: 1,
                       overflow: TextOverflow.ellipsis,
                     ),
+                    if (client.company != null && client.company!.isNotEmpty)
+                      Text(
+                        client.company!,
+                        style: theme.textTheme.bodySmall?.copyWith(
+                          color: theme.colorScheme.primary,
+                          fontWeight: FontWeight.w500,
+                        ),
+                        maxLines: 1,
+                        overflow: TextOverflow.ellipsis,
+                      ),
                     if (client.phone != null && client.phone!.isNotEmpty)
                       Text(
                         client.phone!,

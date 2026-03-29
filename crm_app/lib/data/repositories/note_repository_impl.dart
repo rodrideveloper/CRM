@@ -49,4 +49,9 @@ class NoteRepositoryImpl implements NoteRepository {
         .update({'deleted_at': DateTime.now().toIso8601String()})
         .eq('id', id);
   }
+
+  @override
+  Future<void> restoreNote(String id) async {
+    await _client.rpc('restore_note', params: {'p_note_id': id});
+  }
 }

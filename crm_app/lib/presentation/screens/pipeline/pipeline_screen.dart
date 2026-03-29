@@ -25,6 +25,8 @@ class _PipelineScreenState extends ConsumerState<PipelineScreen> {
   void _showCreateClientDialog() {
     final nameController = TextEditingController();
     final phoneController = TextEditingController();
+    final emailController = TextEditingController();
+    final companyController = TextEditingController();
     final formKey = GlobalKey<FormState>();
 
     showModalBottomSheet(
@@ -73,6 +75,25 @@ class _PipelineScreenState extends ConsumerState<PipelineScreen> {
                   hintText: '+5491112345678',
                 ),
                 keyboardType: TextInputType.phone,
+                textInputAction: TextInputAction.next,
+              ),
+              const SizedBox(height: 12),
+              TextFormField(
+                controller: emailController,
+                decoration: const InputDecoration(
+                  labelText: 'Email',
+                  prefixIcon: Icon(Icons.email_outlined),
+                ),
+                keyboardType: TextInputType.emailAddress,
+                textInputAction: TextInputAction.next,
+              ),
+              const SizedBox(height: 12),
+              TextFormField(
+                controller: companyController,
+                decoration: const InputDecoration(
+                  labelText: 'Empresa',
+                  prefixIcon: Icon(Icons.business_outlined),
+                ),
                 textInputAction: TextInputAction.done,
               ),
               const SizedBox(height: 20),
@@ -86,6 +107,12 @@ class _PipelineScreenState extends ConsumerState<PipelineScreen> {
                         name: nameController.text.trim(),
                         phone: phoneController.text.trim().isNotEmpty
                             ? phoneController.text.trim()
+                            : null,
+                        email: emailController.text.trim().isNotEmpty
+                            ? emailController.text.trim()
+                            : null,
+                        company: companyController.text.trim().isNotEmpty
+                            ? companyController.text.trim()
                             : null,
                       );
                 },

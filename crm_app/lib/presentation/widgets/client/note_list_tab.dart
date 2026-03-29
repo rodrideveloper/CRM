@@ -88,29 +88,25 @@ class NoteListTab extends ConsumerWidget {
                   color: Colors.red,
                   child: const Icon(Icons.delete, color: Colors.white),
                 ),
-                confirmDismiss: (_) async {
-                  return await showDialog<bool>(
-                    context: context,
-                    builder: (ctx) => AlertDialog(
-                      title: const Text('Eliminar nota'),
-                      content: const Text('¿Estás seguro?'),
-                      actions: [
-                        TextButton(
-                          onPressed: () => Navigator.pop(ctx, false),
-                          child: const Text('Cancelar'),
-                        ),
-                        TextButton(
-                          onPressed: () => Navigator.pop(ctx, true),
-                          child: const Text('Eliminar'),
-                        ),
-                      ],
-                    ),
-                  );
-                },
                 onDismissed: (_) {
                   ref
                       .read(notesProvider(clientId).notifier)
                       .deleteNote(note.id);
+                  ScaffoldMessenger.of(context)
+                    ..hideCurrentSnackBar()
+                    ..showSnackBar(
+                      SnackBar(
+                        content: const Text('Nota eliminada'),
+                        action: SnackBarAction(
+                          label: 'Deshacer',
+                          onPressed: () {
+                            ref
+                                .read(notesProvider(clientId).notifier)
+                                .restoreNote(note.id);
+                          },
+                        ),
+                      ),
+                    );
                 },
                 child: Card(
                   child: Padding(

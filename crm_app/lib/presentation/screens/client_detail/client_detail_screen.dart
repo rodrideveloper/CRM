@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:url_launcher/url_launcher.dart';
+import '../../../core/utils/phone_utils.dart';
 import '../../../domain/entities/client.dart';
 import '../../providers/repository_providers.dart';
 import '../../widgets/client/client_info_tab.dart';
@@ -49,8 +50,7 @@ class _ClientDetailView extends ConsumerWidget {
                 icon: const Icon(Icons.chat, color: Color(0xFF25D366)),
                 tooltip: 'WhatsApp',
                 onPressed: () async {
-                  final phone = client.phone!.replaceAll(RegExp(r'[^\d+]'), '');
-                  final uri = Uri.parse('https://wa.me/$phone');
+                  final uri = whatsAppUri(client.phone!);
                   if (await canLaunchUrl(uri)) {
                     await launchUrl(uri, mode: LaunchMode.externalApplication);
                   }

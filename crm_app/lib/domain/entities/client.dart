@@ -20,6 +20,9 @@ class Client {
   final String userId;
   final String name;
   final String? phone;
+  final String? email;
+  final String? company;
+  final String? source;
   final ClientStatus status;
   final DateTime createdAt;
   final DateTime updatedAt;
@@ -29,6 +32,9 @@ class Client {
     required this.userId,
     required this.name,
     this.phone,
+    this.email,
+    this.company,
+    this.source,
     required this.status,
     required this.createdAt,
     required this.updatedAt,
@@ -39,6 +45,9 @@ class Client {
     String? userId,
     String? name,
     String? phone,
+    String? email,
+    String? company,
+    String? source,
     ClientStatus? status,
     DateTime? createdAt,
     DateTime? updatedAt,
@@ -48,6 +57,9 @@ class Client {
       userId: userId ?? this.userId,
       name: name ?? this.name,
       phone: phone ?? this.phone,
+      email: email ?? this.email,
+      company: company ?? this.company,
+      source: source ?? this.source,
       status: status ?? this.status,
       createdAt: createdAt ?? this.createdAt,
       updatedAt: updatedAt ?? this.updatedAt,

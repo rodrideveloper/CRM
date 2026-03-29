@@ -6,6 +6,9 @@ class ClientModel extends Client {
     required super.userId,
     required super.name,
     super.phone,
+    super.email,
+    super.company,
+    super.source,
     required super.status,
     required super.createdAt,
     required super.updatedAt,
@@ -17,6 +20,9 @@ class ClientModel extends Client {
       userId: json['user_id'] as String,
       name: json['name'] as String,
       phone: json['phone'] as String?,
+      email: json['email'] as String?,
+      company: json['company'] as String?,
+      source: json['source'] as String?,
       status: ClientStatus.fromString(json['status'] as String),
       createdAt: DateTime.parse(json['created_at'] as String),
       updatedAt: DateTime.parse(json['updated_at'] as String),
@@ -27,18 +33,34 @@ class ClientModel extends Client {
     required String userId,
     required String name,
     String? phone,
+    String? email,
+    String? company,
+    String? source,
   }) {
-    return {'user_id': userId, 'name': name, if (phone != null) 'phone': phone};
+    return {
+      'user_id': userId,
+      'name': name,
+      if (phone != null) 'phone': phone,
+      if (email != null) 'email': email,
+      if (company != null) 'company': company,
+      if (source != null) 'source': source,
+    };
   }
 
   static Map<String, dynamic> toUpdateJson({
     String? name,
     String? phone,
+    String? email,
+    String? company,
+    String? source,
     ClientStatus? status,
   }) {
     return {
       if (name != null) 'name': name,
       if (phone != null) 'phone': phone,
+      if (email != null) 'email': email,
+      if (company != null) 'company': company,
+      if (source != null) 'source': source,
       if (status != null) 'status': status.value,
     };
   }

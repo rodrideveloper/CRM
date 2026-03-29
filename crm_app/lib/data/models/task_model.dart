@@ -4,6 +4,7 @@ class TaskModel extends Task {
   const TaskModel({
     required super.id,
     required super.clientId,
+    super.clientName,
     required super.title,
     super.dueDate,
     required super.completed,
@@ -12,9 +13,16 @@ class TaskModel extends Task {
   });
 
   factory TaskModel.fromJson(Map<String, dynamic> json) {
+    // When joined with clients table, name comes as nested object
+    String? clientName;
+    if (json['clients'] is Map) {
+      clientName = (json['clients'] as Map<String, dynamic>)['name'] as String?;
+    }
+
     return TaskModel(
       id: json['id'] as String,
       clientId: json['client_id'] as String,
+      clientName: clientName,
       title: json['title'] as String,
       dueDate: json['due_date'] != null
           ? DateTime.parse(json['due_date'] as String)

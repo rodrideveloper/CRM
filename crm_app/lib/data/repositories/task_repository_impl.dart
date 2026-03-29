@@ -89,4 +89,9 @@ class TaskRepositoryImpl implements TaskRepository {
         .update({'deleted_at': DateTime.now().toIso8601String()})
         .eq('id', id);
   }
+
+  @override
+  Future<void> restoreTask(String id) async {
+    await _client.rpc('restore_task', params: {'p_task_id': id});
+  }
 }

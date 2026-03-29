@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../../providers/auth_provider.dart';
+import '../../providers/theme_provider.dart';
 
 class ProfileScreen extends ConsumerWidget {
   const ProfileScreen({super.key});
@@ -8,6 +9,7 @@ class ProfileScreen extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final user = ref.watch(authStateProvider).valueOrNull;
+    final themeMode = ref.watch(themeModeProvider);
     final theme = Theme.of(context);
 
     return Scaffold(
@@ -41,6 +43,47 @@ class ProfileScreen extends ConsumerWidget {
                 color: theme.colorScheme.onSurfaceVariant,
               ),
               textAlign: TextAlign.center,
+            ),
+            const SizedBox(height: 32),
+            // Theme toggle
+            Card(
+              child: ListTile(
+                leading: Icon(
+                  themeMode == ThemeMode.dark
+                      ? Icons.dark_mode
+                      : themeMode == ThemeMode.light
+                          ? Icons.light_mode
+                          : Icons.brightness_auto,
+                ),
+                title: const Text('Tema'),
+                subtitle: Text(
+                  themeMode == ThemeMode.dark
+                      ? 'Oscuro'
+                      : themeMode == ThemeMode.light
+                          ? 'Claro'
+                          : 'Automático',
+                ),
+                trailing: SegmentedButton<ThemeMode>(
+                  segments: const [
+                    ButtonSegment(
+                      value: ThemeMode.light,
+                      icon: Icon(Icons.light_mode, size: 18),
+                    ),
+                    ButtonSegment(
+                      value: ThemeMode.system,
+                      icon: Icon(Icons.brightness_auto, size: 18),
+                    ),
+                    ButtonSegment(
+                      value: ThemeMode.dark,
+                      icon: Icon(Icons.dark_mode, size: 18),
+                    ),
+                  ],
+                  selected: {themeMode},
+                  onSelectionChanged: (modes) {
+                    ref.read(themeModeProvider.notifier).state = modes.first;
+                  },
+                ),
+              ),
             ),
             const Spacer(),
             OutlinedButton.icon(

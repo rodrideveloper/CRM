@@ -114,29 +114,25 @@ class TaskListTab extends ConsumerWidget {
                   color: Colors.red,
                   child: const Icon(Icons.delete, color: Colors.white),
                 ),
-                confirmDismiss: (_) async {
-                  return await showDialog<bool>(
-                    context: context,
-                    builder: (ctx) => AlertDialog(
-                      title: const Text('Eliminar tarea'),
-                      content: const Text('¿Estás seguro?'),
-                      actions: [
-                        TextButton(
-                          onPressed: () => Navigator.pop(ctx, false),
-                          child: const Text('Cancelar'),
-                        ),
-                        TextButton(
-                          onPressed: () => Navigator.pop(ctx, true),
-                          child: const Text('Eliminar'),
-                        ),
-                      ],
-                    ),
-                  );
-                },
                 onDismissed: (_) {
                   ref
                       .read(clientTasksProvider(clientId).notifier)
                       .deleteTask(task.id);
+                  ScaffoldMessenger.of(context)
+                    ..hideCurrentSnackBar()
+                    ..showSnackBar(
+                      SnackBar(
+                        content: const Text('Tarea eliminada'),
+                        action: SnackBarAction(
+                          label: 'Deshacer',
+                          onPressed: () {
+                            ref
+                                .read(clientTasksProvider(clientId).notifier)
+                                .restoreTask(task.id);
+                          },
+                        ),
+                      ),
+                    );
                 },
                 child: Card(
                   color: isOverdue ? Colors.red.shade50 : null,

@@ -5,4 +5,5 @@ abstract class NoteRepository {
   Future<Note> createNote({required String clientId, required String content});
   Future<Note> updateNote(String id, {required String content});
   Future<void> softDeleteNote(String id);
+  Future<void> restoreNote(String id);
 }

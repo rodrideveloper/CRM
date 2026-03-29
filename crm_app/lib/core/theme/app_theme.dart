@@ -45,6 +45,48 @@ class AppTheme {
       extensions: const [_CrmColors(overdue: _errorColor)],
     );
   }
+
+  static ThemeData get dark {
+    return ThemeData(
+      useMaterial3: true,
+      colorSchemeSeed: _primaryColor,
+      brightness: Brightness.dark,
+      appBarTheme: const AppBarTheme(centerTitle: true, elevation: 0),
+      inputDecorationTheme: InputDecorationTheme(
+        filled: true,
+        border: OutlineInputBorder(borderRadius: BorderRadius.circular(12)),
+        contentPadding: const EdgeInsets.symmetric(
+          horizontal: 16,
+          vertical: 14,
+        ),
+      ),
+      elevatedButtonTheme: ElevatedButtonThemeData(
+        style: ElevatedButton.styleFrom(
+          minimumSize: const Size.fromHeight(48),
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(12),
+          ),
+        ),
+      ),
+      cardTheme: CardThemeData(
+        elevation: 1,
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+        margin: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+      ),
+      floatingActionButtonTheme: const FloatingActionButtonThemeData(
+        elevation: 2,
+      ),
+      bottomNavigationBarTheme: const BottomNavigationBarThemeData(
+        type: BottomNavigationBarType.fixed,
+        selectedItemColor: _primaryColor,
+      ),
+      snackBarTheme: SnackBarThemeData(
+        behavior: SnackBarBehavior.floating,
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
+      ),
+      extensions: const [_CrmColors(overdue: _errorColor)],
+    );
+  }
 }
 
 class _CrmColors extends ThemeExtension<_CrmColors> {

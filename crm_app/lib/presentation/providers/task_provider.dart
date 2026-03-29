@@ -34,6 +34,12 @@ class ClientTasksNotifier extends FamilyAsyncNotifier<List<Task>, String> {
     ref.invalidateSelf();
     ref.invalidate(pendingTasksProvider);
   }
+
+  Future<void> restoreTask(String taskId) async {
+    await ref.read(taskRepositoryProvider).restoreTask(taskId);
+    ref.invalidateSelf();
+    ref.invalidate(pendingTasksProvider);
+  }
 }
 
 // Global pending tasks (for Tasks screen)

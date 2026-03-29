@@ -19,10 +19,22 @@ class ClientsNotifier extends AsyncNotifier<List<Client>> {
     );
   }
 
-  Future<void> createClient({required String name, String? phone}) async {
+  Future<void> createClient({
+    required String name,
+    String? phone,
+    String? email,
+    String? company,
+    String? source,
+  }) async {
     await ref
         .read(clientRepositoryProvider)
-        .createClient(name: name, phone: phone);
+        .createClient(
+          name: name,
+          phone: phone,
+          email: email,
+          company: company,
+          source: source,
+        );
     await refresh();
   }
 
@@ -44,6 +56,11 @@ class ClientsNotifier extends AsyncNotifier<List<Client>> {
 
   Future<void> softDeleteClient(String id) async {
     await ref.read(clientRepositoryProvider).softDeleteClient(id);
+    await refresh();
+  }
+
+  Future<void> restoreClient(String id) async {
+    await ref.read(clientRepositoryProvider).restoreClient(id);
     await refresh();
   }
 }

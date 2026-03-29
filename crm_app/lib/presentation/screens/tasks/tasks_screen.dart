@@ -81,6 +81,14 @@ class TasksScreen extends ConsumerWidget {
                     subtitle: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
+                        if (task.clientName != null)
+                          Text(
+                            task.clientName!,
+                            style: theme.textTheme.bodySmall?.copyWith(
+                              color: theme.colorScheme.primary,
+                              fontWeight: FontWeight.w500,
+                            ),
+                          ),
                         if (task.dueDate != null)
                           Text(
                             'Vence: ${task.dueDate!.day}/${task.dueDate!.month}/${task.dueDate!.year}',

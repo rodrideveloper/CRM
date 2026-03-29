@@ -24,4 +24,9 @@ class NotesNotifier extends FamilyAsyncNotifier<List<Note>, String> {
     await ref.read(noteRepositoryProvider).softDeleteNote(noteId);
     ref.invalidateSelf();
   }
+
+  Future<void> restoreNote(String noteId) async {
+    await ref.read(noteRepositoryProvider).restoreNote(noteId);
+    ref.invalidateSelf();
+  }
 }
