@@ -3,7 +3,7 @@
 ## Dependencies
 node_modules/
 
-## Flutter
+## Flutter / Dart
 crm_app/.dart_tool/
 crm_app/.packages
 crm_app/.pub-cache/
@@ -12,6 +12,8 @@ crm_app/build/
 crm_app/.flutter-plugins
 crm_app/.flutter-plugins-dependencies
 crm_app/.metadata
+**/doc/api/
+/coverage/
 
 ## IDE
 .idea/
@@ -19,17 +21,35 @@ crm_app/.metadata
 *.iml
 *.swp
 *.swo
+*.ipr
+*.iws
 
 ## macOS
 .DS_Store
 **/.DS_Store
+.Trash/
 
-## Env / secrets
+## Env / Secrets / Credentials
 .env
 .env.*
+*.env
+**/.env
+**/.env.*
+*.key
+*.pem
+*.p12
+*.jks
+*.keystore
+google-services.json
+GoogleService-Info.plist
 
-## Flutter crash logs
+## Supabase local
+supabase/.temp/
+supabase/.branches/
+
+## Flutter crash & debug logs
 crm_app/flutter_*.log
+**/*.log
 
 ## Android
 crm_app/android/.gradle/
@@ -38,6 +58,8 @@ crm_app/android/app/profile/
 crm_app/android/app/release/
 crm_app/android/local.properties
 crm_app/android/key.properties
+**/*.apk
+**/*.aab
 
 ## iOS
 crm_app/ios/Pods/
@@ -48,3 +70,13 @@ crm_app/ios/Flutter/Generated.xcconfig
 crm_app/ios/Flutter/app.flx
 crm_app/ios/Flutter/engine/
 crm_app/ios/ServiceDefinitions.json
+crm_app/ios/Flutter/.last_build_id
+**/*.ipa
+
+## Symbolication & obfuscation
+app.*.symbols
+app.*.map.json
+
+## FVM
+.fvm/
+.fvmrc
