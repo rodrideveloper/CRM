@@ -37,12 +37,16 @@ class _LeadCaptureSectionState extends State<LeadCaptureSection> {
     });
 
     try {
-      await Supabase.instance.client.from('leads').insert({
-        'name': _nameController.text.trim().isEmpty
+      // TODO: Replace with your actual form_token from user_profiles table
+      const formToken = String.fromEnvironment('FORM_TOKEN',
+          defaultValue: '');
+
+      await Supabase.instance.client.rpc('submit_lead', params: {
+        'p_form_token': formToken,
+        'p_name': _nameController.text.trim().isEmpty
             ? null
             : _nameController.text.trim(),
-        'phone': phone,
-        'source': 'landing',
+        'p_phone': phone,
       });
       setState(() {
         _submitted = true;
