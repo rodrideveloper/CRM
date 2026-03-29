@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
+import '../../../core/theme/design_tokens.dart';
 import '../../../domain/entities/client.dart';
 import '../../providers/client_provider.dart';
 import '../../widgets/pipeline/pipeline_column.dart';
@@ -184,14 +185,7 @@ class _PipelineScreenState extends ConsumerState<PipelineScreen> {
   }
 
   Color _statusColor(ClientStatus status) {
-    return switch (status) {
-      ClientStatus.newClient => Colors.blue,
-      ClientStatus.contacted => Colors.orange,
-      ClientStatus.interested => Colors.purple,
-      ClientStatus.negotiating => Colors.amber.shade700,
-      ClientStatus.closedWon => Colors.green,
-      ClientStatus.closedLost => Colors.red,
-    };
+    return DesignTokens.statusColor(status.value);
   }
 
   @override

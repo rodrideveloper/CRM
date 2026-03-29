@@ -31,12 +31,7 @@ class LandingPage extends StatelessWidget {
             ),
           ),
           // Fixed navbar
-          const Positioned(
-            top: 0,
-            left: 0,
-            right: 0,
-            child: Navbar(),
-          ),
+          const Positioned(top: 0, left: 0, right: 0, child: Navbar()),
         ],
       ),
     );

@@ -68,7 +68,7 @@ class FeaturesSection extends StatelessWidget {
         horizontal: isMobile ? 24 : 80,
         vertical: 80,
       ),
-      color: const Color(0xFF0B1121),
+      color: WebTheme.bgDeep,
       child: Column(
         children: [
           Text(
@@ -93,7 +93,7 @@ class FeaturesSection extends StatelessWidget {
               final cardWidth = crossAxisCount == 1
                   ? constraints.maxWidth
                   : (constraints.maxWidth - (crossAxisCount - 1) * 24) /
-                      crossAxisCount;
+                        crossAxisCount;
 
               return Wrap(
                 spacing: 24,

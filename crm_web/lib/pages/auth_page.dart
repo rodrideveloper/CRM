@@ -51,10 +51,7 @@ class _AuthPageState extends State<AuthPage> {
           password: password,
         );
       } else {
-        await supabase.auth.signUp(
-          email: email,
-          password: password,
-        );
+        await supabase.auth.signUp(email: email, password: password);
       }
 
       if (mounted) {
@@ -139,7 +136,8 @@ class _AuthPageState extends State<AuthPage> {
                     icon: const Icon(Icons.arrow_back, size: 18),
                     label: const Text('Volver'),
                     style: TextButton.styleFrom(
-                        foregroundColor: Colors.white54),
+                      foregroundColor: Colors.white54,
+                    ),
                   ),
                 ),
                 const SizedBox(height: 24),
@@ -191,8 +189,10 @@ class _AuthPageState extends State<AuthPage> {
                         decoration: const InputDecoration(
                           labelText: 'Email',
                           labelStyle: TextStyle(color: Colors.white54),
-                          prefixIcon:
-                              Icon(Icons.email_outlined, color: Colors.white38),
+                          prefixIcon: Icon(
+                            Icons.email_outlined,
+                            color: Colors.white38,
+                          ),
                         ),
                         validator: (v) {
                           if (v == null || v.trim().isEmpty) {
@@ -212,8 +212,10 @@ class _AuthPageState extends State<AuthPage> {
                         decoration: const InputDecoration(
                           labelText: 'Contraseña',
                           labelStyle: TextStyle(color: Colors.white54),
-                          prefixIcon:
-                              Icon(Icons.lock_outlined, color: Colors.white38),
+                          prefixIcon: Icon(
+                            Icons.lock_outlined,
+                            color: Colors.white38,
+                          ),
                         ),
                         validator: (v) {
                           if (v == null || v.isEmpty) {
@@ -236,7 +238,8 @@ class _AuthPageState extends State<AuthPage> {
                       color: Colors.red.withValues(alpha: 0.1),
                       borderRadius: BorderRadius.circular(8),
                       border: Border.all(
-                          color: Colors.red.withValues(alpha: 0.3)),
+                        color: Colors.red.withValues(alpha: 0.3),
+                      ),
                     ),
                     child: Text(
                       _error!,
@@ -264,11 +267,11 @@ class _AuthPageState extends State<AuthPage> {
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
                     Text(
-                      _isLogin
-                          ? '¿No tenés cuenta?'
-                          : '¿Ya tenés cuenta?',
-                      style:
-                          const TextStyle(color: Colors.white54, fontSize: 14),
+                      _isLogin ? '¿No tenés cuenta?' : '¿Ya tenés cuenta?',
+                      style: const TextStyle(
+                        color: Colors.white54,
+                        fontSize: 14,
+                      ),
                     ),
                     TextButton(
                       onPressed: () => setState(() => _isLogin = !_isLogin),

@@ -1,13 +1,11 @@
 import 'package:flutter/material.dart';
+import 'design_tokens.dart';
 
 class AppTheme {
-  static const _primaryColor = Color(0xFF25D366); // WhatsApp green
-  static const _errorColor = Color(0xFFE53935);
-
   static ThemeData get light {
     return ThemeData(
       useMaterial3: true,
-      colorSchemeSeed: _primaryColor,
+      colorSchemeSeed: DesignTokens.primary,
       brightness: Brightness.light,
       appBarTheme: const AppBarTheme(centerTitle: true, elevation: 0),
       inputDecorationTheme: InputDecorationTheme(
@@ -36,25 +34,48 @@ class AppTheme {
       ),
       bottomNavigationBarTheme: const BottomNavigationBarThemeData(
         type: BottomNavigationBarType.fixed,
-        selectedItemColor: _primaryColor,
+        selectedItemColor: DesignTokens.primary,
       ),
       snackBarTheme: SnackBarThemeData(
         behavior: SnackBarBehavior.floating,
         shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
       ),
-      extensions: const [_CrmColors(overdue: _errorColor)],
+      extensions: const [
+        CrmColors(
+          overdue: DesignTokens.error,
+          warning: DesignTokens.warning,
+          info: DesignTokens.info,
+        ),
+      ],
     );
   }
 
   static ThemeData get dark {
     return ThemeData(
       useMaterial3: true,
-      colorSchemeSeed: _primaryColor,
+      colorSchemeSeed: DesignTokens.primary,
       brightness: Brightness.dark,
-      appBarTheme: const AppBarTheme(centerTitle: true, elevation: 0),
+      scaffoldBackgroundColor: DesignTokens.bgBase,
+      appBarTheme: const AppBarTheme(
+        centerTitle: true,
+        elevation: 0,
+        backgroundColor: DesignTokens.bgBase,
+      ),
       inputDecorationTheme: InputDecorationTheme(
         filled: true,
-        border: OutlineInputBorder(borderRadius: BorderRadius.circular(12)),
+        fillColor: DesignTokens.bgElevated,
+        border: OutlineInputBorder(
+          borderRadius: BorderRadius.circular(12),
+          borderSide: const BorderSide(color: Colors.white12),
+        ),
+        enabledBorder: OutlineInputBorder(
+          borderRadius: BorderRadius.circular(12),
+          borderSide: const BorderSide(color: Colors.white12),
+        ),
+        focusedBorder: OutlineInputBorder(
+          borderRadius: BorderRadius.circular(12),
+          borderSide: const BorderSide(color: DesignTokens.primary, width: 2),
+        ),
         contentPadding: const EdgeInsets.symmetric(
           horizontal: 16,
           vertical: 14,
@@ -69,8 +90,12 @@ class AppTheme {
         ),
       ),
       cardTheme: CardThemeData(
-        elevation: 1,
-        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+        color: DesignTokens.bgElevated,
+        elevation: 0,
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(12),
+          side: const BorderSide(color: Colors.white10),
+        ),
         margin: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
       ),
       floatingActionButtonTheme: const FloatingActionButtonThemeData(
@@ -78,28 +103,49 @@ class AppTheme {
       ),
       bottomNavigationBarTheme: const BottomNavigationBarThemeData(
         type: BottomNavigationBarType.fixed,
-        selectedItemColor: _primaryColor,
+        selectedItemColor: DesignTokens.primary,
       ),
       snackBarTheme: SnackBarThemeData(
         behavior: SnackBarBehavior.floating,
         shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
       ),
-      extensions: const [_CrmColors(overdue: _errorColor)],
+      extensions: const [
+        CrmColors(
+          overdue: DesignTokens.error,
+          warning: DesignTokens.warning,
+          info: DesignTokens.info,
+        ),
+      ],
     );
   }
 }
 
-class _CrmColors extends ThemeExtension<_CrmColors> {
+class CrmColors extends ThemeExtension<CrmColors> {
   final Color overdue;
-  const _CrmColors({required this.overdue});
+  final Color warning;
+  final Color info;
+
+  const CrmColors({
+    required this.overdue,
+    required this.warning,
+    required this.info,
+  });
 
   @override
-  _CrmColors copyWith({Color? overdue}) =>
-      _CrmColors(overdue: overdue ?? this.overdue);
+  CrmColors copyWith({Color? overdue, Color? warning, Color? info}) =>
+      CrmColors(
+        overdue: overdue ?? this.overdue,
+        warning: warning ?? this.warning,
+        info: info ?? this.info,
+      );
 
   @override
-  _CrmColors lerp(covariant _CrmColors? other, double t) {
+  CrmColors lerp(covariant CrmColors? other, double t) {
     if (other == null) return this;
-    return _CrmColors(overdue: Color.lerp(overdue, other.overdue, t)!);
+    return CrmColors(
+      overdue: Color.lerp(overdue, other.overdue, t)!,
+      warning: Color.lerp(warning, other.warning, t)!,
+      info: Color.lerp(info, other.info, t)!,
+    );
   }
 }

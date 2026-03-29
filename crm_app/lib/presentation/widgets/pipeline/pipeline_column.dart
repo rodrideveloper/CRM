@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import '../../../core/theme/design_tokens.dart';
 import '../../../domain/entities/client.dart';
 import '../../widgets/pipeline/client_card.dart';
 
@@ -40,13 +41,13 @@ class PipelineColumn extends StatelessWidget {
               Container(
                 padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 2),
                 decoration: BoxDecoration(
-                  color: theme.colorScheme.primary,
+                  color: DesignTokens.statusColor(status.value),
                   borderRadius: BorderRadius.circular(12),
                 ),
                 child: Text(
                   '${clients.length}',
                   style: theme.textTheme.labelSmall?.copyWith(
-                    color: theme.colorScheme.onPrimary,
+                    color: Colors.white,
                     fontWeight: FontWeight.bold,
                   ),
                 ),

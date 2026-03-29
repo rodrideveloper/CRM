@@ -20,10 +20,7 @@ class HeroSection extends StatelessWidget {
         gradient: LinearGradient(
           begin: Alignment.topLeft,
           end: Alignment.bottomRight,
-          colors: [
-            WebTheme.darkBg,
-            Color(0xFF1A2332),
-          ],
+          colors: [WebTheme.darkBg, WebTheme.bgSubtle],
         ),
       ),
       child: Column(
@@ -141,7 +138,8 @@ class HeroSection extends StatelessWidget {
                   Row(
                     children: List.generate(
                       5,
-                      (_) => const Icon(Icons.star, color: Colors.amber, size: 16),
+                      (_) =>
+                          const Icon(Icons.star, color: Colors.amber, size: 16),
                     ),
                   ),
                   const SizedBox(height: 2),

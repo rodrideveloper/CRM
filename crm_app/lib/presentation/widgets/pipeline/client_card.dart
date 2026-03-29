@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:url_launcher/url_launcher.dart';
 import 'package:go_router/go_router.dart';
+import '../../../core/theme/design_tokens.dart';
 import '../../../core/utils/phone_utils.dart';
 import '../../../domain/entities/client.dart';
 
@@ -82,7 +83,7 @@ class ClientCard extends StatelessWidget {
               ),
               if (client.phone != null && client.phone!.isNotEmpty)
                 IconButton(
-                  icon: const Icon(Icons.chat, color: Color(0xFF25D366)),
+                  icon: const Icon(Icons.chat, color: DesignTokens.primary),
                   tooltip: 'WhatsApp',
                   onPressed: () => _openWhatsApp(context),
                   constraints: const BoxConstraints(

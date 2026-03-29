@@ -43,7 +43,7 @@ class HowItWorksSection extends StatelessWidget {
         gradient: LinearGradient(
           begin: Alignment.topCenter,
           end: Alignment.bottomCenter,
-          colors: [Color(0xFF0B1121), WebTheme.darkBg],
+          colors: [WebTheme.bgDeep, WebTheme.darkBg],
         ),
       ),
       child: Column(
@@ -65,22 +65,25 @@ class HowItWorksSection extends StatelessWidget {
           isMobile
               ? Column(
                   children: steps
-                      .map((s) => Padding(
-                            padding: const EdgeInsets.only(bottom: 24),
-                            child: _StepCard(step: s),
-                          ))
+                      .map(
+                        (s) => Padding(
+                          padding: const EdgeInsets.only(bottom: 24),
+                          child: _StepCard(step: s),
+                        ),
+                      )
                       .toList(),
                 )
               : Row(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: steps
-                      .map((s) => Expanded(
-                            child: Padding(
-                              padding:
-                                  const EdgeInsets.symmetric(horizontal: 12),
-                              child: _StepCard(step: s),
-                            ),
-                          ))
+                      .map(
+                        (s) => Expanded(
+                          child: Padding(
+                            padding: const EdgeInsets.symmetric(horizontal: 12),
+                            child: _StepCard(step: s),
+                          ),
+                        ),
+                      )
                       .toList(),
                 ),
         ],

@@ -16,7 +16,7 @@ class PricingSection extends StatelessWidget {
         horizontal: isMobile ? 24 : 80,
         vertical: 80,
       ),
-      color: const Color(0xFF0B1121),
+      color: WebTheme.bgDeep,
       child: Column(
         children: [
           Text(
@@ -48,13 +48,16 @@ class PricingSection extends StatelessWidget {
                 : Row(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: _plans
-                        .map((p) => Expanded(
-                              child: Padding(
-                                padding:
-                                    const EdgeInsets.symmetric(horizontal: 12),
-                                child: _PricingCard(plan: p),
+                        .map(
+                          (p) => Expanded(
+                            child: Padding(
+                              padding: const EdgeInsets.symmetric(
+                                horizontal: 12,
                               ),
-                            ))
+                              child: _PricingCard(plan: p),
+                            ),
+                          ),
+                        )
                         .toList(),
                   ),
           ),
@@ -161,8 +164,8 @@ class _PricingCardState extends State<_PricingCard> {
             color: plan.highlighted
                 ? WebTheme.primaryColor
                 : _hovering
-                    ? Colors.white24
-                    : Colors.white10,
+                ? Colors.white24
+                : Colors.white10,
             width: plan.highlighted ? 2 : 1,
           ),
           boxShadow: plan.highlighted
@@ -180,8 +183,10 @@ class _PricingCardState extends State<_PricingCard> {
           children: [
             if (plan.highlighted)
               Container(
-                padding:
-                    const EdgeInsets.symmetric(horizontal: 12, vertical: 4),
+                padding: const EdgeInsets.symmetric(
+                  horizontal: 12,
+                  vertical: 4,
+                ),
                 margin: const EdgeInsets.only(bottom: 16),
                 decoration: BoxDecoration(
                   color: WebTheme.primaryColor.withValues(alpha: 0.1),
@@ -234,28 +239,30 @@ class _PricingCardState extends State<_PricingCard> {
             const SizedBox(height: 24),
             const Divider(color: Colors.white10),
             const SizedBox(height: 24),
-            ...plan.features.map((f) => Padding(
-                  padding: const EdgeInsets.only(bottom: 12),
-                  child: Row(
-                    children: [
-                      Icon(
-                        Icons.check_circle,
-                        color: WebTheme.primaryColor,
-                        size: 18,
-                      ),
-                      const SizedBox(width: 10),
-                      Expanded(
-                        child: Text(
-                          f,
-                          style: const TextStyle(
-                            color: Colors.white70,
-                            fontSize: 14,
-                          ),
+            ...plan.features.map(
+              (f) => Padding(
+                padding: const EdgeInsets.only(bottom: 12),
+                child: Row(
+                  children: [
+                    Icon(
+                      Icons.check_circle,
+                      color: WebTheme.primaryColor,
+                      size: 18,
+                    ),
+                    const SizedBox(width: 10),
+                    Expanded(
+                      child: Text(
+                        f,
+                        style: const TextStyle(
+                          color: Colors.white70,
+                          fontSize: 14,
                         ),
                       ),
-                    ],
-                  ),
-                )),
+                    ),
+                  ],
+                ),
+              ),
+            ),
             const SizedBox(height: 24),
             SizedBox(
               width: double.infinity,

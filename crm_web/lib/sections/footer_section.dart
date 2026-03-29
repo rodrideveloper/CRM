@@ -133,13 +133,15 @@ class _FooterColumn extends StatelessWidget {
           ),
         ),
         const SizedBox(height: 16),
-        ...links.map((l) => Padding(
-              padding: const EdgeInsets.only(bottom: 10),
-              child: Text(
-                l,
-                style: const TextStyle(color: Colors.white38, fontSize: 14),
-              ),
-            )),
+        ...links.map(
+          (l) => Padding(
+            padding: const EdgeInsets.only(bottom: 10),
+            child: Text(
+              l,
+              style: const TextStyle(color: Colors.white38, fontSize: 14),
+            ),
+          ),
+        ),
       ],
     );
   }

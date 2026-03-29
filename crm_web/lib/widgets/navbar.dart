@@ -14,9 +14,7 @@ class Navbar extends StatelessWidget {
       height: 80,
       decoration: BoxDecoration(
         color: WebTheme.darkBg.withValues(alpha: 0.95),
-        border: const Border(
-          bottom: BorderSide(color: Colors.white10),
-        ),
+        border: const Border(bottom: BorderSide(color: Colors.white10)),
       ),
       padding: EdgeInsets.symmetric(horizontal: isMobile ? 16 : 48),
       child: Row(
@@ -30,9 +28,9 @@ class Navbar extends StatelessWidget {
               Text(
                 'VentasApp',
                 style: Theme.of(context).textTheme.titleLarge?.copyWith(
-                      color: Colors.white,
-                      fontWeight: FontWeight.bold,
-                    ),
+                  color: Colors.white,
+                  fontWeight: FontWeight.bold,
+                ),
               ),
             ],
           ),
@@ -47,17 +45,13 @@ class Navbar extends StatelessWidget {
           ],
           OutlinedButton(
             onPressed: () => Navigator.pushNamed(context, '/login'),
-            style: OutlinedButton.styleFrom(
-              minimumSize: const Size(100, 40),
-            ),
+            style: OutlinedButton.styleFrom(minimumSize: const Size(100, 40)),
             child: const Text('Iniciar sesión'),
           ),
           const SizedBox(width: 12),
           ElevatedButton(
             onPressed: () => Navigator.pushNamed(context, '/register'),
-            style: ElevatedButton.styleFrom(
-              minimumSize: const Size(140, 40),
-            ),
+            style: ElevatedButton.styleFrom(minimumSize: const Size(140, 40)),
             child: const Text('Empezar gratis'),
           ),
         ],
