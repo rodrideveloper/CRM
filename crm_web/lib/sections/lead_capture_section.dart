@@ -37,9 +37,8 @@ class _LeadCaptureSectionState extends State<LeadCaptureSection> {
     });
 
     try {
-      // TODO: Replace with your actual form_token from user_profiles table
       const formToken = String.fromEnvironment('FORM_TOKEN',
-          defaultValue: '');
+          defaultValue: 'c91eda2c-c647-4c52-a0b0-28ffb3d044d3');
 
       await Supabase.instance.client.rpc('submit_lead', params: {
         'p_form_token': formToken,
