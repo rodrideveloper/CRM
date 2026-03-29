@@ -27,7 +27,9 @@ class _ClientInfoTabState extends ConsumerState<ClientInfoTab> {
     _nameController = TextEditingController(text: widget.client.name);
     _phoneController = TextEditingController(text: widget.client.phone ?? '');
     _emailController = TextEditingController(text: widget.client.email ?? '');
-    _companyController = TextEditingController(text: widget.client.company ?? '');
+    _companyController = TextEditingController(
+      text: widget.client.company ?? '',
+    );
     _sourceController = TextEditingController(text: widget.client.source ?? '');
   }
 

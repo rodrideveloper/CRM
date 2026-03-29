@@ -22,13 +22,11 @@ String formatArgPhone(String raw) {
   if (digits.length >= 10) {
     final areaAndRest = digits;
     // Check for 2-digit area code + 15 + 8 digits
-    if (areaAndRest.length == 12 &&
-        areaAndRest.substring(2, 4) == '15') {
+    if (areaAndRest.length == 12 && areaAndRest.substring(2, 4) == '15') {
       digits = areaAndRest.substring(0, 2) + areaAndRest.substring(4);
     }
     // Check for 3-digit area code + 15 + 7 digits
-    else if (areaAndRest.length == 13 &&
-        areaAndRest.substring(3, 5) == '15') {
+    else if (areaAndRest.length == 13 && areaAndRest.substring(3, 5) == '15') {
       digits = areaAndRest.substring(0, 3) + areaAndRest.substring(5);
     }
   }

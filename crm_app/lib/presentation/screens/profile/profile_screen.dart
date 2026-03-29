@@ -52,16 +52,16 @@ class ProfileScreen extends ConsumerWidget {
                   themeMode == ThemeMode.dark
                       ? Icons.dark_mode
                       : themeMode == ThemeMode.light
-                          ? Icons.light_mode
-                          : Icons.brightness_auto,
+                      ? Icons.light_mode
+                      : Icons.brightness_auto,
                 ),
                 title: const Text('Tema'),
                 subtitle: Text(
                   themeMode == ThemeMode.dark
                       ? 'Oscuro'
                       : themeMode == ThemeMode.light
-                          ? 'Claro'
-                          : 'Automático',
+                      ? 'Claro'
+                      : 'Automático',
                 ),
                 trailing: SegmentedButton<ThemeMode>(
                   segments: const [
