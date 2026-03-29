@@ -34,9 +34,10 @@ crm/
 
 ## Database
 - **Enum**: `client_status` → new, contacted, interested, negotiating, closed_won, closed_lost
-- **Tables**: clients, notes, tasks (all with UUID PKs, soft delete via `deleted_at`)
+- **Tables**: clients, notes, tasks, user_profiles (all with UUID PKs, soft delete via `deleted_at` where applicable)
 - **RLS**: Multi-tenant isolation — users only see their own data
-- **Trigger**: Auto-update `updated_at` on row change
+- **Trigger**: Auto-update `updated_at` on row change; auto-create `user_profiles` on signup
+- **RPC**: `submit_lead(form_token, name, phone)` — SECURITY DEFINER, creates clients from public forms
 
 ## Key Design Decisions
 - **Mobile-first**: PageView horizontal kanban (viewportFraction: 0.85), no drag-and-drop

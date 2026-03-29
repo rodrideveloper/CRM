@@ -745,7 +745,7 @@ DropdownButton<Locale>(
 
 ### 5.3 — Recordatorio de seguimiento automático
 
-**Migración DB:** `003_add_follow_up.sql`
+**Migración DB:** `005_add_follow_up.sql`
 ```sql
 ALTER TABLE clients ADD COLUMN next_follow_up TIMESTAMPTZ;
 ```
@@ -775,7 +775,7 @@ ALTER TABLE clients ADD COLUMN next_follow_up TIMESTAMPTZ;
 
 ### 6.1 — Monto de venta en cliente
 
-**Migración DB:** `004_add_deal_value.sql`
+**Migración DB:** `006_add_deal_value.sql`
 ```sql
 ALTER TABLE clients ADD COLUMN deal_value NUMERIC(12,2);
 ALTER TABLE clients ADD COLUMN currency   TEXT DEFAULT 'ARS';
@@ -833,97 +833,34 @@ Cada usuario de VentasApp tiene un **link único** (ej: `ventasapp.com/f/abc123`
 
 Esto convierte a VentasApp de un CRM pasivo a una herramienta de **captación activa** de clientes.
 
-### 7.1 — Token de formulario por usuario
+### 7.1 — Token de formulario por usuario ✅
 
-**Migración DB:** `005_add_form_token.sql`
-```sql
-ALTER TABLE auth.users ADD COLUMN raw_user_meta_data JSONB;
--- O mejor, usar una tabla separada:
-CREATE TABLE public.user_profiles (
-  id UUID PRIMARY KEY REFERENCES auth.users(id),
-  form_token UUID UNIQUE NOT NULL DEFAULT gen_random_uuid(),
-  form_enabled BOOLEAN DEFAULT true,
-  created_at TIMESTAMPTZ DEFAULT now()
-);
+**Migración DB:** `004_user_profiles_and_submit_lead.sql` (ya ejecutada)
 
--- Trigger para crear perfil al registrarse
-CREATE OR REPLACE FUNCTION public.handle_new_user()
-RETURNS TRIGGER AS $$
-BEGIN
-  INSERT INTO public.user_profiles (id) VALUES (NEW.id);
-  RETURN NEW;
-END;
-$$ LANGUAGE plpgsql SECURITY DEFINER;
+Se creó la tabla `user_profiles` con `form_token` UUID único por usuario, trigger `handle_new_user()` para auto-crear perfil en signup, y backfill de usuarios existentes. RLS configurado para que cada usuario solo vea su propio perfil.
 
-CREATE TRIGGER on_auth_user_created
-  AFTER INSERT ON auth.users
-  FOR EACH ROW EXECUTE FUNCTION public.handle_new_user();
-
--- RLS
-ALTER TABLE public.user_profiles ENABLE ROW LEVEL SECURITY;
-
-CREATE POLICY "Users can read own profile"
-  ON public.user_profiles FOR SELECT
-  TO authenticated
-  USING (id = auth.uid());
-
-CREATE POLICY "Anyone can read form_token for lookup"
-  ON public.user_profiles FOR SELECT
-  TO anon
-  USING (form_enabled = true);
-```
-
-| # | Archivo | Cambio |
-|---|---------|--------|
-| A | `supabase/migrations/005_add_form_token.sql` | CREAR — tabla user_profiles + trigger |
-| B | `domain/entities/user_profile.dart` | CREAR — entidad UserProfile |
-| C | `data/models/user_profile_model.dart` | CREAR — DTO con fromJson |
+| # | Archivo | Cambio | Estado |
+|---|---------|--------|--------|
+| A | `supabase/migrations/004_user_profiles_and_submit_lead.sql` | Tabla user_profiles + trigger + RPC | ✅ |
+| B | `domain/entities/user_profile.dart` | CREAR — entidad UserProfile | ⬜ |
+| C | `data/models/user_profile_model.dart` | CREAR — DTO con fromJson | ⬜ |
 
 ---
 
-### 7.2 — Edge Function para crear cliente desde formulario
+### 7.2 — RPC para crear cliente desde formulario ✅
 
-**¿Por qué Edge Function?** El visitante es anónimo pero necesita crear un `client` con el `user_id` del dueño del formulario. RLS no permite eso directamente.
+**Decisión:** Se descartó Edge Function en favor de una función RPC `submit_lead` con `SECURITY DEFINER`. Es más simple (puro SQL, sin deploy de TypeScript) y hace lo mismo: el visitante anónimo puede crear un `client` con el `user_id` del dueño del formulario.
 
-```typescript
-// supabase/functions/submit-lead/index.ts
-import { serve } from 'https://deno.land/std/http/server.ts'
-import { createClient } from 'https://esm.sh/@supabase/supabase-js'
+La función valida el `form_token`, verifica que el formulario esté habilitado, y crea el cliente con `status: 'new'` y `source: 'formulario'`.
 
-serve(async (req) => {
-  const { form_token, name, phone, email } = await req.json()
-  
-  const supabase = createClient(SUPABASE_URL, SERVICE_ROLE_KEY)
-  
-  // Buscar usuario dueño del token
-  const { data: profile } = await supabase
-    .from('user_profiles')
-    .select('id')
-    .eq('form_token', form_token)
-    .eq('form_enabled', true)
-    .single()
-  
-  if (!profile) return new Response('Invalid token', { status: 404 })
-  
-  // Crear cliente en el pipeline del usuario
-  await supabase.from('clients').insert({
-    user_id: profile.id,
-    name: name,
-    phone: phone,
-    email: email,
-    status: 'new',
-    source: 'formulario',
-  })
-  
-  return new Response(JSON.stringify({ ok: true }), { status: 200 })
-})
-```
+La landing (`crm_web`) ya llama a esta RPC desde `lead_capture_section.dart` con el `form_token` configurado via `--dart-define=FORM_TOKEN`.
 
-| # | Archivo | Cambio |
-|---|---------|--------|
-| A | `supabase/functions/submit-lead/index.ts` | CREAR — Edge Function |
-| B | `crm_web/lib/pages/public_form_page.dart` | CREAR — formulario público |
-| C | `crm_web/lib/core/router/app_router.dart` | Agregar ruta `/f/:token` |
+| # | Archivo | Cambio | Estado |
+|---|---------|--------|--------|
+| A | `supabase/migrations/004_user_profiles_and_submit_lead.sql` | RPC submit_lead (SECURITY DEFINER) | ✅ |
+| B | `crm_web/lib/sections/lead_capture_section.dart` | Llama a `rpc('submit_lead')` | ✅ |
+| C | `crm_web/lib/pages/public_form_page.dart` | CREAR — formulario público standalone | ⬜ |
+| D | `crm_web/lib/core/router/app_router.dart` | Agregar ruta `/f/:token` | ⬜ |
 
 ---
 
@@ -967,8 +904,8 @@ Badge en el pipeline que muestre cuántos clientes nuevos llegaron desde el form
 
 | # | Tarea | Prioridad | Complejidad | Estado |
 |---|-------|-----------|-------------|--------|
-| 7.1 | Token de formulario por usuario (user_profiles) | ALTA | Media | ⬜ |
-| 7.2 | Edge Function para crear cliente desde form | ALTA | Alta | ⬜ |
+| 7.1 | Token de formulario por usuario (user_profiles) | ALTA | Media | ✅ |
+| 7.2 | RPC submit_lead + landing conectada | ALTA | Media | ✅ |
 | 7.3 | Pantalla "Mi formulario" en Perfil | ALTA | Baja | ⬜ |
 | 7.4 | Indicador de leads nuevos en pipeline | MEDIA | Baja | ⬜ |
 
@@ -1021,10 +958,10 @@ Features a considerar después de Sprint 6, priorizadas por impacto:
 |-----------|--------|-----------|
 | `001_initial_schema.sql` | 1 | ✅ Schema base (clients, notes, tasks, RLS, triggers) |
 | `002_add_client_fields.sql` | 2 | ✅ email, company, source + funciones RPC restore |
-| `003_leads_table.sql` | Marketing | ✅ Tabla leads para captura landing (anon insert) |
-| `004_add_follow_up.sql` | 5 | next_follow_up en clients |
-| `005_add_deal_value.sql` | 6 | deal_value, currency en clients |
-| `006_user_profiles.sql` | 7 | user_profiles + form_token + trigger on signup |
+| `003_leads_table.sql` | Marketing | ✅ Tabla leads para captura landing (legacy, reemplazada por RPC) |
+| `004_user_profiles_and_submit_lead.sql` | 7 | ✅ user_profiles + form_token + trigger + RPC submit_lead |
+| `005_add_follow_up.sql` | 5 | next_follow_up en clients |
+| `006_add_deal_value.sql` | 6 | deal_value, currency en clients |
 
 ### Template de migración
 ```sql
@@ -1156,8 +1093,8 @@ url_launcher: ^6.3.0
 | Sprint 4 | Búsqueda y Métricas (4 features) | ⬜ Pendiente |
 | Sprint 5 | Notificaciones (3 features) | ⬜ Pendiente |
 | Sprint 6 | Revenue (3 features) | ⬜ Pendiente |
-| Sprint 7 | Captación de Leads (4 features) | ⬜ Pendiente |
+| Sprint 7 | Captación de Leads (4 features) | 🔄 En progreso (2/4) |
 
 **Total features planeadas:** 42  
-**Completadas:** 20  
-**Pendientes:** 22
+**Completadas:** 22  
+**Pendientes:** 20

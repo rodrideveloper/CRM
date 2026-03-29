@@ -216,31 +216,20 @@ Cerrado-Perdido → No convirtió (registrar por qué en nota)
 
 | # | Tarea | Prioridad |
 |---|-------|-----------|
-| 1 | Actualizar precios en landing al modelo real | Alta |
-| 2 | Agregar sección de captura de WhatsApp (formulario → Supabase) | Alta |
-| 3 | Crear tabla `leads` en Supabase para captura web | Alta |
+| 1 | ~~Actualizar precios en landing al modelo real~~ | ✅ Hecho |
+| 2 | ~~Agregar sección de captura de WhatsApp (formulario → Supabase)~~ | ✅ Hecho |
+| 3 | ~~RPC `submit_lead` para crear clientes desde landing~~ | ✅ Hecho (reemplaza tabla `leads`) |
 | 4 | Integrar pixel de Meta en la web | Media |
-| 5 | Agregar sección de FAQ | Baja |
+| 5 | ~~Agregar sección de FAQ~~ | ✅ Hecho |
 | 6 | Agregar sección de prueba social/testimonios | Baja (cuando haya) |
 
-### Tabla `leads` propuesta:
+### Flujo técnico actual:
 
-```sql
-CREATE TABLE public.leads (
-  id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
-  name TEXT,
-  phone TEXT NOT NULL,
-  source TEXT DEFAULT 'landing',  -- landing, tiktok, instagram, ad, referral
-  status TEXT DEFAULT 'new',      -- new, contacted, converted, lost
-  notes TEXT,
-  created_at TIMESTAMPTZ DEFAULT now(),
-  contacted_at TIMESTAMPTZ
-);
+El formulario de la landing llama a la función RPC `submit_lead` con un `form_token` que identifica al usuario. La función (SECURITY DEFINER) crea un `client` con `status: 'new'` y `source: 'formulario'` directamente en el pipeline del usuario. No se usa tabla `leads` separada.
 
--- RLS: solo tu usuario admin puede ver leads
 ```
-
-> Alternativa más simple: los leads se crean como `clients` directamente en tu CRM existente marcando la fuente en una nota.
+Landing form → rpc('submit_lead', {form_token, name, phone}) → INSERT clients
+```
 
 ---
 
