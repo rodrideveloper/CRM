@@ -33,9 +33,6 @@ class _PipelineScreenState extends ConsumerState<PipelineScreen> {
     showModalBottomSheet(
       context: context,
       isScrollControlled: true,
-      shape: const RoundedRectangleBorder(
-        borderRadius: BorderRadius.vertical(top: Radius.circular(20)),
-      ),
       builder: (ctx) => Padding(
         padding: EdgeInsets.fromLTRB(
           24,
@@ -49,13 +46,29 @@ class _PipelineScreenState extends ConsumerState<PipelineScreen> {
             mainAxisSize: MainAxisSize.min,
             crossAxisAlignment: CrossAxisAlignment.stretch,
             children: [
-              Text(
-                'Nuevo cliente',
-                style: Theme.of(
-                  ctx,
-                ).textTheme.titleLarge?.copyWith(fontWeight: FontWeight.bold),
+              Row(
+                children: [
+                  Container(
+                    padding: const EdgeInsets.all(10),
+                    decoration: BoxDecoration(
+                      color: DesignTokens.primaryLight,
+                      borderRadius: BorderRadius.circular(DesignTokens.radiusS),
+                    ),
+                    child: const Icon(
+                      Icons.person_add_rounded,
+                      color: DesignTokens.primary,
+                    ),
+                  ),
+                  const SizedBox(width: 12),
+                  Text(
+                    'Nuevo cliente',
+                    style: Theme.of(ctx).textTheme.titleLarge?.copyWith(
+                      fontWeight: FontWeight.w800,
+                    ),
+                  ),
+                ],
               ),
-              const SizedBox(height: 16),
+              const SizedBox(height: 20),
               TextFormField(
                 controller: nameController,
                 decoration: const InputDecoration(
@@ -117,7 +130,7 @@ class _PipelineScreenState extends ConsumerState<PipelineScreen> {
                             : null,
                       );
                 },
-                child: const Text('Crear'),
+                child: const Text('Crear cliente'),
               ),
             ],
           ),
@@ -129,9 +142,6 @@ class _PipelineScreenState extends ConsumerState<PipelineScreen> {
   void _showChangeStatusSheet(Client client) {
     showModalBottomSheet(
       context: context,
-      shape: const RoundedRectangleBorder(
-        borderRadius: BorderRadius.vertical(top: Radius.circular(20)),
-      ),
       builder: (ctx) => SafeArea(
         child: Padding(
           padding: const EdgeInsets.all(16),
@@ -143,20 +153,36 @@ class _PipelineScreenState extends ConsumerState<PipelineScreen> {
                 'Mover "${client.name}" a:',
                 style: Theme.of(
                   ctx,
-                ).textTheme.titleMedium?.copyWith(fontWeight: FontWeight.bold),
+                ).textTheme.titleMedium?.copyWith(fontWeight: FontWeight.w700),
               ),
               const SizedBox(height: 12),
               ...ClientStatus.values
                   .where((s) => s != client.status)
                   .map(
                     (status) => ListTile(
-                      leading: Icon(
-                        _statusIcon(status),
-                        color: _statusColor(status),
+                      leading: Container(
+                        width: 36,
+                        height: 36,
+                        decoration: BoxDecoration(
+                          color: _statusColor(status).withValues(alpha: 0.15),
+                          borderRadius: BorderRadius.circular(
+                            DesignTokens.radiusS,
+                          ),
+                        ),
+                        child: Icon(
+                          _statusIcon(status),
+                          color: _statusColor(status),
+                          size: 20,
+                        ),
                       ),
-                      title: Text(status.label),
+                      title: Text(
+                        status.label,
+                        style: const TextStyle(fontWeight: FontWeight.w600),
+                      ),
                       shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(8),
+                        borderRadius: BorderRadius.circular(
+                          DesignTokens.radiusS,
+                        ),
                       ),
                       onTap: () async {
                         Navigator.pop(ctx);
@@ -175,12 +201,12 @@ class _PipelineScreenState extends ConsumerState<PipelineScreen> {
 
   IconData _statusIcon(ClientStatus status) {
     return switch (status) {
-      ClientStatus.newClient => Icons.fiber_new,
-      ClientStatus.contacted => Icons.phone_callback,
-      ClientStatus.interested => Icons.thumb_up_outlined,
-      ClientStatus.negotiating => Icons.handshake_outlined,
-      ClientStatus.closedWon => Icons.check_circle_outline,
-      ClientStatus.closedLost => Icons.cancel_outlined,
+      ClientStatus.newClient => Icons.fiber_new_rounded,
+      ClientStatus.contacted => Icons.phone_callback_rounded,
+      ClientStatus.interested => Icons.thumb_up_rounded,
+      ClientStatus.negotiating => Icons.handshake_rounded,
+      ClientStatus.closedWon => Icons.check_circle_rounded,
+      ClientStatus.closedLost => Icons.cancel_rounded,
     };
   }
 
@@ -191,15 +217,24 @@ class _PipelineScreenState extends ConsumerState<PipelineScreen> {
   @override
   Widget build(BuildContext context) {
     final pipeline = ref.watch(pipelineProvider);
+    final theme = Theme.of(context);
 
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Pipeline'),
+        title: const Text('Pipeline 🎯'),
         actions: [
           IconButton(
-            icon: const Icon(Icons.search),
+            icon: Container(
+              padding: const EdgeInsets.all(8),
+              decoration: BoxDecoration(
+                color: DesignTokens.bgSubtle,
+                borderRadius: BorderRadius.circular(DesignTokens.radiusS),
+              ),
+              child: const Icon(Icons.search_rounded, size: 20),
+            ),
             onPressed: () => _showSearchSheet(),
           ),
+          const SizedBox(width: 8),
         ],
       ),
       body: pipeline.when(
@@ -208,11 +243,27 @@ class _PipelineScreenState extends ConsumerState<PipelineScreen> {
           child: Column(
             mainAxisSize: MainAxisSize.min,
             children: [
-              Text('Error: $err'),
-              const SizedBox(height: 8),
-              ElevatedButton(
+              const Text('😕', style: TextStyle(fontSize: 48)),
+              const SizedBox(height: 12),
+              Text(
+                'Algo salió mal',
+                style: theme.textTheme.titleMedium?.copyWith(
+                  fontWeight: FontWeight.w700,
+                ),
+              ),
+              const SizedBox(height: 4),
+              Text(
+                '$err',
+                style: theme.textTheme.bodySmall?.copyWith(
+                  color: theme.colorScheme.onSurfaceVariant,
+                ),
+                textAlign: TextAlign.center,
+              ),
+              const SizedBox(height: 16),
+              ElevatedButton.icon(
                 onPressed: () => ref.read(clientsProvider.notifier).refresh(),
-                child: const Text('Reintentar'),
+                icon: const Icon(Icons.refresh_rounded),
+                label: const Text('Reintentar'),
               ),
             ],
           ),
@@ -221,7 +272,7 @@ class _PipelineScreenState extends ConsumerState<PipelineScreen> {
           final statuses = ClientStatus.values;
           return Column(
             children: [
-              // Status tabs (scrollable chips)
+              // Status chips
               SizedBox(
                 height: 48,
                 child: ListView.separated(
@@ -231,12 +282,26 @@ class _PipelineScreenState extends ConsumerState<PipelineScreen> {
                   separatorBuilder: (_, __) => const SizedBox(width: 8),
                   itemBuilder: (context, index) {
                     final status = statuses[index];
+                    final count = pipelineMap[status]?.length ?? 0;
                     final isSelected = _currentPage == index;
+                    final statusColor = _statusColor(status);
                     return ChoiceChip(
-                      label: Text(
-                        '${status.label} (${pipelineMap[status]?.length ?? 0})',
-                      ),
+                      label: Text('${status.label} ($count)'),
                       selected: isSelected,
+                      selectedColor: statusColor.withValues(alpha: 0.15),
+                      labelStyle: TextStyle(
+                        color: isSelected
+                            ? statusColor
+                            : theme.colorScheme.onSurfaceVariant,
+                        fontWeight: isSelected
+                            ? FontWeight.w700
+                            : FontWeight.w500,
+                      ),
+                      side: isSelected
+                          ? BorderSide(
+                              color: statusColor.withValues(alpha: 0.3),
+                            )
+                          : BorderSide(color: Colors.grey.shade200),
                       onSelected: (_) {
                         _pageController.animateToPage(
                           index,
@@ -249,7 +314,7 @@ class _PipelineScreenState extends ConsumerState<PipelineScreen> {
                 ),
               ),
               const SizedBox(height: 8),
-              // Pipeline columns (swipeable)
+              // Pipeline columns
               Expanded(
                 child: PageView.builder(
                   controller: _pageController,
@@ -274,9 +339,10 @@ class _PipelineScreenState extends ConsumerState<PipelineScreen> {
           );
         },
       ),
-      floatingActionButton: FloatingActionButton(
+      floatingActionButton: FloatingActionButton.extended(
         onPressed: _showCreateClientDialog,
-        child: const Icon(Icons.person_add),
+        icon: const Icon(Icons.person_add_rounded),
+        label: const Text('Nuevo'),
       ),
     );
   }
@@ -285,9 +351,6 @@ class _PipelineScreenState extends ConsumerState<PipelineScreen> {
     showModalBottomSheet(
       context: context,
       isScrollControlled: true,
-      shape: const RoundedRectangleBorder(
-        borderRadius: BorderRadius.vertical(top: Radius.circular(20)),
-      ),
       builder: (ctx) => DraggableScrollableSheet(
         initialChildSize: 0.7,
         minChildSize: 0.5,
@@ -320,6 +383,7 @@ class _SearchSheetState extends ConsumerState<_SearchSheet> {
   @override
   Widget build(BuildContext context) {
     final results = ref.watch(filteredClientsProvider);
+    final theme = Theme.of(context);
 
     return Padding(
       padding: const EdgeInsets.all(16),
@@ -329,7 +393,7 @@ class _SearchSheetState extends ConsumerState<_SearchSheet> {
             controller: _searchController,
             decoration: const InputDecoration(
               hintText: 'Buscar clientes...',
-              prefixIcon: Icon(Icons.search),
+              prefixIcon: Icon(Icons.search_rounded),
             ),
             onChanged: (value) {
               ref.read(clientSearchQueryProvider.notifier).state = value;
@@ -342,10 +406,38 @@ class _SearchSheetState extends ConsumerState<_SearchSheet> {
               error: (err, _) => Center(child: Text('Error: $err')),
               data: (clients) {
                 if (_searchController.text.isEmpty) {
-                  return const Center(child: Text('Escribí para buscar'));
+                  return Center(
+                    child: Column(
+                      mainAxisSize: MainAxisSize.min,
+                      children: [
+                        const Text('🔍', style: TextStyle(fontSize: 40)),
+                        const SizedBox(height: 8),
+                        Text(
+                          'Escribí para buscar',
+                          style: theme.textTheme.bodyLarge?.copyWith(
+                            color: theme.colorScheme.onSurfaceVariant,
+                          ),
+                        ),
+                      ],
+                    ),
+                  );
                 }
                 if (clients.isEmpty) {
-                  return const Center(child: Text('Sin resultados'));
+                  return Center(
+                    child: Column(
+                      mainAxisSize: MainAxisSize.min,
+                      children: [
+                        const Text('🤷', style: TextStyle(fontSize: 40)),
+                        const SizedBox(height: 8),
+                        Text(
+                          'Sin resultados',
+                          style: theme.textTheme.bodyLarge?.copyWith(
+                            color: theme.colorScheme.onSurfaceVariant,
+                          ),
+                        ),
+                      ],
+                    ),
+                  );
                 }
                 return ListView.builder(
                   controller: widget.scrollController,
@@ -354,10 +446,29 @@ class _SearchSheetState extends ConsumerState<_SearchSheet> {
                     final client = clients[index];
                     return ListTile(
                       leading: CircleAvatar(
-                        child: Text(client.name[0].toUpperCase()),
+                        backgroundColor: DesignTokens.statusColor(
+                          client.status.value,
+                        ).withValues(alpha: 0.15),
+                        child: Text(
+                          client.name[0].toUpperCase(),
+                          style: TextStyle(
+                            color: DesignTokens.statusColor(
+                              client.status.value,
+                            ),
+                            fontWeight: FontWeight.w700,
+                          ),
+                        ),
                       ),
-                      title: Text(client.name),
+                      title: Text(
+                        client.name,
+                        style: const TextStyle(fontWeight: FontWeight.w600),
+                      ),
                       subtitle: Text(client.status.label),
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(
+                          DesignTokens.radiusS,
+                        ),
+                      ),
                       onTap: () {
                         Navigator.pop(context);
                         context.push('/client/${client.id}');

@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
+import '../../../core/theme/design_tokens.dart';
 import '../../providers/task_provider.dart';
 import '../../providers/repository_providers.dart';
 
@@ -14,12 +15,20 @@ class TasksScreen extends ConsumerWidget {
 
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Tareas pendientes'),
+        title: const Text('Tareas 📋'),
         actions: [
           IconButton(
-            icon: const Icon(Icons.refresh),
+            icon: Container(
+              padding: const EdgeInsets.all(8),
+              decoration: BoxDecoration(
+                color: DesignTokens.bgSubtle,
+                borderRadius: BorderRadius.circular(DesignTokens.radiusS),
+              ),
+              child: const Icon(Icons.refresh_rounded, size: 20),
+            ),
             onPressed: () => ref.invalidate(pendingTasksProvider),
           ),
+          const SizedBox(width: 8),
         ],
       ),
       body: tasksAsync.when(
@@ -28,11 +37,26 @@ class TasksScreen extends ConsumerWidget {
           child: Column(
             mainAxisSize: MainAxisSize.min,
             children: [
-              Text('Error: $err'),
-              const SizedBox(height: 8),
-              ElevatedButton(
+              const Text('😕', style: TextStyle(fontSize: 48)),
+              const SizedBox(height: 12),
+              Text(
+                'Algo salió mal',
+                style: theme.textTheme.titleMedium?.copyWith(
+                  fontWeight: FontWeight.w700,
+                ),
+              ),
+              const SizedBox(height: 4),
+              Text(
+                '$err',
+                style: theme.textTheme.bodySmall?.copyWith(
+                  color: theme.colorScheme.onSurfaceVariant,
+                ),
+              ),
+              const SizedBox(height: 16),
+              ElevatedButton.icon(
                 onPressed: () => ref.invalidate(pendingTasksProvider),
-                child: const Text('Reintentar'),
+                icon: const Icon(Icons.refresh_rounded),
+                label: const Text('Reintentar'),
               ),
             ],
           ),
@@ -43,13 +67,14 @@ class TasksScreen extends ConsumerWidget {
               child: Column(
                 mainAxisSize: MainAxisSize.min,
                 children: [
-                  Icon(
-                    Icons.check_circle_outline,
-                    size: 64,
-                    color: theme.colorScheme.primary,
-                  ),
+                  const Text('🎉', style: TextStyle(fontSize: 56)),
                   const SizedBox(height: 16),
-                  Text('¡Todo al día!', style: theme.textTheme.titleLarge),
+                  Text(
+                    '¡Todo al día!',
+                    style: theme.textTheme.titleLarge?.copyWith(
+                      fontWeight: FontWeight.w800,
+                    ),
+                  ),
                   const SizedBox(height: 4),
                   Text(
                     'No hay tareas pendientes',
@@ -71,13 +96,58 @@ class TasksScreen extends ConsumerWidget {
                 final task = tasks[index];
                 final isOverdue = task.isOverdue;
 
-                return Card(
-                  color: isOverdue ? Colors.red.shade50 : null,
+                return Container(
+                  margin: const EdgeInsets.only(bottom: 8),
+                  decoration: BoxDecoration(
+                    color: isOverdue
+                        ? DesignTokens.error.withValues(alpha: 0.06)
+                        : Colors.white,
+                    borderRadius: BorderRadius.circular(DesignTokens.radiusM),
+                    border: isOverdue
+                        ? Border.all(
+                            color: DesignTokens.error.withValues(alpha: 0.2),
+                          )
+                        : null,
+                    boxShadow: DesignTokens.shadowSoft,
+                  ),
                   child: ListTile(
+                    contentPadding: const EdgeInsets.symmetric(
+                      horizontal: 16,
+                      vertical: 6,
+                    ),
                     leading: isOverdue
-                        ? const Icon(Icons.warning, color: Colors.red)
-                        : const Icon(Icons.task_outlined),
-                    title: Text(task.title),
+                        ? Container(
+                            padding: const EdgeInsets.all(8),
+                            decoration: BoxDecoration(
+                              color: DesignTokens.error.withValues(alpha: 0.12),
+                              borderRadius: BorderRadius.circular(
+                                DesignTokens.radiusS,
+                              ),
+                            ),
+                            child: const Icon(
+                              Icons.warning_rounded,
+                              color: DesignTokens.error,
+                              size: 20,
+                            ),
+                          )
+                        : Container(
+                            padding: const EdgeInsets.all(8),
+                            decoration: BoxDecoration(
+                              color: DesignTokens.info.withValues(alpha: 0.12),
+                              borderRadius: BorderRadius.circular(
+                                DesignTokens.radiusS,
+                              ),
+                            ),
+                            child: Icon(
+                              Icons.task_alt_rounded,
+                              color: DesignTokens.info,
+                              size: 20,
+                            ),
+                          ),
+                    title: Text(
+                      task.title,
+                      style: const TextStyle(fontWeight: FontWeight.w600),
+                    ),
                     subtitle: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
@@ -85,22 +155,51 @@ class TasksScreen extends ConsumerWidget {
                           Text(
                             task.clientName!,
                             style: theme.textTheme.bodySmall?.copyWith(
-                              color: theme.colorScheme.primary,
-                              fontWeight: FontWeight.w500,
+                              color: DesignTokens.accent,
+                              fontWeight: FontWeight.w600,
                             ),
                           ),
                         if (task.dueDate != null)
-                          Text(
-                            'Vence: ${task.dueDate!.day}/${task.dueDate!.month}/${task.dueDate!.year}',
-                            style: TextStyle(
-                              color: isOverdue ? Colors.red : null,
-                              fontWeight: isOverdue ? FontWeight.bold : null,
-                            ),
+                          Row(
+                            children: [
+                              Icon(
+                                Icons.schedule_rounded,
+                                size: 13,
+                                color: isOverdue
+                                    ? DesignTokens.error
+                                    : theme.colorScheme.onSurfaceVariant,
+                              ),
+                              const SizedBox(width: 4),
+                              Text(
+                                'Vence: ${task.dueDate!.day}/${task.dueDate!.month}/${task.dueDate!.year}',
+                                style: TextStyle(
+                                  color: isOverdue
+                                      ? DesignTokens.error
+                                      : null,
+                                  fontWeight:
+                                      isOverdue ? FontWeight.w700 : null,
+                                  fontSize: 12,
+                                ),
+                              ),
+                            ],
                           ),
                       ],
                     ),
                     trailing: IconButton(
-                      icon: const Icon(Icons.check_circle_outline),
+                      icon: Container(
+                        padding: const EdgeInsets.all(6),
+                        decoration: BoxDecoration(
+                          color: DesignTokens.primaryLight,
+                          borderRadius: BorderRadius.circular(
+                            DesignTokens.radiusS,
+                          ),
+                        ),
+                        child: const Icon(
+                          Icons.check_rounded,
+                          color: DesignTokens.primary,
+                          size: 18,
+                        ),
+                      ),
                       tooltip: 'Completar',
                       onPressed: () async {
                         await ref

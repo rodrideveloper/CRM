@@ -33,17 +33,17 @@ class ShellScreen extends StatelessWidget {
         destinations: const [
           NavigationDestination(
             icon: Icon(Icons.view_kanban_outlined),
-            selectedIcon: Icon(Icons.view_kanban),
+            selectedIcon: Icon(Icons.view_kanban_rounded),
             label: 'Pipeline',
           ),
           NavigationDestination(
             icon: Icon(Icons.task_outlined),
-            selectedIcon: Icon(Icons.task),
+            selectedIcon: Icon(Icons.task_alt_rounded),
             label: 'Tareas',
           ),
           NavigationDestination(
             icon: Icon(Icons.person_outlined),
-            selectedIcon: Icon(Icons.person),
+            selectedIcon: Icon(Icons.person_rounded),
             label: 'Perfil',
           ),
         ],

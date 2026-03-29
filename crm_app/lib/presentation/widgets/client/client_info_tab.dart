@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import '../../../core/theme/design_tokens.dart';
 import '../../../domain/entities/client.dart';
 import '../../providers/client_provider.dart';
 import '../../providers/repository_providers.dart';
@@ -66,15 +67,16 @@ class _ClientInfoTabState extends ConsumerState<ClientInfoTab> {
     await ref.read(clientsProvider.notifier).refresh();
     if (mounted) {
       setState(() => _editing = false);
-      ScaffoldMessenger.of(
-        context,
-      ).showSnackBar(const SnackBar(content: Text('Cliente actualizado')));
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(content: Text('✅ Cliente actualizado')),
+      );
     }
   }
 
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
+    final statusColor = DesignTokens.statusColor(widget.client.status.value);
 
     return SingleChildScrollView(
       padding: const EdgeInsets.all(16),
@@ -85,70 +87,110 @@ class _ClientInfoTabState extends ConsumerState<ClientInfoTab> {
           children: [
             // Status badge
             Center(
-              child: Chip(
-                label: Text(
-                  widget.client.status.label,
-                  style: const TextStyle(fontWeight: FontWeight.bold),
+              child: Container(
+                padding: const EdgeInsets.symmetric(
+                  horizontal: 16,
+                  vertical: 8,
                 ),
-                avatar: const Icon(Icons.circle, size: 12),
+                decoration: BoxDecoration(
+                  color: statusColor.withValues(alpha: 0.12),
+                  borderRadius: BorderRadius.circular(DesignTokens.radiusL),
+                  border: Border.all(
+                    color: statusColor.withValues(alpha: 0.3),
+                  ),
+                ),
+                child: Row(
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    Container(
+                      width: 8,
+                      height: 8,
+                      decoration: BoxDecoration(
+                        color: statusColor,
+                        shape: BoxShape.circle,
+                      ),
+                    ),
+                    const SizedBox(width: 8),
+                    Text(
+                      widget.client.status.label,
+                      style: TextStyle(
+                        fontWeight: FontWeight.w700,
+                        color: statusColor,
+                      ),
+                    ),
+                  ],
+                ),
               ),
             ),
             const SizedBox(height: 24),
-            TextFormField(
-              controller: _nameController,
-              decoration: const InputDecoration(
-                labelText: 'Nombre',
-                prefixIcon: Icon(Icons.person_outlined),
+            // Form fields in a card
+            Container(
+              padding: const EdgeInsets.all(20),
+              decoration: BoxDecoration(
+                color: Colors.white,
+                borderRadius: BorderRadius.circular(DesignTokens.radiusM),
+                boxShadow: DesignTokens.shadowSoft,
               ),
-              enabled: _editing,
-              validator: (v) =>
-                  v == null || v.trim().isEmpty ? 'Requerido' : null,
-            ),
-            const SizedBox(height: 12),
-            TextFormField(
-              controller: _phoneController,
-              decoration: const InputDecoration(
-                labelText: 'Teléfono',
-                prefixIcon: Icon(Icons.phone_outlined),
-                hintText: '+5491112345678',
+              child: Column(
+                children: [
+                  TextFormField(
+                    controller: _nameController,
+                    decoration: const InputDecoration(
+                      labelText: 'Nombre',
+                      prefixIcon: Icon(Icons.person_outlined),
+                    ),
+                    enabled: _editing,
+                    validator: (v) =>
+                        v == null || v.trim().isEmpty ? 'Requerido' : null,
+                  ),
+                  const SizedBox(height: 12),
+                  TextFormField(
+                    controller: _phoneController,
+                    decoration: const InputDecoration(
+                      labelText: 'Teléfono',
+                      prefixIcon: Icon(Icons.phone_outlined),
+                      hintText: '+5491112345678',
+                    ),
+                    enabled: _editing,
+                    keyboardType: TextInputType.phone,
+                  ),
+                  const SizedBox(height: 12),
+                  TextFormField(
+                    controller: _emailController,
+                    decoration: const InputDecoration(
+                      labelText: 'Email',
+                      prefixIcon: Icon(Icons.email_outlined),
+                    ),
+                    enabled: _editing,
+                    keyboardType: TextInputType.emailAddress,
+                  ),
+                  const SizedBox(height: 12),
+                  TextFormField(
+                    controller: _companyController,
+                    decoration: const InputDecoration(
+                      labelText: 'Empresa',
+                      prefixIcon: Icon(Icons.business_outlined),
+                    ),
+                    enabled: _editing,
+                  ),
+                  const SizedBox(height: 12),
+                  TextFormField(
+                    controller: _sourceController,
+                    decoration: const InputDecoration(
+                      labelText: 'Origen',
+                      prefixIcon: Icon(Icons.source_outlined),
+                      hintText: 'Ej: Instagram, referido, web',
+                    ),
+                    enabled: _editing,
+                  ),
+                ],
               ),
-              enabled: _editing,
-              keyboardType: TextInputType.phone,
             ),
-            const SizedBox(height: 12),
-            TextFormField(
-              controller: _emailController,
-              decoration: const InputDecoration(
-                labelText: 'Email',
-                prefixIcon: Icon(Icons.email_outlined),
-              ),
-              enabled: _editing,
-              keyboardType: TextInputType.emailAddress,
-            ),
-            const SizedBox(height: 12),
-            TextFormField(
-              controller: _companyController,
-              decoration: const InputDecoration(
-                labelText: 'Empresa',
-                prefixIcon: Icon(Icons.business_outlined),
-              ),
-              enabled: _editing,
-            ),
-            const SizedBox(height: 12),
-            TextFormField(
-              controller: _sourceController,
-              decoration: const InputDecoration(
-                labelText: 'Origen',
-                prefixIcon: Icon(Icons.source_outlined),
-                hintText: 'Ej: Instagram, referido, web',
-              ),
-              enabled: _editing,
-            ),
-            const SizedBox(height: 24),
+            const SizedBox(height: 20),
             if (_editing) ...[
               ElevatedButton.icon(
                 onPressed: _save,
-                icon: const Icon(Icons.save),
+                icon: const Icon(Icons.save_rounded),
                 label: const Text('Guardar'),
               ),
               const SizedBox(height: 8),
@@ -166,26 +208,58 @@ class _ClientInfoTabState extends ConsumerState<ClientInfoTab> {
             ] else
               OutlinedButton.icon(
                 onPressed: () => setState(() => _editing = true),
-                icon: const Icon(Icons.edit),
+                icon: const Icon(Icons.edit_rounded),
                 label: const Text('Editar'),
               ),
-            const SizedBox(height: 16),
+            const SizedBox(height: 20),
             // Metadata
-            Text(
-              'Creado: ${_formatDate(widget.client.createdAt)}',
-              style: theme.textTheme.bodySmall?.copyWith(
-                color: theme.colorScheme.onSurfaceVariant,
+            Container(
+              padding: const EdgeInsets.all(14),
+              decoration: BoxDecoration(
+                color: DesignTokens.bgSubtle,
+                borderRadius: BorderRadius.circular(DesignTokens.radiusS),
               ),
-            ),
-            Text(
-              'Actualizado: ${_formatDate(widget.client.updatedAt)}',
-              style: theme.textTheme.bodySmall?.copyWith(
-                color: theme.colorScheme.onSurfaceVariant,
+              child: Column(
+                children: [
+                  _buildMetaRow(
+                    Icons.calendar_today_rounded,
+                    'Creado',
+                    _formatDate(widget.client.createdAt),
+                    theme,
+                  ),
+                  const SizedBox(height: 6),
+                  _buildMetaRow(
+                    Icons.update_rounded,
+                    'Actualizado',
+                    _formatDate(widget.client.updatedAt),
+                    theme,
+                  ),
+                ],
               ),
             ),
           ],
         ),
       ),
+    );
+  }
+
+  Widget _buildMetaRow(
+    IconData icon,
+    String label,
+    String value,
+    ThemeData theme,
+  ) {
+    return Row(
+      children: [
+        Icon(icon, size: 14, color: theme.colorScheme.onSurfaceVariant),
+        const SizedBox(width: 8),
+        Text(
+          '$label: $value',
+          style: theme.textTheme.bodySmall?.copyWith(
+            color: theme.colorScheme.onSurfaceVariant,
+          ),
+        ),
+      ],
     );
   }
 

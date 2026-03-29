@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import '../../../core/theme/design_tokens.dart';
 import '../../providers/task_provider.dart';
 
 class TaskListTab extends ConsumerWidget {
@@ -13,9 +14,6 @@ class TaskListTab extends ConsumerWidget {
     showModalBottomSheet(
       context: context,
       isScrollControlled: true,
-      shape: const RoundedRectangleBorder(
-        borderRadius: BorderRadius.vertical(top: Radius.circular(20)),
-      ),
       builder: (ctx) => StatefulBuilder(
         builder: (ctx, setSheetState) => Padding(
           padding: EdgeInsets.fromLTRB(
@@ -28,24 +26,42 @@ class TaskListTab extends ConsumerWidget {
             mainAxisSize: MainAxisSize.min,
             crossAxisAlignment: CrossAxisAlignment.stretch,
             children: [
-              Text(
-                'Nueva tarea',
-                style: Theme.of(
-                  ctx,
-                ).textTheme.titleLarge?.copyWith(fontWeight: FontWeight.bold),
+              Row(
+                children: [
+                  Container(
+                    padding: const EdgeInsets.all(10),
+                    decoration: BoxDecoration(
+                      color: DesignTokens.info.withValues(alpha: 0.12),
+                      borderRadius: BorderRadius.circular(
+                        DesignTokens.radiusS,
+                      ),
+                    ),
+                    child: Icon(
+                      Icons.add_task_rounded,
+                      color: DesignTokens.info,
+                    ),
+                  ),
+                  const SizedBox(width: 12),
+                  Text(
+                    'Nueva tarea',
+                    style: Theme.of(ctx).textTheme.titleLarge?.copyWith(
+                      fontWeight: FontWeight.w800,
+                    ),
+                  ),
+                ],
               ),
               const SizedBox(height: 16),
               TextField(
                 controller: titleController,
                 decoration: const InputDecoration(
                   labelText: 'Título de la tarea',
-                  prefixIcon: Icon(Icons.task_outlined),
+                  prefixIcon: Icon(Icons.task_alt_rounded),
                 ),
                 textInputAction: TextInputAction.done,
               ),
               const SizedBox(height: 12),
               OutlinedButton.icon(
-                icon: const Icon(Icons.calendar_today),
+                icon: const Icon(Icons.calendar_today_rounded),
                 label: Text(
                   selectedDate != null
                       ? '${selectedDate!.day}/${selectedDate!.month}/${selectedDate!.year}'
@@ -87,6 +103,7 @@ class TaskListTab extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final tasksAsync = ref.watch(clientTasksProvider(clientId));
+    final theme = Theme.of(context);
 
     return Scaffold(
       body: tasksAsync.when(
@@ -94,8 +111,27 @@ class TaskListTab extends ConsumerWidget {
         error: (err, _) => Center(child: Text('Error: $err')),
         data: (tasks) {
           if (tasks.isEmpty) {
-            return const Center(
-              child: Text('Sin tareas. Creá una con el botón +'),
+            return Center(
+              child: Column(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  const Text('✅', style: TextStyle(fontSize: 48)),
+                  const SizedBox(height: 12),
+                  Text(
+                    'Sin tareas pendientes',
+                    style: theme.textTheme.titleMedium?.copyWith(
+                      fontWeight: FontWeight.w700,
+                    ),
+                  ),
+                  const SizedBox(height: 4),
+                  Text(
+                    'Creá una con el botón +',
+                    style: theme.textTheme.bodyMedium?.copyWith(
+                      color: theme.colorScheme.onSurfaceVariant,
+                    ),
+                  ),
+                ],
+              ),
             );
           }
           return ListView.builder(
@@ -110,9 +146,12 @@ class TaskListTab extends ConsumerWidget {
                 direction: DismissDirection.endToStart,
                 background: Container(
                   alignment: Alignment.centerRight,
-                  padding: const EdgeInsets.only(right: 16),
-                  color: Colors.red,
-                  child: const Icon(Icons.delete, color: Colors.white),
+                  padding: const EdgeInsets.only(right: 20),
+                  decoration: BoxDecoration(
+                    color: DesignTokens.error,
+                    borderRadius: BorderRadius.circular(DesignTokens.radiusM),
+                  ),
+                  child: const Icon(Icons.delete_rounded, color: Colors.white),
                 ),
                 onDismissed: (_) {
                   ref
@@ -134,16 +173,39 @@ class TaskListTab extends ConsumerWidget {
                       ),
                     );
                 },
-                child: Card(
-                  color: isOverdue ? Colors.red.shade50 : null,
+                child: Container(
+                  margin: const EdgeInsets.only(bottom: 8),
+                  decoration: BoxDecoration(
+                    color: isOverdue
+                        ? DesignTokens.error.withValues(alpha: 0.06)
+                        : Colors.white,
+                    borderRadius: BorderRadius.circular(DesignTokens.radiusM),
+                    border: isOverdue
+                        ? Border.all(
+                            color: DesignTokens.error.withValues(alpha: 0.2),
+                          )
+                        : null,
+                    boxShadow: DesignTokens.shadowSoft,
+                  ),
                   child: ListTile(
-                    leading: Checkbox(
-                      value: task.completed,
-                      onChanged: (_) {
-                        ref
-                            .read(clientTasksProvider(clientId).notifier)
-                            .toggleComplete(task.id);
-                      },
+                    contentPadding: const EdgeInsets.symmetric(
+                      horizontal: 12,
+                      vertical: 4,
+                    ),
+                    leading: Transform.scale(
+                      scale: 1.2,
+                      child: Checkbox(
+                        value: task.completed,
+                        activeColor: DesignTokens.primary,
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(4),
+                        ),
+                        onChanged: (_) {
+                          ref
+                              .read(clientTasksProvider(clientId).notifier)
+                              .toggleComplete(task.id);
+                        },
+                      ),
                     ),
                     title: Text(
                       task.title,
@@ -151,19 +213,52 @@ class TaskListTab extends ConsumerWidget {
                         decoration: task.completed
                             ? TextDecoration.lineThrough
                             : null,
+                        fontWeight: FontWeight.w600,
+                        color: task.completed
+                            ? theme.colorScheme.onSurfaceVariant
+                            : null,
                       ),
                     ),
                     subtitle: task.dueDate != null
-                        ? Text(
-                            'Vence: ${task.dueDate!.day}/${task.dueDate!.month}/${task.dueDate!.year}',
-                            style: TextStyle(
-                              color: isOverdue ? Colors.red : null,
-                              fontWeight: isOverdue ? FontWeight.bold : null,
-                            ),
+                        ? Row(
+                            children: [
+                              Icon(
+                                Icons.schedule_rounded,
+                                size: 13,
+                                color: isOverdue
+                                    ? DesignTokens.error
+                                    : theme.colorScheme.onSurfaceVariant,
+                              ),
+                              const SizedBox(width: 4),
+                              Text(
+                                'Vence: ${task.dueDate!.day}/${task.dueDate!.month}/${task.dueDate!.year}',
+                                style: TextStyle(
+                                  color: isOverdue
+                                      ? DesignTokens.error
+                                      : null,
+                                  fontWeight:
+                                      isOverdue ? FontWeight.w700 : null,
+                                  fontSize: 12,
+                                ),
+                              ),
+                            ],
                           )
                         : null,
                     trailing: isOverdue
-                        ? const Icon(Icons.warning, color: Colors.red)
+                        ? Container(
+                            padding: const EdgeInsets.all(6),
+                            decoration: BoxDecoration(
+                              color: DesignTokens.error.withValues(alpha: 0.12),
+                              borderRadius: BorderRadius.circular(
+                                DesignTokens.radiusS,
+                              ),
+                            ),
+                            child: const Icon(
+                              Icons.warning_rounded,
+                              color: DesignTokens.error,
+                              size: 18,
+                            ),
+                          )
                         : null,
                   ),
                 ),
@@ -175,7 +270,7 @@ class TaskListTab extends ConsumerWidget {
       floatingActionButton: FloatingActionButton.small(
         heroTag: 'addTask',
         onPressed: () => _showAddTaskDialog(context, ref),
-        child: const Icon(Icons.add),
+        child: const Icon(Icons.add_rounded),
       ),
     );
   }

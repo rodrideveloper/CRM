@@ -18,37 +18,44 @@ class PipelineColumn extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
+    final statusColor = DesignTokens.statusColor(status.value);
 
     return Column(
       children: [
         // Column header
         Container(
           width: double.infinity,
-          padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
+          padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 14),
           decoration: BoxDecoration(
-            color: theme.colorScheme.surfaceContainerHighest,
-            borderRadius: BorderRadius.circular(12),
+            color: statusColor.withValues(alpha: 0.08),
+            borderRadius: BorderRadius.circular(DesignTokens.radiusM),
+            border: Border(left: BorderSide(color: statusColor, width: 3)),
           ),
           child: Row(
             children: [
-              Text(
-                status.label,
-                style: theme.textTheme.titleMedium?.copyWith(
-                  fontWeight: FontWeight.bold,
+              Expanded(
+                child: Text(
+                  status.label,
+                  style: theme.textTheme.titleMedium?.copyWith(
+                    fontWeight: FontWeight.w700,
+                    color: statusColor,
+                  ),
                 ),
               ),
-              const SizedBox(width: 8),
               Container(
-                padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 2),
+                padding: const EdgeInsets.symmetric(
+                  horizontal: 10,
+                  vertical: 4,
+                ),
                 decoration: BoxDecoration(
-                  color: DesignTokens.statusColor(status.value),
-                  borderRadius: BorderRadius.circular(12),
+                  color: statusColor,
+                  borderRadius: BorderRadius.circular(DesignTokens.radiusL),
                 ),
                 child: Text(
                   '${clients.length}',
                   style: theme.textTheme.labelSmall?.copyWith(
                     color: Colors.white,
-                    fontWeight: FontWeight.bold,
+                    fontWeight: FontWeight.w700,
                   ),
                 ),
               ),
@@ -60,11 +67,18 @@ class PipelineColumn extends StatelessWidget {
         Expanded(
           child: clients.isEmpty
               ? Center(
-                  child: Text(
-                    'Sin clientes',
-                    style: theme.textTheme.bodyMedium?.copyWith(
-                      color: theme.colorScheme.onSurfaceVariant,
-                    ),
+                  child: Column(
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      const Text('📭', style: TextStyle(fontSize: 32)),
+                      const SizedBox(height: 8),
+                      Text(
+                        'Sin clientes',
+                        style: theme.textTheme.bodyMedium?.copyWith(
+                          color: theme.colorScheme.onSurfaceVariant,
+                        ),
+                      ),
+                    ],
                   ),
                 )
               : ListView.builder(

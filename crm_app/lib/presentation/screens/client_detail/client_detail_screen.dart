@@ -27,7 +27,16 @@ class ClientDetailScreen extends ConsumerWidget {
           const Scaffold(body: Center(child: CircularProgressIndicator())),
       error: (err, _) => Scaffold(
         appBar: AppBar(),
-        body: Center(child: Text('Error: $err')),
+        body: Center(
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              const Text('😕', style: TextStyle(fontSize: 40)),
+              const SizedBox(height: 8),
+              Text('Error: $err'),
+            ],
+          ),
+        ),
       ),
       data: (client) => _ClientDetailView(client: client),
     );
@@ -40,6 +49,8 @@ class _ClientDetailView extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
+    final statusColor = DesignTokens.statusColor(client.status.value);
+
     return DefaultTabController(
       length: 3,
       child: Scaffold(
@@ -47,22 +58,48 @@ class _ClientDetailView extends ConsumerWidget {
           title: Text(client.name),
           actions: [
             if (client.phone != null && client.phone!.isNotEmpty)
-              IconButton(
-                icon: const Icon(Icons.chat, color: DesignTokens.primary),
-                tooltip: 'WhatsApp',
-                onPressed: () async {
-                  final uri = whatsAppUri(client.phone!);
-                  if (await canLaunchUrl(uri)) {
-                    await launchUrl(uri, mode: LaunchMode.externalApplication);
-                  }
-                },
+              Padding(
+                padding: const EdgeInsets.only(right: 8),
+                child: Container(
+                  decoration: BoxDecoration(
+                    color: DesignTokens.primaryLight,
+                    borderRadius: BorderRadius.circular(DesignTokens.radiusS),
+                  ),
+                  child: IconButton(
+                    icon: const Icon(
+                      Icons.chat_rounded,
+                      color: DesignTokens.primary,
+                      size: 20,
+                    ),
+                    tooltip: 'WhatsApp',
+                    onPressed: () async {
+                      final uri = whatsAppUri(client.phone!);
+                      if (await canLaunchUrl(uri)) {
+                        await launchUrl(
+                          uri,
+                          mode: LaunchMode.externalApplication,
+                        );
+                      }
+                    },
+                  ),
+                ),
               ),
           ],
-          bottom: const TabBar(
+          bottom: TabBar(
+            indicatorWeight: 3,
             tabs: [
-              Tab(icon: Icon(Icons.person_outlined), text: 'Info'),
-              Tab(icon: Icon(Icons.note_outlined), text: 'Notas'),
-              Tab(icon: Icon(Icons.task_outlined), text: 'Tareas'),
+              Tab(
+                icon: Icon(Icons.person_rounded, size: 20, color: statusColor),
+                text: 'Info',
+              ),
+              const Tab(
+                icon: Icon(Icons.note_rounded, size: 20),
+                text: 'Notas',
+              ),
+              const Tab(
+                icon: Icon(Icons.task_alt_rounded, size: 20),
+                text: 'Tareas',
+              ),
             ],
           ),
         ),
