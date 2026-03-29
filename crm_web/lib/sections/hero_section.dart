@@ -90,9 +90,9 @@ class HeroSection extends StatelessWidget {
               ElevatedButton.icon(
                 onPressed: () => Navigator.pushNamed(context, '/register'),
                 icon: const Icon(Icons.rocket_launch, size: 20),
-                label: const Text('Empezar gratis'),
+                label: const Text('Probá 14 días gratis'),
                 style: ElevatedButton.styleFrom(
-                  minimumSize: const Size(220, 56),
+                  minimumSize: const Size(240, 56),
                 ),
               ),
               OutlinedButton.icon(
@@ -144,7 +144,7 @@ class HeroSection extends StatelessWidget {
                   ),
                   const SizedBox(height: 2),
                   const Text(
-                    'Usado por +500 PyMEs argentinas',
+                    'Sumate a las PyMEs que ya usan VentasApp',
                     style: TextStyle(color: Colors.white54, fontSize: 13),
                   ),
                 ],

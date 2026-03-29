@@ -20,7 +20,7 @@ class PricingSection extends StatelessWidget {
       child: Column(
         children: [
           Text(
-            'Planes simples, sin sorpresas',
+            'Un solo plan. Todo incluido.',
             style: TextStyle(
               color: Colors.white,
               fontSize: isMobile ? 28 : 40,
@@ -29,37 +29,55 @@ class PricingSection extends StatelessWidget {
           ),
           const SizedBox(height: 12),
           const Text(
-            'Empezá gratis. Escalá cuando lo necesites.',
+            'Probá 14 días gratis. Sin tarjeta de crédito.',
             style: TextStyle(color: Colors.white54, fontSize: 18),
           ),
           const SizedBox(height: 48),
           ConstrainedBox(
-            constraints: const BoxConstraints(maxWidth: 1000),
-            child: isMobile
-                ? Column(
+            constraints: const BoxConstraints(maxWidth: 520),
+            child: _PricingCard(plan: _mainPlan),
+          ),
+          const SizedBox(height: 32),
+          // Founder badge
+          Container(
+            padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 14),
+            decoration: BoxDecoration(
+              color: WebTheme.primaryColor.withValues(alpha: 0.08),
+              borderRadius: BorderRadius.circular(16),
+              border: Border.all(
+                color: WebTheme.primaryColor.withValues(alpha: 0.25),
+              ),
+            ),
+            child: Row(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                Icon(Icons.local_fire_department,
+                    color: WebTheme.primaryColor, size: 20),
+                const SizedBox(width: 10),
+                Text.rich(
+                  TextSpan(
                     children: [
-                      _PricingCard(plan: _plans[0]),
-                      const SizedBox(height: 24),
-                      _PricingCard(plan: _plans[1]),
-                      const SizedBox(height: 24),
-                      _PricingCard(plan: _plans[2]),
+                      const TextSpan(
+                        text: 'Precio fundador: ',
+                        style: TextStyle(color: Colors.white70, fontSize: 14),
+                      ),
+                      TextSpan(
+                        text: '\$2.999/mes',
+                        style: TextStyle(
+                          color: WebTheme.primaryColor,
+                          fontSize: 14,
+                          fontWeight: FontWeight.w700,
+                        ),
+                      ),
+                      const TextSpan(
+                        text: ' para los primeros 50 usuarios',
+                        style: TextStyle(color: Colors.white70, fontSize: 14),
+                      ),
                     ],
-                  )
-                : Row(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: _plans
-                        .map(
-                          (p) => Expanded(
-                            child: Padding(
-                              padding: const EdgeInsets.symmetric(
-                                horizontal: 12,
-                              ),
-                              child: _PricingCard(plan: p),
-                            ),
-                          ),
-                        )
-                        .toList(),
                   ),
+                ),
+              ],
+            ),
           ),
         ],
       ),
@@ -67,54 +85,24 @@ class PricingSection extends StatelessWidget {
   }
 }
 
-final _plans = [
-  _Plan(
-    name: 'Gratis',
-    price: '\$0',
-    period: 'por siempre',
-    description: 'Para empezar a organizar tus ventas',
-    features: [
-      '1 usuario',
-      'Hasta 50 clientes',
-      'Pipeline visual',
-      'Notas y tareas',
-      'WhatsApp en un toque',
-    ],
-    cta: 'Empezar gratis',
-    highlighted: false,
-  ),
-  _Plan(
-    name: 'Pro',
-    price: 'USD 9.99',
-    period: '/mes',
-    description: 'Para vendedores que quieren crecer',
-    features: [
-      'Todo lo del plan Gratis',
-      'Clientes ilimitados',
-      'Modo oscuro',
-      'Exportar datos',
-      'Sin marca de agua',
-      'Soporte prioritario',
-    ],
-    cta: 'Elegir Pro',
-    highlighted: true,
-  ),
-  _Plan(
-    name: 'Equipo',
-    price: 'USD 24.99',
-    period: '/mes',
-    description: 'Para equipos de venta',
-    features: [
-      'Todo lo del plan Pro',
-      'Hasta 5 usuarios',
-      'Base de datos compartida',
-      'Reportes y métricas',
-      'Soporte dedicado',
-    ],
-    cta: 'Elegir Equipo',
-    highlighted: false,
-  ),
-];
+final _mainPlan = _Plan(
+  name: 'VentasApp',
+  price: '\$5.999',
+  period: '/mes',
+  description: 'Todo lo que necesitás para vender más por WhatsApp',
+  features: [
+    'Clientes ilimitados',
+    'Pipeline visual tipo kanban',
+    'Notas y tareas por cliente',
+    'Contacto WhatsApp en 1 toque',
+    'Tema claro y oscuro',
+    'Exportar datos',
+    'Soporte prioritario',
+    'Todas las actualizaciones incluidas',
+  ],
+  cta: 'Empezar 14 días gratis',
+  highlighted: true,
+);
 
 class _Plan {
   final String name;

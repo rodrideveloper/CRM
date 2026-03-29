@@ -5,6 +5,8 @@ import '../sections/hero_section.dart';
 import '../sections/features_section.dart';
 import '../sections/how_it_works_section.dart';
 import '../sections/pricing_section.dart';
+import '../sections/lead_capture_section.dart';
+import '../sections/faq_section.dart';
 import '../sections/cta_section.dart';
 import '../sections/footer_section.dart';
 
@@ -25,6 +27,8 @@ class LandingPage extends StatelessWidget {
                 FeaturesSection(),
                 HowItWorksSection(),
                 PricingSection(),
+                LeadCaptureSection(),
+                FaqSection(),
                 CtaSection(),
                 FooterSection(),
               ],

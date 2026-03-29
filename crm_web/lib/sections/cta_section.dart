@@ -52,16 +52,16 @@ class CtaSection extends StatelessWidget {
             ElevatedButton.icon(
               onPressed: () => Navigator.pushNamed(context, '/register'),
               icon: const Icon(Icons.rocket_launch, size: 20),
-              label: const Text('Crear cuenta gratis'),
+              label: const Text('Empezar mi prueba gratis'),
               style: ElevatedButton.styleFrom(
                 backgroundColor: Colors.white,
                 foregroundColor: WebTheme.gradientEnd,
-                minimumSize: const Size(240, 56),
+                minimumSize: const Size(260, 56),
               ),
             ),
             const SizedBox(height: 16),
             const Text(
-              'Sin tarjeta de crédito · Gratis para siempre',
+              '14 días gratis · Sin tarjeta de crédito · Cancelá cuando quieras',
               style: TextStyle(color: Colors.white60, fontSize: 13),
             ),
           ],
