@@ -1,7 +1,7 @@
 # CRM WhatsApp Sales — Plan de Implementación por Sprints
 
 > **Última actualización:** 29 de marzo de 2026  
-> **Estado actual:** Sprint 1 completado (MVP base)  
+> **Estado actual:** Sprint 2 completado + Landing page + Design system + Marketing funnel  
 > **Objetivo:** Salir a producción con algo básico, confiable, usable y que sume valor.
 
 ---
@@ -9,14 +9,15 @@
 ## Índice
 
 1. [Sprint 1 — MVP Base (COMPLETADO)](#sprint-1--mvp-base-completado)
-2. [Sprint 2 — Producción Mínima Viable](#sprint-2--producción-mínima-viable)
+2. [Sprint 2 — Producción Mínima Viable (COMPLETADO)](#sprint-2--producción-mínima-viable-completado)
 3. [Sprint 3 — Experiencia de Usuario](#sprint-3--experiencia-de-usuario)
 4. [Sprint 4 — Búsqueda, Filtros y Métricas](#sprint-4--búsqueda-filtros-y-métricas)
 5. [Sprint 5 — Notificaciones y Recordatorios](#sprint-5--notificaciones-y-recordatorios)
 6. [Sprint 6 — Revenue y Monetización](#sprint-6--revenue-y-monetización)
-7. [Backlog Futuro](#backlog-futuro)
-8. [Estrategia de Migraciones DB](#estrategia-de-migraciones-db)
-9. [Inventario Actual del Código](#inventario-actual-del-código)
+7. [Sprint 7 — Captación de Leads (Formulario Público)](#sprint-7--captación-de-leads-formulario-público)
+8. [Backlog Futuro](#backlog-futuro)
+9. [Estrategia de Migraciones DB](#estrategia-de-migraciones-db)
+10. [Inventario Actual del Código](#inventario-actual-del-código)
 
 ---
 
@@ -76,7 +77,7 @@ tasks:    id, client_id, title, due_date, completed, created_at, updated_at, del
 
 ---
 
-## Sprint 2 — Producción Mínima Viable 🚧
+## Sprint 2 — Producción Mínima Viable (COMPLETADO) ✅
 
 > **Prioridad:** BLOQUEANTE para producción  
 > **Objetivo:** Completar los campos mínimos de cliente, robustez, y polish visual.
@@ -341,12 +342,12 @@ MaterialApp.router(
 
 | # | Tarea | Prioridad | Complejidad | Estado |
 |---|-------|-----------|-------------|--------|
-| 2.1 | Campos adicionales en Cliente (email, company, source) | ALTA | Media | ⬜ |
-| 2.2 | Formateo de teléfono argentino | ALTA | Baja | ⬜ |
-| 2.3 | Paginación en pipeline | MEDIA | Media | ⬜ |
-| 2.4 | Fix client_name en tareas pendientes | ALTA | Baja | ⬜ |
-| 2.5 | Snackbar de Undo para eliminaciones | MEDIA | Media | ⬜ |
-| 2.6 | Dark mode | MEDIA | Baja | ⬜ |
+| 2.1 | Campos adicionales en Cliente (email, company, source) | ALTA | Media | ✅ |
+| 2.2 | Formateo de teléfono argentino | ALTA | Baja | ✅ |
+| 2.3 | Paginación en pipeline | MEDIA | Media | ✅ |
+| 2.4 | Fix client_name en tareas pendientes | ALTA | Baja | ✅ |
+| 2.5 | Snackbar de Undo para eliminaciones | MEDIA | Media | ✅ |
+| 2.6 | Dark mode | MEDIA | Baja | ✅ |
 
 ---
 
@@ -821,6 +822,158 @@ ALTER TABLE clients ADD COLUMN currency   TEXT DEFAULT 'ARS';
 
 ---
 
+## Sprint 7 — Captación de Leads (Formulario Público)
+
+> **Objetivo:** Que cada usuario tenga un formulario público para captar leads que caigan directo a su pipeline.  
+> **Propuesta de valor:** "Compartí un link y los leads aparecen en tu pipeline"
+
+### Concepto
+
+Cada usuario de VentasApp tiene un **link único** (ej: `ventasapp.com/f/abc123`). Cuando alguien llena el formulario, se crea un cliente con `status: new` en el pipeline del dueño del formulario.
+
+Esto convierte a VentasApp de un CRM pasivo a una herramienta de **captación activa** de clientes.
+
+### 7.1 — Token de formulario por usuario
+
+**Migración DB:** `005_add_form_token.sql`
+```sql
+ALTER TABLE auth.users ADD COLUMN raw_user_meta_data JSONB;
+-- O mejor, usar una tabla separada:
+CREATE TABLE public.user_profiles (
+  id UUID PRIMARY KEY REFERENCES auth.users(id),
+  form_token UUID UNIQUE NOT NULL DEFAULT gen_random_uuid(),
+  form_enabled BOOLEAN DEFAULT true,
+  created_at TIMESTAMPTZ DEFAULT now()
+);
+
+-- Trigger para crear perfil al registrarse
+CREATE OR REPLACE FUNCTION public.handle_new_user()
+RETURNS TRIGGER AS $$
+BEGIN
+  INSERT INTO public.user_profiles (id) VALUES (NEW.id);
+  RETURN NEW;
+END;
+$$ LANGUAGE plpgsql SECURITY DEFINER;
+
+CREATE TRIGGER on_auth_user_created
+  AFTER INSERT ON auth.users
+  FOR EACH ROW EXECUTE FUNCTION public.handle_new_user();
+
+-- RLS
+ALTER TABLE public.user_profiles ENABLE ROW LEVEL SECURITY;
+
+CREATE POLICY "Users can read own profile"
+  ON public.user_profiles FOR SELECT
+  TO authenticated
+  USING (id = auth.uid());
+
+CREATE POLICY "Anyone can read form_token for lookup"
+  ON public.user_profiles FOR SELECT
+  TO anon
+  USING (form_enabled = true);
+```
+
+| # | Archivo | Cambio |
+|---|---------|--------|
+| A | `supabase/migrations/005_add_form_token.sql` | CREAR — tabla user_profiles + trigger |
+| B | `domain/entities/user_profile.dart` | CREAR — entidad UserProfile |
+| C | `data/models/user_profile_model.dart` | CREAR — DTO con fromJson |
+
+---
+
+### 7.2 — Edge Function para crear cliente desde formulario
+
+**¿Por qué Edge Function?** El visitante es anónimo pero necesita crear un `client` con el `user_id` del dueño del formulario. RLS no permite eso directamente.
+
+```typescript
+// supabase/functions/submit-lead/index.ts
+import { serve } from 'https://deno.land/std/http/server.ts'
+import { createClient } from 'https://esm.sh/@supabase/supabase-js'
+
+serve(async (req) => {
+  const { form_token, name, phone, email } = await req.json()
+  
+  const supabase = createClient(SUPABASE_URL, SERVICE_ROLE_KEY)
+  
+  // Buscar usuario dueño del token
+  const { data: profile } = await supabase
+    .from('user_profiles')
+    .select('id')
+    .eq('form_token', form_token)
+    .eq('form_enabled', true)
+    .single()
+  
+  if (!profile) return new Response('Invalid token', { status: 404 })
+  
+  // Crear cliente en el pipeline del usuario
+  await supabase.from('clients').insert({
+    user_id: profile.id,
+    name: name,
+    phone: phone,
+    email: email,
+    status: 'new',
+    source: 'formulario',
+  })
+  
+  return new Response(JSON.stringify({ ok: true }), { status: 200 })
+})
+```
+
+| # | Archivo | Cambio |
+|---|---------|--------|
+| A | `supabase/functions/submit-lead/index.ts` | CREAR — Edge Function |
+| B | `crm_web/lib/pages/public_form_page.dart` | CREAR — formulario público |
+| C | `crm_web/lib/core/router/app_router.dart` | Agregar ruta `/f/:token` |
+
+---
+
+### 7.3 — Pantalla "Mi formulario" en la app
+
+En la pantalla de Perfil, sección para ver y compartir el link del formulario.
+
+| # | Archivo | Cambio |
+|---|---------|--------|
+| A | `presentation/screens/profile/profile_screen.dart` | Sección "Mi formulario" con link + botón copiar/compartir |
+| B | `presentation/providers/user_profile_provider.dart` | CREAR — provider para leer form_token |
+| C | `data/repositories/user_profile_repository.dart` | CREAR — consultar user_profiles |
+
+**UI:**
+```
+┌─────────────────────────────────┐
+│ 📋 Mi formulario de captación   │
+│                                 │
+│ ventasapp.com/f/abc-123-def     │
+│                                 │
+│ [📋 Copiar link]  [📤 Compartir]│
+│                                 │
+│ ☑ Formulario activo             │
+└─────────────────────────────────┘
+```
+
+---
+
+### 7.4 — Indicador de leads nuevos
+
+Badge en el pipeline que muestre cuántos clientes nuevos llegaron desde el formulario.
+
+| # | Archivo | Cambio |
+|---|---------|--------|
+| A | `presentation/screens/shell_screen.dart` | Badge en tab Pipeline con count |
+| B | `presentation/providers/client_provider.dart` | Provider `newLeadsCountProvider` |
+
+---
+
+### Checklist Sprint 7
+
+| # | Tarea | Prioridad | Complejidad | Estado |
+|---|-------|-----------|-------------|--------|
+| 7.1 | Token de formulario por usuario (user_profiles) | ALTA | Media | ⬜ |
+| 7.2 | Edge Function para crear cliente desde form | ALTA | Alta | ⬜ |
+| 7.3 | Pantalla "Mi formulario" en Perfil | ALTA | Baja | ⬜ |
+| 7.4 | Indicador de leads nuevos en pipeline | MEDIA | Baja | ⬜ |
+
+---
+
 ## Backlog Futuro
 
 Features a considerar después de Sprint 6, priorizadas por impacto:
@@ -867,9 +1020,11 @@ Features a considerar después de Sprint 6, priorizadas por impacto:
 | Migración | Sprint | Contenido |
 |-----------|--------|-----------|
 | `001_initial_schema.sql` | 1 | ✅ Schema base (clients, notes, tasks, RLS, triggers) |
-| `002_add_client_fields.sql` | 2 | email, company, source + funciones RPC restore |
-| `003_add_follow_up.sql` | 5 | next_follow_up en clients |
-| `004_add_deal_value.sql` | 6 | deal_value, currency en clients |
+| `002_add_client_fields.sql` | 2 | ✅ email, company, source + funciones RPC restore |
+| `003_leads_table.sql` | Marketing | ✅ Tabla leads para captura landing (anon insert) |
+| `004_add_follow_up.sql` | 5 | next_follow_up en clients |
+| `005_add_deal_value.sql` | 6 | deal_value, currency en clients |
+| `006_user_profiles.sql` | 7 | user_profiles + form_token + trigger on signup |
 
 ### Template de migración
 ```sql
@@ -995,12 +1150,14 @@ url_launcher: ^6.3.0
 | Sprint | Features | Estado |
 |--------|----------|--------|
 | Sprint 1 | MVP Base (14 features) | ✅ Completado |
-| Sprint 2 | Producción Mínima (6 features) | ⬜ Pendiente |
+| Sprint 2 | Producción Mínima (6 features) | ✅ Completado |
+| Landing | Landing page + design system + marketing funnel | ✅ Completado |
 | Sprint 3 | UX Polish + i18n (8 features) | ⬜ Pendiente |
 | Sprint 4 | Búsqueda y Métricas (4 features) | ⬜ Pendiente |
 | Sprint 5 | Notificaciones (3 features) | ⬜ Pendiente |
 | Sprint 6 | Revenue (3 features) | ⬜ Pendiente |
+| Sprint 7 | Captación de Leads (4 features) | ⬜ Pendiente |
 
-**Total features planeadas:** 38  
-**Completadas:** 14  
-**Pendientes:** 24
+**Total features planeadas:** 42  
+**Completadas:** 20  
+**Pendientes:** 22

@@ -51,8 +51,11 @@ class PricingSection extends StatelessWidget {
             child: Row(
               mainAxisSize: MainAxisSize.min,
               children: [
-                Icon(Icons.local_fire_department,
-                    color: WebTheme.primaryColor, size: 20),
+                Icon(
+                  Icons.local_fire_department,
+                  color: WebTheme.primaryColor,
+                  size: 20,
+                ),
                 const SizedBox(width: 10),
                 Text.rich(
                   TextSpan(

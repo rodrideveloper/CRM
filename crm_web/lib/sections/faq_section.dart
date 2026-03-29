@@ -97,8 +97,11 @@ class _FaqItemState extends State<_FaqItem> {
         data: Theme.of(context).copyWith(dividerColor: Colors.transparent),
         child: ExpansionTile(
           tilePadding: const EdgeInsets.symmetric(horizontal: 20, vertical: 4),
-          childrenPadding:
-              const EdgeInsets.only(left: 20, right: 20, bottom: 16),
+          childrenPadding: const EdgeInsets.only(
+            left: 20,
+            right: 20,
+            bottom: 16,
+          ),
           title: Text(
             widget.question,
             style: const TextStyle(

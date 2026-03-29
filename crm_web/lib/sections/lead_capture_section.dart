@@ -113,9 +113,7 @@ class _LeadCaptureSectionState extends State<LeadCaptureSection> {
       decoration: BoxDecoration(
         color: WebTheme.cardBg,
         borderRadius: BorderRadius.circular(20),
-        border: Border.all(
-          color: WebTheme.primaryColor.withValues(alpha: 0.3),
-        ),
+        border: Border.all(color: WebTheme.primaryColor.withValues(alpha: 0.3)),
       ),
       child: Column(
         children: [
