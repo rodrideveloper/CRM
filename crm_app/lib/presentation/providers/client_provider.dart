@@ -2,6 +2,12 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../../domain/entities/client.dart';
 import 'repository_providers.dart';
 
+enum ClientSortOrder { recent, name, oldest }
+
+final clientSortOrderProvider = StateProvider<ClientSortOrder>(
+  (ref) => ClientSortOrder.recent,
+);
+
 final clientsProvider = AsyncNotifierProvider<ClientsNotifier, List<Client>>(
   ClientsNotifier.new,
 );
@@ -69,10 +75,22 @@ class ClientsNotifier extends AsyncNotifier<List<Client>> {
 final pipelineProvider = Provider<AsyncValue<Map<ClientStatus, List<Client>>>>((
   ref,
 ) {
+  final sortOrder = ref.watch(clientSortOrderProvider);
   return ref.watch(clientsProvider).whenData((clients) {
     final map = <ClientStatus, List<Client>>{};
     for (final status in ClientStatus.values) {
-      map[status] = clients.where((c) => c.status == status).toList();
+      final filtered = clients.where((c) => c.status == status).toList();
+      switch (sortOrder) {
+        case ClientSortOrder.recent:
+          filtered.sort((a, b) => b.createdAt.compareTo(a.createdAt));
+        case ClientSortOrder.oldest:
+          filtered.sort((a, b) => a.createdAt.compareTo(b.createdAt));
+        case ClientSortOrder.name:
+          filtered.sort(
+            (a, b) => a.name.toLowerCase().compareTo(b.name.toLowerCase()),
+          );
+      }
+      map[status] = filtered;
     }
     return map;
   });

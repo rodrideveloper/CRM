@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:url_launcher/url_launcher.dart';
 import '../../../core/theme/design_tokens.dart';
+import '../../../core/utils/l10n_extension.dart';
 import '../../../core/utils/phone_utils.dart';
 import '../../../domain/entities/client.dart';
 import '../../providers/repository_providers.dart';
@@ -90,15 +91,15 @@ class _ClientDetailView extends ConsumerWidget {
             tabs: [
               Tab(
                 icon: Icon(Icons.person_rounded, size: 20, color: statusColor),
-                text: 'Info',
+                text: context.l10n.info,
               ),
-              const Tab(
-                icon: Icon(Icons.note_rounded, size: 20),
-                text: 'Notas',
+              Tab(
+                icon: const Icon(Icons.note_rounded, size: 20),
+                text: context.l10n.notes,
               ),
-              const Tab(
-                icon: Icon(Icons.task_alt_rounded, size: 20),
-                text: 'Tareas',
+              Tab(
+                icon: const Icon(Icons.task_alt_rounded, size: 20),
+                text: context.l10n.tasks,
               ),
             ],
           ),

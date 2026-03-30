@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import '../../../core/theme/design_tokens.dart';
+import '../../../core/utils/l10n_extension.dart';
 import '../../providers/task_provider.dart';
 import '../../providers/repository_providers.dart';
 
@@ -15,7 +16,7 @@ class TasksScreen extends ConsumerWidget {
 
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Tareas 📋'),
+        title: Text(context.l10n.tasksTitle),
         actions: [
           IconButton(
             icon: Container(
@@ -40,7 +41,7 @@ class TasksScreen extends ConsumerWidget {
               const Text('😕', style: TextStyle(fontSize: 48)),
               const SizedBox(height: 12),
               Text(
-                'Algo salió mal',
+                context.l10n.somethingWentWrong,
                 style: theme.textTheme.titleMedium?.copyWith(
                   fontWeight: FontWeight.w700,
                 ),
@@ -56,7 +57,7 @@ class TasksScreen extends ConsumerWidget {
               ElevatedButton.icon(
                 onPressed: () => ref.invalidate(pendingTasksProvider),
                 icon: const Icon(Icons.refresh_rounded),
-                label: const Text('Reintentar'),
+                label: Text(context.l10n.retry),
               ),
             ],
           ),
@@ -70,14 +71,14 @@ class TasksScreen extends ConsumerWidget {
                   const Text('🎉', style: TextStyle(fontSize: 56)),
                   const SizedBox(height: 16),
                   Text(
-                    '¡Todo al día!',
+                    context.l10n.allCaughtUp,
                     style: theme.textTheme.titleLarge?.copyWith(
                       fontWeight: FontWeight.w800,
                     ),
                   ),
                   const SizedBox(height: 4),
                   Text(
-                    'No hay tareas pendientes',
+                    context.l10n.noPendingTasks,
                     style: theme.textTheme.bodyMedium?.copyWith(
                       color: theme.colorScheme.onSurfaceVariant,
                     ),
@@ -171,13 +172,14 @@ class TasksScreen extends ConsumerWidget {
                               ),
                               const SizedBox(width: 4),
                               Text(
-                                'Vence: ${task.dueDate!.day}/${task.dueDate!.month}/${task.dueDate!.year}',
+                                context.l10n.dueDate(
+                                  '${task.dueDate!.day}/${task.dueDate!.month}/${task.dueDate!.year}',
+                                ),
                                 style: TextStyle(
-                                  color: isOverdue
-                                      ? DesignTokens.error
+                                  color: isOverdue ? DesignTokens.error : null,
+                                  fontWeight: isOverdue
+                                      ? FontWeight.w700
                                       : null,
-                                  fontWeight:
-                                      isOverdue ? FontWeight.w700 : null,
                                   fontSize: 12,
                                 ),
                               ),
@@ -200,7 +202,7 @@ class TasksScreen extends ConsumerWidget {
                           size: 18,
                         ),
                       ),
-                      tooltip: 'Completar',
+                      tooltip: context.l10n.complete,
                       onPressed: () async {
                         await ref
                             .read(taskRepositoryProvider)

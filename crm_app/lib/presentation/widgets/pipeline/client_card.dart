@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:url_launcher/url_launcher.dart';
 import 'package:go_router/go_router.dart';
 import '../../../core/theme/design_tokens.dart';
+import '../../../core/utils/l10n_extension.dart';
 import '../../../core/utils/phone_utils.dart';
 import '../../../domain/entities/client.dart';
 
@@ -13,9 +14,9 @@ class ClientCard extends StatelessWidget {
 
   Future<void> _openWhatsApp(BuildContext context) async {
     if (client.phone == null || client.phone!.isEmpty) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text('Este cliente no tiene teléfono')),
-      );
+      ScaffoldMessenger.of(
+        context,
+      ).showSnackBar(SnackBar(content: Text(context.l10n.noPhoneNumber)));
       return;
     }
     final uri = whatsAppUri(client.phone!);
@@ -119,7 +120,7 @@ class ClientCard extends StatelessWidget {
                         color: DesignTokens.primary,
                         size: 20,
                       ),
-                      tooltip: 'WhatsApp',
+                      tooltip: context.l10n.whatsapp,
                       onPressed: () => _openWhatsApp(context),
                       padding: EdgeInsets.zero,
                     ),

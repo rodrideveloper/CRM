@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import '../../../core/theme/design_tokens.dart';
+import '../../../core/utils/l10n_extension.dart';
 import '../../../domain/entities/client.dart';
 import '../../providers/client_provider.dart';
 import '../../widgets/pipeline/pipeline_column.dart';
@@ -61,7 +62,7 @@ class _PipelineScreenState extends ConsumerState<PipelineScreen> {
                   ),
                   const SizedBox(width: 12),
                   Text(
-                    'Nuevo cliente',
+                    context.l10n.newClient,
                     style: Theme.of(ctx).textTheme.titleLarge?.copyWith(
                       fontWeight: FontWeight.w800,
                     ),
@@ -71,22 +72,22 @@ class _PipelineScreenState extends ConsumerState<PipelineScreen> {
               const SizedBox(height: 20),
               TextFormField(
                 controller: nameController,
-                decoration: const InputDecoration(
-                  labelText: 'Nombre',
-                  prefixIcon: Icon(Icons.person_outlined),
+                decoration: InputDecoration(
+                  labelText: context.l10n.name,
+                  prefixIcon: const Icon(Icons.person_outlined),
                 ),
                 textInputAction: TextInputAction.next,
                 validator: (v) => v == null || v.trim().isEmpty
-                    ? 'El nombre es requerido'
+                    ? context.l10n.nameRequired
                     : null,
               ),
               const SizedBox(height: 12),
               TextFormField(
                 controller: phoneController,
-                decoration: const InputDecoration(
-                  labelText: 'Teléfono (con código de país)',
-                  prefixIcon: Icon(Icons.phone_outlined),
-                  hintText: '+5491112345678',
+                decoration: InputDecoration(
+                  labelText: context.l10n.phoneWithCountry,
+                  prefixIcon: const Icon(Icons.phone_outlined),
+                  hintText: context.l10n.phoneHint,
                 ),
                 keyboardType: TextInputType.phone,
                 textInputAction: TextInputAction.next,
@@ -94,9 +95,9 @@ class _PipelineScreenState extends ConsumerState<PipelineScreen> {
               const SizedBox(height: 12),
               TextFormField(
                 controller: emailController,
-                decoration: const InputDecoration(
-                  labelText: 'Email',
-                  prefixIcon: Icon(Icons.email_outlined),
+                decoration: InputDecoration(
+                  labelText: context.l10n.email,
+                  prefixIcon: const Icon(Icons.email_outlined),
                 ),
                 keyboardType: TextInputType.emailAddress,
                 textInputAction: TextInputAction.next,
@@ -104,9 +105,9 @@ class _PipelineScreenState extends ConsumerState<PipelineScreen> {
               const SizedBox(height: 12),
               TextFormField(
                 controller: companyController,
-                decoration: const InputDecoration(
-                  labelText: 'Empresa',
-                  prefixIcon: Icon(Icons.business_outlined),
+                decoration: InputDecoration(
+                  labelText: context.l10n.company,
+                  prefixIcon: const Icon(Icons.business_outlined),
                 ),
                 textInputAction: TextInputAction.done,
               ),
@@ -130,7 +131,7 @@ class _PipelineScreenState extends ConsumerState<PipelineScreen> {
                             : null,
                       );
                 },
-                child: const Text('Crear cliente'),
+                child: Text(context.l10n.createClient),
               ),
             ],
           ),
@@ -150,7 +151,7 @@ class _PipelineScreenState extends ConsumerState<PipelineScreen> {
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               Text(
-                'Mover "${client.name}" a:',
+                context.l10n.moveClientTo(client.name),
                 style: Theme.of(
                   ctx,
                 ).textTheme.titleMedium?.copyWith(fontWeight: FontWeight.w700),
@@ -176,7 +177,7 @@ class _PipelineScreenState extends ConsumerState<PipelineScreen> {
                         ),
                       ),
                       title: Text(
-                        status.label,
+                        status.localizedLabel(context),
                         style: const TextStyle(fontWeight: FontWeight.w600),
                       ),
                       shape: RoundedRectangleBorder(
@@ -221,8 +222,75 @@ class _PipelineScreenState extends ConsumerState<PipelineScreen> {
 
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Pipeline 🎯'),
+        title: Text(context.l10n.pipelineTitle),
         actions: [
+          PopupMenuButton<ClientSortOrder>(
+            icon: Container(
+              padding: const EdgeInsets.all(8),
+              decoration: BoxDecoration(
+                color: DesignTokens.bgSubtle,
+                borderRadius: BorderRadius.circular(DesignTokens.radiusS),
+              ),
+              child: const Icon(Icons.sort_rounded, size: 20),
+            ),
+            tooltip: context.l10n.sort,
+            onSelected: (order) {
+              ref.read(clientSortOrderProvider.notifier).state = order;
+            },
+            itemBuilder: (context) {
+              final current = ref.read(clientSortOrderProvider);
+              return [
+                PopupMenuItem(
+                  value: ClientSortOrder.recent,
+                  child: Row(
+                    children: [
+                      Icon(
+                        Icons.schedule_rounded,
+                        size: 18,
+                        color: current == ClientSortOrder.recent
+                            ? DesignTokens.primary
+                            : null,
+                      ),
+                      const SizedBox(width: 8),
+                      Text(context.l10n.sortRecent),
+                    ],
+                  ),
+                ),
+                PopupMenuItem(
+                  value: ClientSortOrder.name,
+                  child: Row(
+                    children: [
+                      Icon(
+                        Icons.sort_by_alpha_rounded,
+                        size: 18,
+                        color: current == ClientSortOrder.name
+                            ? DesignTokens.primary
+                            : null,
+                      ),
+                      const SizedBox(width: 8),
+                      Text(context.l10n.sortName),
+                    ],
+                  ),
+                ),
+                PopupMenuItem(
+                  value: ClientSortOrder.oldest,
+                  child: Row(
+                    children: [
+                      Icon(
+                        Icons.history_rounded,
+                        size: 18,
+                        color: current == ClientSortOrder.oldest
+                            ? DesignTokens.primary
+                            : null,
+                      ),
+                      const SizedBox(width: 8),
+                      Text(context.l10n.sortOldest),
+                    ],
+                  ),
+                ),
+              ];
+            },
+          ),
           IconButton(
             icon: Container(
               padding: const EdgeInsets.all(8),
@@ -246,7 +314,7 @@ class _PipelineScreenState extends ConsumerState<PipelineScreen> {
               const Text('😕', style: TextStyle(fontSize: 48)),
               const SizedBox(height: 12),
               Text(
-                'Algo salió mal',
+                context.l10n.somethingWentWrong,
                 style: theme.textTheme.titleMedium?.copyWith(
                   fontWeight: FontWeight.w700,
                 ),
@@ -263,7 +331,7 @@ class _PipelineScreenState extends ConsumerState<PipelineScreen> {
               ElevatedButton.icon(
                 onPressed: () => ref.read(clientsProvider.notifier).refresh(),
                 icon: const Icon(Icons.refresh_rounded),
-                label: const Text('Reintentar'),
+                label: Text(context.l10n.retry),
               ),
             ],
           ),
@@ -286,7 +354,7 @@ class _PipelineScreenState extends ConsumerState<PipelineScreen> {
                     final isSelected = _currentPage == index;
                     final statusColor = _statusColor(status);
                     return ChoiceChip(
-                      label: Text('${status.label} ($count)'),
+                      label: Text('${status.localizedLabel(context)} ($count)'),
                       selected: isSelected,
                       selectedColor: statusColor.withValues(alpha: 0.15),
                       labelStyle: TextStyle(
@@ -330,6 +398,8 @@ class _PipelineScreenState extends ConsumerState<PipelineScreen> {
                         status: status,
                         clients: clients,
                         onChangeStatus: _showChangeStatusSheet,
+                        onRefresh: () =>
+                            ref.read(clientsProvider.notifier).refresh(),
                       ),
                     );
                   },
@@ -342,7 +412,7 @@ class _PipelineScreenState extends ConsumerState<PipelineScreen> {
       floatingActionButton: FloatingActionButton.extended(
         onPressed: _showCreateClientDialog,
         icon: const Icon(Icons.person_add_rounded),
-        label: const Text('Nuevo'),
+        label: Text(context.l10n.newLabel),
       ),
     );
   }
@@ -391,9 +461,9 @@ class _SearchSheetState extends ConsumerState<_SearchSheet> {
         children: [
           TextField(
             controller: _searchController,
-            decoration: const InputDecoration(
-              hintText: 'Buscar clientes...',
-              prefixIcon: Icon(Icons.search_rounded),
+            decoration: InputDecoration(
+              hintText: context.l10n.searchClients,
+              prefixIcon: const Icon(Icons.search_rounded),
             ),
             onChanged: (value) {
               ref.read(clientSearchQueryProvider.notifier).state = value;
@@ -413,7 +483,7 @@ class _SearchSheetState extends ConsumerState<_SearchSheet> {
                         const Text('🔍', style: TextStyle(fontSize: 40)),
                         const SizedBox(height: 8),
                         Text(
-                          'Escribí para buscar',
+                          context.l10n.typeToSearch,
                           style: theme.textTheme.bodyLarge?.copyWith(
                             color: theme.colorScheme.onSurfaceVariant,
                           ),
@@ -430,7 +500,7 @@ class _SearchSheetState extends ConsumerState<_SearchSheet> {
                         const Text('🤷', style: TextStyle(fontSize: 40)),
                         const SizedBox(height: 8),
                         Text(
-                          'Sin resultados',
+                          context.l10n.noResults,
                           style: theme.textTheme.bodyLarge?.copyWith(
                             color: theme.colorScheme.onSurfaceVariant,
                           ),
@@ -463,7 +533,7 @@ class _SearchSheetState extends ConsumerState<_SearchSheet> {
                         client.name,
                         style: const TextStyle(fontWeight: FontWeight.w600),
                       ),
-                      subtitle: Text(client.status.label),
+                      subtitle: Text(client.status.localizedLabel(context)),
                       shape: RoundedRectangleBorder(
                         borderRadius: BorderRadius.circular(
                           DesignTokens.radiusS,

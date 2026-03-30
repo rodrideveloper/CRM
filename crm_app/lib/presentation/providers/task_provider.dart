@@ -23,6 +23,18 @@ class ClientTasksNotifier extends FamilyAsyncNotifier<List<Task>, String> {
     ref.invalidate(pendingTasksProvider);
   }
 
+  Future<void> updateTask(
+    String taskId, {
+    String? title,
+    DateTime? dueDate,
+  }) async {
+    await ref
+        .read(taskRepositoryProvider)
+        .updateTask(taskId, title: title, dueDate: dueDate);
+    ref.invalidateSelf();
+    ref.invalidate(pendingTasksProvider);
+  }
+
   Future<void> toggleComplete(String taskId) async {
     await ref.read(taskRepositoryProvider).toggleComplete(taskId);
     ref.invalidateSelf();

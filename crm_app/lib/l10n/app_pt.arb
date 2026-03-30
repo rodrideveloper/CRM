@@ -1,0 +1,122 @@
+{
+  "@@locale": "pt",
+
+  "appTitle": "CRM WhatsApp",
+
+  "pipeline": "Pipeline",
+  "tasks": "Tarefas",
+  "profile": "Perfil",
+
+  "pipelineTitle": "Pipeline 🎯",
+  "tasksTitle": "Tarefas 📋",
+  "profileTitle": "Perfil 👤",
+
+  "loginWelcome": "Bem-vindo de volta! 👋",
+  "loginSubtitle": "Entre e feche mais vendas",
+  "loginButton": "Entrar",
+  "loginNoAccount": "Não tem conta? ",
+  "loginRegisterLink": "Cadastre-se",
+
+  "registerWelcome": "Comece agora! 🚀",
+  "registerSubtitle": "Crie sua conta e organize suas vendas",
+  "registerButton": "Criar conta",
+  "registerHasAccount": "Já tem conta? ",
+  "registerLoginLink": "Entrar",
+  "registerSuccess": "Conta criada! Verifique seu email para confirmar.",
+
+  "email": "Email",
+  "emailInvalid": "Email inválido",
+  "password": "Senha",
+  "passwordMinLength": "Mínimo 6 caracteres",
+  "confirmPassword": "Confirmar senha",
+  "passwordsDoNotMatch": "As senhas não coincidem",
+
+  "name": "Nome",
+  "phone": "Telefone",
+  "phoneHint": "+5491112345678",
+  "phoneWithCountry": "Telefone (com código do país)",
+  "company": "Empresa",
+  "source": "Origem",
+  "sourceHint": "Ex: Instagram, indicação, web",
+
+  "save": "Salvar",
+  "cancel": "Cancelar",
+  "delete": "Excluir",
+  "edit": "Editar",
+  "undo": "Desfazer",
+  "retry": "Tentar novamente",
+
+  "newClient": "Novo cliente",
+  "createClient": "Criar cliente",
+  "nameRequired": "O nome é obrigatório",
+  "required": "Obrigatório",
+  "clientUpdated": "✅ Cliente atualizado",
+  "clientDeleted": "Cliente excluído",
+  "deleteClient": "Excluir cliente",
+  "deleteClientConfirm": "Tem certeza de que deseja excluir \"{name}\"? Esta ação pode ser desfeita.",
+  "moveClientTo": "Mover \"{name}\" para:",
+  "noClients": "Sem clientes",
+  "noPhoneNumber": "Este cliente não tem telefone",
+
+  "newNote": "Nova nota",
+  "editNote": "Editar nota",
+  "noteHint": "Escreva sua nota...",
+  "saveNote": "Salvar nota",
+  "saveChanges": "Salvar alterações",
+  "noNotes": "Sem notas ainda",
+  "noNotesHint": "Adicione uma com o botão +",
+  "noteDeleted": "Nota excluída",
+
+  "newTask": "Nova tarefa",
+  "editTask": "Editar tarefa",
+  "taskTitle": "Título da tarefa",
+  "taskDueDate": "Data de vencimento (opcional)",
+  "createTask": "Criar tarefa",
+  "noTasks": "Sem tarefas pendentes",
+  "noTasksHint": "Crie uma com o botão +",
+  "taskDeleted": "Tarefa excluída",
+  "dueDate": "Vence: {date}",
+  "complete": "Completar",
+
+  "allCaughtUp": "Tudo em dia!",
+  "noPendingTasks": "Sem tarefas pendentes",
+
+  "info": "Info",
+  "notes": "Notas",
+
+  "whatsapp": "WhatsApp",
+
+  "somethingWentWrong": "Algo deu errado",
+
+  "searchClients": "Buscar clientes...",
+  "typeToSearch": "Digite para buscar",
+  "noResults": "Sem resultados",
+
+  "sortRecent": "Mais recentes",
+  "sortName": "Nome A-Z",
+  "sortOldest": "Mais antigos",
+  "sort": "Ordenar",
+
+  "theme": "Tema",
+  "themeLight": "Claro",
+  "themeDark": "Escuro",
+  "themeAuto": "Automático",
+  "noEmail": "Sem email",
+
+  "logout": "Sair",
+  "logoutConfirm": "Tem certeza?",
+
+  "language": "Idioma",
+
+  "created": "Criado",
+  "updated": "Atualizado",
+
+  "statusNew": "Novo",
+  "statusContacted": "Contatado",
+  "statusInterested": "Interessado",
+  "statusNegotiating": "Negociando",
+  "statusClosedWon": "Ganho",
+  "statusClosedLost": "Perdido",
+
+  "newLabel": "Novo"
+}

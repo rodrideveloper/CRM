@@ -1,7 +1,7 @@
 # CRM WhatsApp Sales — Plan de Implementación por Sprints
 
-> **Última actualización:** 29 de marzo de 2026  
-> **Estado actual:** Sprint 2 completado + Landing page + Design system + Marketing funnel  
+> **Última actualización:** 30 de marzo de 2026  
+> **Estado actual:** Sprint 3 completado  
 > **Objetivo:** Salir a producción con algo básico, confiable, usable y que sume valor.
 
 ---
@@ -10,7 +10,7 @@
 
 1. [Sprint 1 — MVP Base (COMPLETADO)](#sprint-1--mvp-base-completado)
 2. [Sprint 2 — Producción Mínima Viable (COMPLETADO)](#sprint-2--producción-mínima-viable-completado)
-3. [Sprint 3 — Experiencia de Usuario](#sprint-3--experiencia-de-usuario)
+3. [Sprint 3 — Experiencia de Usuario (COMPLETADO)](#sprint-3--experiencia-de-usuario-completado)
 4. [Sprint 4 — Búsqueda, Filtros y Métricas](#sprint-4--búsqueda-filtros-y-métricas)
 5. [Sprint 5 — Notificaciones y Recordatorios](#sprint-5--notificaciones-y-recordatorios)
 6. [Sprint 6 — Revenue y Monetización](#sprint-6--revenue-y-monetización)
@@ -351,7 +351,7 @@ MaterialApp.router(
 
 ---
 
-## Sprint 3 — Experiencia de Usuario
+## Sprint 3 — Experiencia de Usuario (COMPLETADO) ✅
 
 > **Objetivo:** Pulir la app para que se sienta profesional y rápida.
 

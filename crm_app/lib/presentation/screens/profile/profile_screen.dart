@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../../../core/theme/design_tokens.dart';
+import '../../../core/utils/l10n_extension.dart';
 import '../../providers/auth_provider.dart';
+import '../../providers/locale_provider.dart';
 import '../../providers/theme_provider.dart';
 
 class ProfileScreen extends ConsumerWidget {
@@ -14,7 +16,7 @@ class ProfileScreen extends ConsumerWidget {
     final theme = Theme.of(context);
 
     return Scaffold(
-      appBar: AppBar(title: const Text('Perfil 👤')),
+      appBar: AppBar(title: Text(context.l10n.profileTitle)),
       body: SingleChildScrollView(
         padding: const EdgeInsets.all(24),
         child: Column(
@@ -44,7 +46,7 @@ class ProfileScreen extends ConsumerWidget {
             ),
             const SizedBox(height: 16),
             Text(
-              user?.email ?? 'Sin email',
+              user?.email ?? context.l10n.noEmail,
               style: theme.textTheme.titleMedium?.copyWith(
                 fontWeight: FontWeight.w700,
               ),
@@ -94,17 +96,17 @@ class ProfileScreen extends ConsumerWidget {
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
                             Text(
-                              'Tema',
+                              context.l10n.theme,
                               style: theme.textTheme.titleSmall?.copyWith(
                                 fontWeight: FontWeight.w700,
                               ),
                             ),
                             Text(
                               themeMode == ThemeMode.dark
-                                  ? 'Oscuro'
+                                  ? context.l10n.themeDark
                                   : themeMode == ThemeMode.light
-                                      ? 'Claro'
-                                      : 'Automático',
+                                  ? context.l10n.themeLight
+                                  : context.l10n.themeAuto,
                               style: theme.textTheme.bodySmall?.copyWith(
                                 color: theme.colorScheme.onSurfaceVariant,
                               ),
@@ -118,27 +120,87 @@ class ProfileScreen extends ConsumerWidget {
                   SizedBox(
                     width: double.infinity,
                     child: SegmentedButton<ThemeMode>(
-                      segments: const [
+                      segments: [
                         ButtonSegment(
                           value: ThemeMode.light,
-                          icon: Icon(Icons.light_mode_rounded, size: 18),
-                          label: Text('Claro'),
+                          icon: const Icon(Icons.light_mode_rounded, size: 18),
+                          label: Text(context.l10n.themeLight),
                         ),
                         ButtonSegment(
                           value: ThemeMode.system,
-                          icon: Icon(Icons.brightness_auto_rounded, size: 18),
-                          label: Text('Auto'),
+                          icon: const Icon(
+                            Icons.brightness_auto_rounded,
+                            size: 18,
+                          ),
+                          label: Text(context.l10n.themeAuto),
                         ),
                         ButtonSegment(
                           value: ThemeMode.dark,
-                          icon: Icon(Icons.dark_mode_rounded, size: 18),
-                          label: Text('Oscuro'),
+                          icon: const Icon(Icons.dark_mode_rounded, size: 18),
+                          label: Text(context.l10n.themeDark),
                         ),
                       ],
                       selected: {themeMode},
                       onSelectionChanged: (modes) {
                         ref.read(themeModeProvider.notifier).state =
                             modes.first;
+                      },
+                    ),
+                  ),
+                ],
+              ),
+            ),
+            const SizedBox(height: 16),
+            // Language selector card
+            Container(
+              padding: const EdgeInsets.all(16),
+              decoration: BoxDecoration(
+                color: Colors.white,
+                borderRadius: BorderRadius.circular(DesignTokens.radiusM),
+                boxShadow: DesignTokens.shadowSoft,
+              ),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Row(
+                    children: [
+                      Container(
+                        padding: const EdgeInsets.all(8),
+                        decoration: BoxDecoration(
+                          color: DesignTokens.info.withValues(alpha: 0.12),
+                          borderRadius: BorderRadius.circular(
+                            DesignTokens.radiusS,
+                          ),
+                        ),
+                        child: Icon(
+                          Icons.language_rounded,
+                          color: DesignTokens.info,
+                          size: 20,
+                        ),
+                      ),
+                      const SizedBox(width: 12),
+                      Text(
+                        context.l10n.language,
+                        style: theme.textTheme.titleSmall?.copyWith(
+                          fontWeight: FontWeight.w700,
+                        ),
+                      ),
+                    ],
+                  ),
+                  const SizedBox(height: 12),
+                  SizedBox(
+                    width: double.infinity,
+                    child: SegmentedButton<Locale?>(
+                      segments: const [
+                        ButtonSegment(value: Locale('es'), label: Text('ES')),
+                        ButtonSegment(value: Locale('en'), label: Text('EN')),
+                        ButtonSegment(value: Locale('pt'), label: Text('PT')),
+                      ],
+                      selected: {
+                        ref.watch(localeProvider) ?? const Locale('es'),
+                      },
+                      onSelectionChanged: (locales) {
+                        ref.read(localeProvider.notifier).state = locales.first;
                       },
                     ),
                   ),
@@ -152,16 +214,16 @@ class ProfileScreen extends ConsumerWidget {
                 final confirm = await showDialog<bool>(
                   context: context,
                   builder: (ctx) => AlertDialog(
-                    title: const Text('Cerrar sesión'),
-                    content: const Text('¿Estás seguro?'),
+                    title: Text(context.l10n.logout),
+                    content: Text(context.l10n.logoutConfirm),
                     actions: [
                       TextButton(
                         onPressed: () => Navigator.pop(ctx, false),
-                        child: const Text('Cancelar'),
+                        child: Text(context.l10n.cancel),
                       ),
                       TextButton(
                         onPressed: () => Navigator.pop(ctx, true),
-                        child: const Text('Cerrar sesión'),
+                        child: Text(context.l10n.logout),
                       ),
                     ],
                   ),
@@ -171,7 +233,7 @@ class ProfileScreen extends ConsumerWidget {
                 }
               },
               icon: const Icon(Icons.logout_rounded),
-              label: const Text('Cerrar sesión'),
+              label: Text(context.l10n.logout),
               style: OutlinedButton.styleFrom(
                 foregroundColor: DesignTokens.error,
                 side: BorderSide(

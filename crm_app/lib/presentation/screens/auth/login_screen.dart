@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import '../../../core/theme/design_tokens.dart';
+import '../../../core/utils/l10n_extension.dart';
 import '../../providers/auth_provider.dart';
 
 class LoginScreen extends ConsumerStatefulWidget {
@@ -119,14 +120,14 @@ class _LoginScreenState extends ConsumerState<LoginScreen>
                         ),
                         const SizedBox(height: 24),
                         Text(
-                          '¡Hola de nuevo! 👋',
+                          context.l10n.loginWelcome,
                           style: Theme.of(context).textTheme.headlineSmall
                               ?.copyWith(fontWeight: FontWeight.w800),
                           textAlign: TextAlign.center,
                         ),
                         const SizedBox(height: 8),
                         Text(
-                          'Iniciá sesión y cerrá más ventas',
+                          context.l10n.loginSubtitle,
                           style: Theme.of(context).textTheme.bodyLarge
                               ?.copyWith(
                                 color: Theme.of(
@@ -149,21 +150,21 @@ class _LoginScreenState extends ConsumerState<LoginScreen>
                             children: [
                               TextFormField(
                                 controller: _emailController,
-                                decoration: const InputDecoration(
-                                  labelText: 'Email',
-                                  prefixIcon: Icon(Icons.email_outlined),
+                                decoration: InputDecoration(
+                                  labelText: context.l10n.email,
+                                  prefixIcon: const Icon(Icons.email_outlined),
                                 ),
                                 keyboardType: TextInputType.emailAddress,
                                 textInputAction: TextInputAction.next,
                                 validator: (v) => v == null || !v.contains('@')
-                                    ? 'Email inválido'
+                                    ? context.l10n.emailInvalid
                                     : null,
                               ),
                               const SizedBox(height: 16),
                               TextFormField(
                                 controller: _passwordController,
                                 decoration: InputDecoration(
-                                  labelText: 'Contraseña',
+                                  labelText: context.l10n.password,
                                   prefixIcon: const Icon(Icons.lock_outlined),
                                   suffixIcon: IconButton(
                                     icon: Icon(
@@ -181,7 +182,7 @@ class _LoginScreenState extends ConsumerState<LoginScreen>
                                 textInputAction: TextInputAction.done,
                                 onFieldSubmitted: (_) => _submit(),
                                 validator: (v) => v == null || v.length < 6
-                                    ? 'Mínimo 6 caracteres'
+                                    ? context.l10n.passwordMinLength
                                     : null,
                               ),
                               const SizedBox(height: 24),
@@ -196,7 +197,7 @@ class _LoginScreenState extends ConsumerState<LoginScreen>
                                           color: Colors.white,
                                         ),
                                       )
-                                    : const Text('Iniciar sesión'),
+                                    : Text(context.l10n.loginButton),
                               ),
                             ],
                           ),
@@ -206,10 +207,10 @@ class _LoginScreenState extends ConsumerState<LoginScreen>
                           onPressed: () => context.go('/register'),
                           child: Text.rich(
                             TextSpan(
-                              text: '¿No tenés cuenta? ',
+                              text: context.l10n.loginNoAccount,
                               children: [
                                 TextSpan(
-                                  text: 'Registrate',
+                                  text: context.l10n.loginRegisterLink,
                                   style: TextStyle(
                                     fontWeight: FontWeight.w700,
                                     color: Theme.of(

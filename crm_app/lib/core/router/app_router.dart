@@ -59,8 +59,22 @@ final routerProvider = Provider<GoRouter>((ref) {
       GoRoute(
         path: '/client/:id',
         parentNavigatorKey: _rootNavigatorKey,
-        builder: (context, state) =>
-            ClientDetailScreen(clientId: state.pathParameters['id']!),
+        pageBuilder: (context, state) => CustomTransitionPage(
+          key: state.pageKey,
+          child: ClientDetailScreen(clientId: state.pathParameters['id']!),
+          transitionsBuilder: (context, animation, secondaryAnimation, child) {
+            return SlideTransition(
+              position:
+                  Tween<Offset>(
+                    begin: const Offset(1.0, 0.0),
+                    end: Offset.zero,
+                  ).animate(
+                    CurvedAnimation(parent: animation, curve: Curves.easeInOut),
+                  ),
+              child: child,
+            );
+          },
+        ),
       ),
     ],
   );

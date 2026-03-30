@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import '../../../core/theme/design_tokens.dart';
+import '../../../core/utils/l10n_extension.dart';
 import '../../providers/auth_provider.dart';
 
 class RegisterScreen extends ConsumerStatefulWidget {
@@ -63,11 +64,9 @@ class _RegisterScreenState extends ConsumerState<RegisterScreen>
           context,
         ).showSnackBar(SnackBar(content: Text(state.error.toString())));
       } else {
-        ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(
-            content: Text('¡Cuenta creada! Revisá tu email para confirmar.'),
-          ),
-        );
+        ScaffoldMessenger.of(
+          context,
+        ).showSnackBar(SnackBar(content: Text(context.l10n.registerSuccess)));
       }
     }
   }
@@ -129,14 +128,14 @@ class _RegisterScreenState extends ConsumerState<RegisterScreen>
                         ),
                         const SizedBox(height: 24),
                         Text(
-                          '¡Empezá ahora! 🚀',
+                          context.l10n.registerWelcome,
                           style: Theme.of(context).textTheme.headlineSmall
                               ?.copyWith(fontWeight: FontWeight.w800),
                           textAlign: TextAlign.center,
                         ),
                         const SizedBox(height: 8),
                         Text(
-                          'Creá tu cuenta y organizá tus ventas',
+                          context.l10n.registerSubtitle,
                           style: Theme.of(context).textTheme.bodyLarge
                               ?.copyWith(
                                 color: Theme.of(
@@ -159,21 +158,21 @@ class _RegisterScreenState extends ConsumerState<RegisterScreen>
                             children: [
                               TextFormField(
                                 controller: _emailController,
-                                decoration: const InputDecoration(
-                                  labelText: 'Email',
-                                  prefixIcon: Icon(Icons.email_outlined),
+                                decoration: InputDecoration(
+                                  labelText: context.l10n.email,
+                                  prefixIcon: const Icon(Icons.email_outlined),
                                 ),
                                 keyboardType: TextInputType.emailAddress,
                                 textInputAction: TextInputAction.next,
                                 validator: (v) => v == null || !v.contains('@')
-                                    ? 'Email inválido'
+                                    ? context.l10n.emailInvalid
                                     : null,
                               ),
                               const SizedBox(height: 16),
                               TextFormField(
                                 controller: _passwordController,
                                 decoration: InputDecoration(
-                                  labelText: 'Contraseña',
+                                  labelText: context.l10n.password,
                                   prefixIcon: const Icon(Icons.lock_outlined),
                                   suffixIcon: IconButton(
                                     icon: Icon(
@@ -190,21 +189,21 @@ class _RegisterScreenState extends ConsumerState<RegisterScreen>
                                 obscureText: _obscurePassword,
                                 textInputAction: TextInputAction.next,
                                 validator: (v) => v == null || v.length < 6
-                                    ? 'Mínimo 6 caracteres'
+                                    ? context.l10n.passwordMinLength
                                     : null,
                               ),
                               const SizedBox(height: 16),
                               TextFormField(
                                 controller: _confirmController,
-                                decoration: const InputDecoration(
-                                  labelText: 'Confirmar contraseña',
-                                  prefixIcon: Icon(Icons.lock_outlined),
+                                decoration: InputDecoration(
+                                  labelText: context.l10n.confirmPassword,
+                                  prefixIcon: const Icon(Icons.lock_outlined),
                                 ),
                                 obscureText: _obscurePassword,
                                 textInputAction: TextInputAction.done,
                                 onFieldSubmitted: (_) => _submit(),
                                 validator: (v) => v != _passwordController.text
-                                    ? 'Las contraseñas no coinciden'
+                                    ? context.l10n.passwordsDoNotMatch
                                     : null,
                               ),
                               const SizedBox(height: 24),
@@ -219,7 +218,7 @@ class _RegisterScreenState extends ConsumerState<RegisterScreen>
                                           color: Colors.white,
                                         ),
                                       )
-                                    : const Text('Crear cuenta'),
+                                    : Text(context.l10n.registerButton),
                               ),
                             ],
                           ),
@@ -229,10 +228,10 @@ class _RegisterScreenState extends ConsumerState<RegisterScreen>
                           onPressed: () => context.go('/login'),
                           child: Text.rich(
                             TextSpan(
-                              text: '¿Ya tenés cuenta? ',
+                              text: context.l10n.registerHasAccount,
                               children: [
                                 TextSpan(
-                                  text: 'Iniciá sesión',
+                                  text: context.l10n.registerLoginLink,
                                   style: TextStyle(
                                     fontWeight: FontWeight.w700,
                                     color: Theme.of(

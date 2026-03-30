@@ -1,15 +1,23 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../../../core/theme/design_tokens.dart';
+import '../../../core/utils/l10n_extension.dart';
 import '../../providers/task_provider.dart';
 
 class TaskListTab extends ConsumerWidget {
   final String clientId;
   const TaskListTab({super.key, required this.clientId});
 
-  void _showAddTaskDialog(BuildContext context, WidgetRef ref) {
-    final titleController = TextEditingController();
-    DateTime? selectedDate;
+  void _showTaskDialog(
+    BuildContext context,
+    WidgetRef ref, {
+    String? taskId,
+    String? initialTitle,
+    DateTime? initialDate,
+  }) {
+    final titleController = TextEditingController(text: initialTitle ?? '');
+    DateTime? selectedDate = initialDate;
+    final isEditing = taskId != null;
 
     showModalBottomSheet(
       context: context,
@@ -32,18 +40,16 @@ class TaskListTab extends ConsumerWidget {
                     padding: const EdgeInsets.all(10),
                     decoration: BoxDecoration(
                       color: DesignTokens.info.withValues(alpha: 0.12),
-                      borderRadius: BorderRadius.circular(
-                        DesignTokens.radiusS,
-                      ),
+                      borderRadius: BorderRadius.circular(DesignTokens.radiusS),
                     ),
                     child: Icon(
-                      Icons.add_task_rounded,
+                      isEditing ? Icons.edit_rounded : Icons.add_task_rounded,
                       color: DesignTokens.info,
                     ),
                   ),
                   const SizedBox(width: 12),
                   Text(
-                    'Nueva tarea',
+                    isEditing ? context.l10n.editTask : context.l10n.newTask,
                     style: Theme.of(ctx).textTheme.titleLarge?.copyWith(
                       fontWeight: FontWeight.w800,
                     ),
@@ -53,11 +59,12 @@ class TaskListTab extends ConsumerWidget {
               const SizedBox(height: 16),
               TextField(
                 controller: titleController,
-                decoration: const InputDecoration(
-                  labelText: 'Título de la tarea',
-                  prefixIcon: Icon(Icons.task_alt_rounded),
+                decoration: InputDecoration(
+                  labelText: context.l10n.taskTitle,
+                  prefixIcon: const Icon(Icons.task_alt_rounded),
                 ),
                 textInputAction: TextInputAction.done,
+                autofocus: true,
               ),
               const SizedBox(height: 12),
               OutlinedButton.icon(
@@ -65,12 +72,14 @@ class TaskListTab extends ConsumerWidget {
                 label: Text(
                   selectedDate != null
                       ? '${selectedDate!.day}/${selectedDate!.month}/${selectedDate!.year}'
-                      : 'Fecha de vencimiento (opcional)',
+                      : context.l10n.taskDueDate,
                 ),
                 onPressed: () async {
                   final date = await showDatePicker(
                     context: ctx,
-                    initialDate: DateTime.now().add(const Duration(days: 1)),
+                    initialDate:
+                        selectedDate ??
+                        DateTime.now().add(const Duration(days: 1)),
                     firstDate: DateTime.now(),
                     lastDate: DateTime.now().add(const Duration(days: 365)),
                   );
@@ -84,14 +93,28 @@ class TaskListTab extends ConsumerWidget {
                 onPressed: () {
                   if (titleController.text.trim().isEmpty) return;
                   Navigator.pop(ctx);
-                  ref
-                      .read(clientTasksProvider(clientId).notifier)
-                      .addTask(
-                        title: titleController.text.trim(),
-                        dueDate: selectedDate,
-                      );
+                  if (isEditing) {
+                    ref
+                        .read(clientTasksProvider(clientId).notifier)
+                        .updateTask(
+                          taskId,
+                          title: titleController.text.trim(),
+                          dueDate: selectedDate,
+                        );
+                  } else {
+                    ref
+                        .read(clientTasksProvider(clientId).notifier)
+                        .addTask(
+                          title: titleController.text.trim(),
+                          dueDate: selectedDate,
+                        );
+                  }
                 },
-                child: const Text('Crear tarea'),
+                child: Text(
+                  isEditing
+                      ? context.l10n.saveChanges
+                      : context.l10n.createTask,
+                ),
               ),
             ],
           ),
@@ -118,14 +141,14 @@ class TaskListTab extends ConsumerWidget {
                   const Text('✅', style: TextStyle(fontSize: 48)),
                   const SizedBox(height: 12),
                   Text(
-                    'Sin tareas pendientes',
+                    context.l10n.noTasks,
                     style: theme.textTheme.titleMedium?.copyWith(
                       fontWeight: FontWeight.w700,
                     ),
                   ),
                   const SizedBox(height: 4),
                   Text(
-                    'Creá una con el botón +',
+                    context.l10n.noTasksHint,
                     style: theme.textTheme.bodyMedium?.copyWith(
                       color: theme.colorScheme.onSurfaceVariant,
                     ),
@@ -161,9 +184,9 @@ class TaskListTab extends ConsumerWidget {
                     ..hideCurrentSnackBar()
                     ..showSnackBar(
                       SnackBar(
-                        content: const Text('Tarea eliminada'),
+                        content: Text(context.l10n.taskDeleted),
                         action: SnackBarAction(
-                          label: 'Deshacer',
+                          label: context.l10n.undo,
                           onPressed: () {
                             ref
                                 .read(clientTasksProvider(clientId).notifier)
@@ -191,6 +214,13 @@ class TaskListTab extends ConsumerWidget {
                     contentPadding: const EdgeInsets.symmetric(
                       horizontal: 12,
                       vertical: 4,
+                    ),
+                    onTap: () => _showTaskDialog(
+                      context,
+                      ref,
+                      taskId: task.id,
+                      initialTitle: task.title,
+                      initialDate: task.dueDate,
                     ),
                     leading: Transform.scale(
                       scale: 1.2,
@@ -231,13 +261,14 @@ class TaskListTab extends ConsumerWidget {
                               ),
                               const SizedBox(width: 4),
                               Text(
-                                'Vence: ${task.dueDate!.day}/${task.dueDate!.month}/${task.dueDate!.year}',
+                                context.l10n.dueDate(
+                                  '${task.dueDate!.day}/${task.dueDate!.month}/${task.dueDate!.year}',
+                                ),
                                 style: TextStyle(
-                                  color: isOverdue
-                                      ? DesignTokens.error
+                                  color: isOverdue ? DesignTokens.error : null,
+                                  fontWeight: isOverdue
+                                      ? FontWeight.w700
                                       : null,
-                                  fontWeight:
-                                      isOverdue ? FontWeight.w700 : null,
                                   fontSize: 12,
                                 ),
                               ),
@@ -269,7 +300,7 @@ class TaskListTab extends ConsumerWidget {
       ),
       floatingActionButton: FloatingActionButton.small(
         heroTag: 'addTask',
-        onPressed: () => _showAddTaskDialog(context, ref),
+        onPressed: () => _showTaskDialog(context, ref),
         child: const Icon(Icons.add_rounded),
       ),
     );

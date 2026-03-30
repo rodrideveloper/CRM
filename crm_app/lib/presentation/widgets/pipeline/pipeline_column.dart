@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import '../../../core/theme/design_tokens.dart';
+import '../../../core/utils/l10n_extension.dart';
 import '../../../domain/entities/client.dart';
 import '../../widgets/pipeline/client_card.dart';
 
@@ -7,12 +8,14 @@ class PipelineColumn extends StatelessWidget {
   final ClientStatus status;
   final List<Client> clients;
   final void Function(Client client) onChangeStatus;
+  final Future<void> Function()? onRefresh;
 
   const PipelineColumn({
     super.key,
     required this.status,
     required this.clients,
     required this.onChangeStatus,
+    this.onRefresh,
   });
 
   @override
@@ -35,7 +38,7 @@ class PipelineColumn extends StatelessWidget {
             children: [
               Expanded(
                 child: Text(
-                  status.label,
+                  status.localizedLabel(context),
                   style: theme.textTheme.titleMedium?.copyWith(
                     fontWeight: FontWeight.w700,
                     color: statusColor,
@@ -73,7 +76,7 @@ class PipelineColumn extends StatelessWidget {
                       const Text('📭', style: TextStyle(fontSize: 32)),
                       const SizedBox(height: 8),
                       Text(
-                        'Sin clientes',
+                        context.l10n.noClients,
                         style: theme.textTheme.bodyMedium?.copyWith(
                           color: theme.colorScheme.onSurfaceVariant,
                         ),
@@ -81,16 +84,19 @@ class PipelineColumn extends StatelessWidget {
                     ],
                   ),
                 )
-              : ListView.builder(
-                  padding: const EdgeInsets.only(bottom: 80),
-                  itemCount: clients.length,
-                  itemBuilder: (context, index) {
-                    final client = clients[index];
-                    return ClientCard(
-                      client: client,
-                      onStatusChange: () => onChangeStatus(client),
-                    );
-                  },
+              : RefreshIndicator(
+                  onRefresh: onRefresh ?? () async {},
+                  child: ListView.builder(
+                    padding: const EdgeInsets.only(bottom: 80),
+                    itemCount: clients.length,
+                    itemBuilder: (context, index) {
+                      final client = clients[index];
+                      return ClientCard(
+                        client: client,
+                        onStatusChange: () => onChangeStatus(client),
+                      );
+                    },
+                  ),
                 ),
         ),
       ],

@@ -20,6 +20,11 @@ class NotesNotifier extends FamilyAsyncNotifier<List<Note>, String> {
     ref.invalidateSelf();
   }
 
+  Future<void> updateNote(String noteId, String content) async {
+    await ref.read(noteRepositoryProvider).updateNote(noteId, content: content);
+    ref.invalidateSelf();
+  }
+
   Future<void> deleteNote(String noteId) async {
     await ref.read(noteRepositoryProvider).softDeleteNote(noteId);
     ref.invalidateSelf();

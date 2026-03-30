@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:go_router/go_router.dart';
 import '../../../core/theme/design_tokens.dart';
+import '../../../core/utils/l10n_extension.dart';
 import '../../../domain/entities/client.dart';
 import '../../providers/client_provider.dart';
 import '../../providers/repository_providers.dart';
@@ -44,6 +46,48 @@ class _ClientInfoTabState extends ConsumerState<ClientInfoTab> {
     super.dispose();
   }
 
+  Future<void> _confirmDelete(BuildContext context) async {
+    final confirm = await showDialog<bool>(
+      context: context,
+      builder: (ctx) => AlertDialog(
+        title: Text(context.l10n.deleteClient),
+        content: Text(context.l10n.deleteClientConfirm(widget.client.name)),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.pop(ctx, false),
+            child: Text(context.l10n.cancel),
+          ),
+          TextButton(
+            onPressed: () => Navigator.pop(ctx, true),
+            style: TextButton.styleFrom(foregroundColor: DesignTokens.error),
+            child: Text(context.l10n.delete),
+          ),
+        ],
+      ),
+    );
+    if (confirm == true && mounted) {
+      await ref
+          .read(clientsProvider.notifier)
+          .softDeleteClient(widget.client.id);
+      if (mounted) {
+        context.pop();
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: Text(context.l10n.clientDeleted),
+            action: SnackBarAction(
+              label: context.l10n.undo,
+              onPressed: () {
+                ref
+                    .read(clientsProvider.notifier)
+                    .restoreClient(widget.client.id);
+              },
+            ),
+          ),
+        );
+      }
+    }
+  }
+
   Future<void> _save() async {
     if (!_formKey.currentState!.validate()) return;
 
@@ -67,9 +111,9 @@ class _ClientInfoTabState extends ConsumerState<ClientInfoTab> {
     await ref.read(clientsProvider.notifier).refresh();
     if (mounted) {
       setState(() => _editing = false);
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text('✅ Cliente actualizado')),
-      );
+      ScaffoldMessenger.of(
+        context,
+      ).showSnackBar(SnackBar(content: Text(context.l10n.clientUpdated)));
     }
   }
 
@@ -95,9 +139,7 @@ class _ClientInfoTabState extends ConsumerState<ClientInfoTab> {
                 decoration: BoxDecoration(
                   color: statusColor.withValues(alpha: 0.12),
                   borderRadius: BorderRadius.circular(DesignTokens.radiusL),
-                  border: Border.all(
-                    color: statusColor.withValues(alpha: 0.3),
-                  ),
+                  border: Border.all(color: statusColor.withValues(alpha: 0.3)),
                 ),
                 child: Row(
                   mainAxisSize: MainAxisSize.min,
@@ -112,7 +154,7 @@ class _ClientInfoTabState extends ConsumerState<ClientInfoTab> {
                     ),
                     const SizedBox(width: 8),
                     Text(
-                      widget.client.status.label,
+                      widget.client.status.localizedLabel(context),
                       style: TextStyle(
                         fontWeight: FontWeight.w700,
                         color: statusColor,
@@ -135,21 +177,22 @@ class _ClientInfoTabState extends ConsumerState<ClientInfoTab> {
                 children: [
                   TextFormField(
                     controller: _nameController,
-                    decoration: const InputDecoration(
-                      labelText: 'Nombre',
-                      prefixIcon: Icon(Icons.person_outlined),
+                    decoration: InputDecoration(
+                      labelText: context.l10n.name,
+                      prefixIcon: const Icon(Icons.person_outlined),
                     ),
                     enabled: _editing,
-                    validator: (v) =>
-                        v == null || v.trim().isEmpty ? 'Requerido' : null,
+                    validator: (v) => v == null || v.trim().isEmpty
+                        ? context.l10n.required
+                        : null,
                   ),
                   const SizedBox(height: 12),
                   TextFormField(
                     controller: _phoneController,
-                    decoration: const InputDecoration(
-                      labelText: 'Teléfono',
-                      prefixIcon: Icon(Icons.phone_outlined),
-                      hintText: '+5491112345678',
+                    decoration: InputDecoration(
+                      labelText: context.l10n.phone,
+                      prefixIcon: const Icon(Icons.phone_outlined),
+                      hintText: context.l10n.phoneHint,
                     ),
                     enabled: _editing,
                     keyboardType: TextInputType.phone,
@@ -157,9 +200,9 @@ class _ClientInfoTabState extends ConsumerState<ClientInfoTab> {
                   const SizedBox(height: 12),
                   TextFormField(
                     controller: _emailController,
-                    decoration: const InputDecoration(
-                      labelText: 'Email',
-                      prefixIcon: Icon(Icons.email_outlined),
+                    decoration: InputDecoration(
+                      labelText: context.l10n.email,
+                      prefixIcon: const Icon(Icons.email_outlined),
                     ),
                     enabled: _editing,
                     keyboardType: TextInputType.emailAddress,
@@ -167,19 +210,19 @@ class _ClientInfoTabState extends ConsumerState<ClientInfoTab> {
                   const SizedBox(height: 12),
                   TextFormField(
                     controller: _companyController,
-                    decoration: const InputDecoration(
-                      labelText: 'Empresa',
-                      prefixIcon: Icon(Icons.business_outlined),
+                    decoration: InputDecoration(
+                      labelText: context.l10n.company,
+                      prefixIcon: const Icon(Icons.business_outlined),
                     ),
                     enabled: _editing,
                   ),
                   const SizedBox(height: 12),
                   TextFormField(
                     controller: _sourceController,
-                    decoration: const InputDecoration(
-                      labelText: 'Origen',
-                      prefixIcon: Icon(Icons.source_outlined),
-                      hintText: 'Ej: Instagram, referido, web',
+                    decoration: InputDecoration(
+                      labelText: context.l10n.source,
+                      prefixIcon: const Icon(Icons.source_outlined),
+                      hintText: context.l10n.sourceHint,
                     ),
                     enabled: _editing,
                   ),
@@ -191,7 +234,7 @@ class _ClientInfoTabState extends ConsumerState<ClientInfoTab> {
               ElevatedButton.icon(
                 onPressed: _save,
                 icon: const Icon(Icons.save_rounded),
-                label: const Text('Guardar'),
+                label: Text(context.l10n.save),
               ),
               const SizedBox(height: 8),
               OutlinedButton(
@@ -203,13 +246,13 @@ class _ClientInfoTabState extends ConsumerState<ClientInfoTab> {
                   _sourceController.text = widget.client.source ?? '';
                   setState(() => _editing = false);
                 },
-                child: const Text('Cancelar'),
+                child: Text(context.l10n.cancel),
               ),
             ] else
               OutlinedButton.icon(
                 onPressed: () => setState(() => _editing = true),
                 icon: const Icon(Icons.edit_rounded),
-                label: const Text('Editar'),
+                label: Text(context.l10n.edit),
               ),
             const SizedBox(height: 20),
             // Metadata
@@ -223,18 +266,32 @@ class _ClientInfoTabState extends ConsumerState<ClientInfoTab> {
                 children: [
                   _buildMetaRow(
                     Icons.calendar_today_rounded,
-                    'Creado',
+                    context.l10n.created,
                     _formatDate(widget.client.createdAt),
                     theme,
                   ),
                   const SizedBox(height: 6),
                   _buildMetaRow(
                     Icons.update_rounded,
-                    'Actualizado',
+                    context.l10n.updated,
                     _formatDate(widget.client.updatedAt),
                     theme,
                   ),
                 ],
+              ),
+            ),
+            const SizedBox(height: 24),
+            // Delete button
+            OutlinedButton.icon(
+              onPressed: () => _confirmDelete(context),
+              icon: const Icon(Icons.delete_rounded),
+              label: Text(context.l10n.deleteClient),
+              style: OutlinedButton.styleFrom(
+                foregroundColor: DesignTokens.error,
+                side: BorderSide(
+                  color: DesignTokens.error.withValues(alpha: 0.3),
+                ),
+                minimumSize: const Size.fromHeight(50),
               ),
             ),
           ],

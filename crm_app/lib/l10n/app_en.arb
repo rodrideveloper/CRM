@@ -1,0 +1,122 @@
+{
+  "@@locale": "en",
+
+  "appTitle": "CRM WhatsApp",
+
+  "pipeline": "Pipeline",
+  "tasks": "Tasks",
+  "profile": "Profile",
+
+  "pipelineTitle": "Pipeline 🎯",
+  "tasksTitle": "Tasks 📋",
+  "profileTitle": "Profile 👤",
+
+  "loginWelcome": "Welcome back! 👋",
+  "loginSubtitle": "Sign in and close more deals",
+  "loginButton": "Sign in",
+  "loginNoAccount": "Don't have an account? ",
+  "loginRegisterLink": "Sign up",
+
+  "registerWelcome": "Get started! 🚀",
+  "registerSubtitle": "Create your account and organize your sales",
+  "registerButton": "Create account",
+  "registerHasAccount": "Already have an account? ",
+  "registerLoginLink": "Sign in",
+  "registerSuccess": "Account created! Check your email to confirm.",
+
+  "email": "Email",
+  "emailInvalid": "Invalid email",
+  "password": "Password",
+  "passwordMinLength": "At least 6 characters",
+  "confirmPassword": "Confirm password",
+  "passwordsDoNotMatch": "Passwords do not match",
+
+  "name": "Name",
+  "phone": "Phone",
+  "phoneHint": "+5491112345678",
+  "phoneWithCountry": "Phone (with country code)",
+  "company": "Company",
+  "source": "Source",
+  "sourceHint": "E.g.: Instagram, referral, web",
+
+  "save": "Save",
+  "cancel": "Cancel",
+  "delete": "Delete",
+  "edit": "Edit",
+  "undo": "Undo",
+  "retry": "Retry",
+
+  "newClient": "New client",
+  "createClient": "Create client",
+  "nameRequired": "Name is required",
+  "required": "Required",
+  "clientUpdated": "✅ Client updated",
+  "clientDeleted": "Client deleted",
+  "deleteClient": "Delete client",
+  "deleteClientConfirm": "Are you sure you want to delete \"{name}\"? This action can be undone.",
+  "moveClientTo": "Move \"{name}\" to:",
+  "noClients": "No clients",
+  "noPhoneNumber": "This client has no phone number",
+
+  "newNote": "New note",
+  "editNote": "Edit note",
+  "noteHint": "Write your note...",
+  "saveNote": "Save note",
+  "saveChanges": "Save changes",
+  "noNotes": "No notes yet",
+  "noNotesHint": "Add one with the + button",
+  "noteDeleted": "Note deleted",
+
+  "newTask": "New task",
+  "editTask": "Edit task",
+  "taskTitle": "Task title",
+  "taskDueDate": "Due date (optional)",
+  "createTask": "Create task",
+  "noTasks": "No pending tasks",
+  "noTasksHint": "Create one with the + button",
+  "taskDeleted": "Task deleted",
+  "dueDate": "Due: {date}",
+  "complete": "Complete",
+
+  "allCaughtUp": "All caught up!",
+  "noPendingTasks": "No pending tasks",
+
+  "info": "Info",
+  "notes": "Notes",
+
+  "whatsapp": "WhatsApp",
+
+  "somethingWentWrong": "Something went wrong",
+
+  "searchClients": "Search clients...",
+  "typeToSearch": "Type to search",
+  "noResults": "No results",
+
+  "sortRecent": "Most recent",
+  "sortName": "Name A-Z",
+  "sortOldest": "Oldest first",
+  "sort": "Sort",
+
+  "theme": "Theme",
+  "themeLight": "Light",
+  "themeDark": "Dark",
+  "themeAuto": "Auto",
+  "noEmail": "No email",
+
+  "logout": "Log out",
+  "logoutConfirm": "Are you sure?",
+
+  "language": "Language",
+
+  "created": "Created",
+  "updated": "Updated",
+
+  "statusNew": "New",
+  "statusContacted": "Contacted",
+  "statusInterested": "Interested",
+  "statusNegotiating": "Negotiating",
+  "statusClosedWon": "Won",
+  "statusClosedLost": "Lost",
+
+  "newLabel": "New"
+}
