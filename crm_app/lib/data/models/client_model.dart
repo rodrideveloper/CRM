@@ -10,6 +10,7 @@ class ClientModel extends Client {
     super.company,
     super.source,
     required super.status,
+    super.nextFollowUp,
     required super.createdAt,
     required super.updatedAt,
   });
@@ -24,6 +25,9 @@ class ClientModel extends Client {
       company: json['company'] as String?,
       source: json['source'] as String?,
       status: ClientStatus.fromString(json['status'] as String),
+      nextFollowUp: json['next_follow_up'] != null
+          ? DateTime.parse(json['next_follow_up'] as String)
+          : null,
       createdAt: DateTime.parse(json['created_at'] as String),
       updatedAt: DateTime.parse(json['updated_at'] as String),
     );
@@ -54,6 +58,8 @@ class ClientModel extends Client {
     String? company,
     String? source,
     ClientStatus? status,
+    DateTime? nextFollowUp,
+    bool clearFollowUp = false,
   }) {
     return {
       if (name != null) 'name': name,
@@ -62,6 +68,9 @@ class ClientModel extends Client {
       if (company != null) 'company': company,
       if (source != null) 'source': source,
       if (status != null) 'status': status.value,
+      if (clearFollowUp) 'next_follow_up': null,
+      if (nextFollowUp != null)
+        'next_follow_up': nextFollowUp.toIso8601String(),
     };
   }
 }

@@ -20,6 +20,8 @@ abstract class ClientRepository {
     String? company,
     String? source,
     ClientStatus? status,
+    DateTime? nextFollowUp,
+    bool clearFollowUp = false,
   });
   Future<void> softDeleteClient(String id);
   Future<void> restoreClient(String id);

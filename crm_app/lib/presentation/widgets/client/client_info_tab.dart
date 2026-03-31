@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
+import 'package:intl/intl.dart';
 import '../../../core/theme/design_tokens.dart';
 import '../../../core/utils/l10n_extension.dart';
 import '../../../domain/entities/client.dart';
@@ -293,6 +294,9 @@ class _ClientInfoTabState extends ConsumerState<ClientInfoTab> {
               ),
             ),
             const SizedBox(height: 16),
+            // Follow-up reminder card
+            _buildFollowUpCard(context, theme),
+            const SizedBox(height: 16),
             if (_editing) ...[
               Container(
                 decoration: BoxDecoration(
@@ -340,6 +344,155 @@ class _ClientInfoTabState extends ConsumerState<ClientInfoTab> {
         ),
       ),
     );
+  }
+
+  Widget _buildFollowUpCard(BuildContext context, ThemeData theme) {
+    final followUp = widget.client.nextFollowUp;
+    final isDue = widget.client.hasFollowUpDue;
+    final cardColor = isDue
+        ? DesignTokens.error.withValues(alpha: 0.08)
+        : DesignTokens.surfaceContainerLow;
+    final borderColor = isDue
+        ? DesignTokens.error.withValues(alpha: 0.3)
+        : DesignTokens.outlineVariant.withValues(alpha: 0.12);
+
+    return Container(
+      padding: const EdgeInsets.all(16),
+      decoration: BoxDecoration(
+        color: cardColor,
+        borderRadius: BorderRadius.circular(DesignTokens.radiusL),
+        border: Border.all(color: borderColor),
+      ),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Row(
+            children: [
+              Icon(
+                isDue ? Icons.alarm_on_rounded : Icons.schedule_rounded,
+                size: 20,
+                color: isDue ? DesignTokens.error : DesignTokens.primary,
+              ),
+              const SizedBox(width: 8),
+              Text(
+                context.l10n.followUpReminder,
+                style: theme.textTheme.titleSmall?.copyWith(
+                  fontWeight: FontWeight.w600,
+                  color: isDue ? DesignTokens.error : null,
+                ),
+              ),
+            ],
+          ),
+          const SizedBox(height: 12),
+          if (followUp != null) ...[
+            Text(
+              isDue ? context.l10n.followUpDue : context.l10n.followUpScheduled,
+              style: theme.textTheme.labelSmall?.copyWith(
+                color: isDue
+                    ? DesignTokens.error
+                    : DesignTokens.onSurfaceVariant,
+              ),
+            ),
+            const SizedBox(height: 4),
+            Text(
+              DateFormat('dd/MM/yyyy HH:mm').format(followUp),
+              style: theme.textTheme.bodyLarge?.copyWith(
+                fontWeight: FontWeight.w600,
+                color: isDue ? DesignTokens.error : null,
+              ),
+            ),
+            const SizedBox(height: 12),
+            Row(
+              children: [
+                Expanded(
+                  child: OutlinedButton.icon(
+                    onPressed: () => _pickFollowUpDate(context),
+                    icon: const Icon(Icons.edit_calendar_rounded, size: 16),
+                    label: Text(context.l10n.followUpDate),
+                  ),
+                ),
+                const SizedBox(width: 8),
+                Expanded(
+                  child: OutlinedButton.icon(
+                    onPressed: () => _clearFollowUp(context),
+                    icon: const Icon(Icons.clear_rounded, size: 16),
+                    label: Text(context.l10n.removeFollowUp),
+                    style: OutlinedButton.styleFrom(
+                      foregroundColor: DesignTokens.error,
+                      side: BorderSide(
+                        color: DesignTokens.error.withValues(alpha: 0.3),
+                      ),
+                    ),
+                  ),
+                ),
+              ],
+            ),
+          ] else
+            SizedBox(
+              width: double.infinity,
+              child: OutlinedButton.icon(
+                onPressed: () => _pickFollowUpDate(context),
+                icon: const Icon(Icons.add_alarm_rounded, size: 18),
+                label: Text(context.l10n.setFollowUp),
+                style: OutlinedButton.styleFrom(
+                  foregroundColor: DesignTokens.primary,
+                ),
+              ),
+            ),
+        ],
+      ),
+    );
+  }
+
+  Future<void> _pickFollowUpDate(BuildContext context) async {
+    final now = DateTime.now();
+    final date = await showDatePicker(
+      context: context,
+      initialDate:
+          widget.client.nextFollowUp ?? now.add(const Duration(days: 1)),
+      firstDate: now,
+      lastDate: now.add(const Duration(days: 365)),
+    );
+    if (date == null || !mounted) return;
+
+    final time = await showTimePicker(
+      context: context,
+      initialTime: widget.client.nextFollowUp != null
+          ? TimeOfDay.fromDateTime(widget.client.nextFollowUp!)
+          : const TimeOfDay(hour: 10, minute: 0),
+    );
+    if (!mounted) return;
+
+    final selectedTime = time ?? const TimeOfDay(hour: 10, minute: 0);
+    final dateTime = DateTime(
+      date.year,
+      date.month,
+      date.day,
+      selectedTime.hour,
+      selectedTime.minute,
+    );
+
+    final repo = ref.read(clientRepositoryProvider);
+    await repo.updateClient(widget.client.id, nextFollowUp: dateTime);
+    await ref.read(clientsProvider.notifier).refresh();
+
+    if (mounted) {
+      ScaffoldMessenger.of(
+        context,
+      ).showSnackBar(SnackBar(content: Text(context.l10n.followUpUpdated)));
+    }
+  }
+
+  Future<void> _clearFollowUp(BuildContext context) async {
+    final repo = ref.read(clientRepositoryProvider);
+    await repo.updateClient(widget.client.id, clearFollowUp: true);
+    await ref.read(clientsProvider.notifier).refresh();
+
+    if (mounted) {
+      ScaffoldMessenger.of(
+        context,
+      ).showSnackBar(SnackBar(content: Text(context.l10n.followUpUpdated)));
+    }
   }
 
   String _formatDateLong(DateTime dt) {

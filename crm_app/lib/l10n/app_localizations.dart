@@ -777,6 +777,48 @@ abstract class AppLocalizations {
   /// In es, this message translates to:
   /// **'Por estado'**
   String get byStatus;
+
+  /// No description provided for @followUpReminder.
+  ///
+  /// In es, this message translates to:
+  /// **'Recordatorio de seguimiento'**
+  String get followUpReminder;
+
+  /// No description provided for @setFollowUp.
+  ///
+  /// In es, this message translates to:
+  /// **'Programar seguimiento'**
+  String get setFollowUp;
+
+  /// No description provided for @followUpDate.
+  ///
+  /// In es, this message translates to:
+  /// **'Fecha de seguimiento'**
+  String get followUpDate;
+
+  /// No description provided for @followUpDue.
+  ///
+  /// In es, this message translates to:
+  /// **'Seguimiento vencido'**
+  String get followUpDue;
+
+  /// No description provided for @followUpScheduled.
+  ///
+  /// In es, this message translates to:
+  /// **'Seguimiento programado'**
+  String get followUpScheduled;
+
+  /// No description provided for @removeFollowUp.
+  ///
+  /// In es, this message translates to:
+  /// **'Quitar recordatorio'**
+  String get removeFollowUp;
+
+  /// No description provided for @followUpUpdated.
+  ///
+  /// In es, this message translates to:
+  /// **'Seguimiento actualizado'**
+  String get followUpUpdated;
 }
 
 class _AppLocalizationsDelegate

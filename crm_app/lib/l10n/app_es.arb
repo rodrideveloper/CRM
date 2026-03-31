@@ -157,5 +157,13 @@
   "newThisMonth": "Nuevos este mes",
   "overdueTasks": "Tareas vencidas",
   "totalClients": "Total clientes",
-  "byStatus": "Por estado"
+  "byStatus": "Por estado",
+
+  "followUpReminder": "Recordatorio de seguimiento",
+  "setFollowUp": "Programar seguimiento",
+  "followUpDate": "Fecha de seguimiento",
+  "followUpDue": "Seguimiento vencido",
+  "followUpScheduled": "Seguimiento programado",
+  "removeFollowUp": "Quitar recordatorio",
+  "followUpUpdated": "Seguimiento actualizado"
 }
