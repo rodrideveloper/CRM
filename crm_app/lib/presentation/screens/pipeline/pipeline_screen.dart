@@ -34,6 +34,7 @@ class _PipelineScreenState extends ConsumerState<PipelineScreen> {
     showModalBottomSheet(
       context: context,
       isScrollControlled: true,
+      useRootNavigator: true,
       builder: (ctx) => Padding(
         padding: EdgeInsets.fromLTRB(
           24,
@@ -155,6 +156,7 @@ class _PipelineScreenState extends ConsumerState<PipelineScreen> {
   void _showChangeStatusSheet(Client client) {
     showModalBottomSheet(
       context: context,
+      useRootNavigator: true,
       builder: (ctx) => SafeArea(
         child: Padding(
           padding: const EdgeInsets.all(16),
@@ -454,9 +456,17 @@ class _PipelineScreenState extends ConsumerState<PipelineScreen> {
           );
         },
       ),
-      floatingActionButton: FloatingActionButton(
-        onPressed: _showCreateClientDialog,
-        child: const Icon(Icons.add_rounded),
+      floatingActionButton: Padding(
+        padding: EdgeInsets.only(
+          bottom:
+              kBottomNavigationBarHeight +
+              MediaQuery.of(context).padding.bottom +
+              16,
+        ),
+        child: FloatingActionButton(
+          onPressed: _showCreateClientDialog,
+          child: const Icon(Icons.add_rounded),
+        ),
       ),
     );
   }
@@ -465,6 +475,7 @@ class _PipelineScreenState extends ConsumerState<PipelineScreen> {
     showModalBottomSheet(
       context: context,
       isScrollControlled: true,
+      useRootNavigator: true,
       builder: (ctx) => DraggableScrollableSheet(
         initialChildSize: 0.7,
         minChildSize: 0.5,
