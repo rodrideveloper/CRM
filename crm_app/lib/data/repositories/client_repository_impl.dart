@@ -35,7 +35,9 @@ class ClientRepositoryImpl implements ClientRepository {
     final data = await _client
         .from('clients')
         .select()
-        .ilike('name', '%$query%')
+        .or(
+          'name.ilike.%$query%,phone.ilike.%$query%,email.ilike.%$query%,company.ilike.%$query%',
+        )
         .order('name');
     return data.map((json) => ClientModel.fromJson(json)).toList();
   }

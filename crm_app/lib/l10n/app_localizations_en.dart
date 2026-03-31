@@ -301,4 +301,57 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get newLabel => 'New';
+
+  @override
+  String get filters => 'Filters';
+
+  @override
+  String get clearFilters => 'Clear filters';
+
+  @override
+  String get filterByDate => 'Filter by date';
+
+  @override
+  String get filterBySource => 'Filter by source';
+
+  @override
+  String get dateRange => 'Date range';
+
+  @override
+  String get from => 'From';
+
+  @override
+  String get to => 'To';
+
+  @override
+  String get allSources => 'All';
+
+  @override
+  String get apply => 'Apply';
+
+  @override
+  String activeFilters(int count) {
+    return '$count active filter(s)';
+  }
+
+  @override
+  String get metrics => 'Metrics';
+
+  @override
+  String get conversionRate => 'Conversion rate';
+
+  @override
+  String get newThisWeek => 'New this week';
+
+  @override
+  String get newThisMonth => 'New this month';
+
+  @override
+  String get overdueTasks => 'Overdue tasks';
+
+  @override
+  String get totalClients => 'Total clients';
+
+  @override
+  String get byStatus => 'By status';
 }

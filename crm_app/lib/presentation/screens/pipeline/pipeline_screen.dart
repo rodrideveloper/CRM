@@ -5,6 +5,7 @@ import '../../../core/theme/design_tokens.dart';
 import '../../../core/utils/l10n_extension.dart';
 import '../../../domain/entities/client.dart';
 import '../../providers/client_provider.dart';
+import '../../providers/metrics_provider.dart';
 import '../../widgets/pipeline/pipeline_column.dart';
 
 class PipelineScreen extends ConsumerStatefulWidget {
@@ -229,9 +230,35 @@ class _PipelineScreenState extends ConsumerState<PipelineScreen> {
     return DesignTokens.statusColor(status.value);
   }
 
+  void _showFilterSheet() {
+    showModalBottomSheet(
+      context: context,
+      isScrollControlled: true,
+      useRootNavigator: true,
+      builder: (ctx) => _FilterSheet(),
+    );
+  }
+
+  void _showMetricsSheet() {
+    showModalBottomSheet(
+      context: context,
+      isScrollControlled: true,
+      useRootNavigator: true,
+      builder: (ctx) => DraggableScrollableSheet(
+        initialChildSize: 0.6,
+        minChildSize: 0.4,
+        maxChildSize: 0.85,
+        expand: false,
+        builder: (context, scrollController) =>
+            _MetricsSheet(scrollController: scrollController),
+      ),
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     final pipeline = ref.watch(pipelineProvider);
+    final hasFilters = ref.watch(hasActiveFiltersProvider);
     final theme = Theme.of(context);
 
     return Scaffold(
@@ -247,9 +274,30 @@ class _PipelineScreenState extends ConsumerState<PipelineScreen> {
             icon: const Icon(Icons.search_rounded, size: 22),
             onPressed: () => _showSearchSheet(),
           ),
+          Stack(
+            children: [
+              IconButton(
+                icon: const Icon(Icons.filter_list_rounded, size: 22),
+                onPressed: () => _showFilterSheet(),
+              ),
+              if (hasFilters)
+                Positioned(
+                  right: 8,
+                  top: 8,
+                  child: Container(
+                    width: 8,
+                    height: 8,
+                    decoration: const BoxDecoration(
+                      color: DesignTokens.primary,
+                      shape: BoxShape.circle,
+                    ),
+                  ),
+                ),
+            ],
+          ),
           IconButton(
-            icon: const Icon(Icons.notifications_outlined, size: 22),
-            onPressed: () {},
+            icon: const Icon(Icons.bar_chart_rounded, size: 22),
+            onPressed: () => _showMetricsSheet(),
           ),
           const SizedBox(width: 4),
         ],
@@ -347,6 +395,56 @@ class _PipelineScreenState extends ConsumerState<PipelineScreen> {
                   ],
                 ),
               ),
+              // Active filters banner
+              if (hasFilters)
+                Padding(
+                  padding: const EdgeInsets.fromLTRB(16, 0, 16, 12),
+                  child: Container(
+                    padding: const EdgeInsets.symmetric(
+                      horizontal: 12,
+                      vertical: 8,
+                    ),
+                    decoration: BoxDecoration(
+                      color: DesignTokens.primary.withValues(alpha: 0.1),
+                      borderRadius: BorderRadius.circular(DesignTokens.radiusS),
+                      border: Border.all(
+                        color: DesignTokens.primary.withValues(alpha: 0.2),
+                      ),
+                    ),
+                    child: Row(
+                      children: [
+                        const Icon(
+                          Icons.filter_list_rounded,
+                          size: 16,
+                          color: DesignTokens.primary,
+                        ),
+                        const SizedBox(width: 8),
+                        Expanded(
+                          child: Text(
+                            _buildFilterDescription(context),
+                            style: theme.textTheme.bodySmall?.copyWith(
+                              color: DesignTokens.primary,
+                              fontWeight: FontWeight.w600,
+                            ),
+                          ),
+                        ),
+                        GestureDetector(
+                          onTap: () {
+                            ref.read(dateRangeFilterProvider.notifier).state =
+                                null;
+                            ref.read(sourceFilterProvider.notifier).state =
+                                null;
+                          },
+                          child: const Icon(
+                            Icons.close_rounded,
+                            size: 18,
+                            color: DesignTokens.primary,
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+                ),
               // Status chips
               SizedBox(
                 height: 44,
@@ -471,6 +569,20 @@ class _PipelineScreenState extends ConsumerState<PipelineScreen> {
     );
   }
 
+  String _buildFilterDescription(BuildContext context) {
+    final parts = <String>[];
+    final dateRange = ref.read(dateRangeFilterProvider);
+    final source = ref.read(sourceFilterProvider);
+    if (dateRange != null) {
+      String fmt(DateTime d) => '${d.day}/${d.month}/${d.year}';
+      parts.add('${fmt(dateRange.start)} → ${fmt(dateRange.end)}');
+    }
+    if (source != null) {
+      parts.add(source);
+    }
+    return parts.join(' · ');
+  }
+
   void _showSearchSheet() {
     showModalBottomSheet(
       context: context,
@@ -587,6 +699,417 @@ class _SearchSheetState extends ConsumerState<_SearchSheet> {
                   },
                 );
               },
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+}
+
+// ── Filter Sheet ───────────────────────────────────────────
+
+class _FilterSheet extends ConsumerStatefulWidget {
+  @override
+  ConsumerState<_FilterSheet> createState() => _FilterSheetState();
+}
+
+class _FilterSheetState extends ConsumerState<_FilterSheet> {
+  DateTime? _startDate;
+  DateTime? _endDate;
+  String? _selectedSource;
+
+  @override
+  void initState() {
+    super.initState();
+    final dateRange = ref.read(dateRangeFilterProvider);
+    _startDate = dateRange?.start;
+    _endDate = dateRange?.end;
+    _selectedSource = ref.read(sourceFilterProvider);
+  }
+
+  Future<void> _pickDate({required bool isStart}) async {
+    final now = DateTime.now();
+    final picked = await showDatePicker(
+      context: context,
+      initialDate: isStart ? (_startDate ?? now) : (_endDate ?? now),
+      firstDate: DateTime(2020),
+      lastDate: now,
+    );
+    if (picked != null) {
+      setState(() {
+        if (isStart) {
+          _startDate = picked;
+        } else {
+          _endDate = picked;
+        }
+      });
+    }
+  }
+
+  String _formatDate(DateTime? d) {
+    if (d == null) return '—';
+    return '${d.day}/${d.month}/${d.year}';
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    final theme = Theme.of(context);
+    final sources = ref.watch(availableSourcesProvider);
+
+    return SafeArea(
+      child: Padding(
+        padding: const EdgeInsets.all(24),
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          crossAxisAlignment: CrossAxisAlignment.stretch,
+          children: [
+            Row(
+              children: [
+                Container(
+                  padding: const EdgeInsets.all(10),
+                  decoration: BoxDecoration(
+                    color: DesignTokens.primaryContainer.withValues(
+                      alpha: 0.15,
+                    ),
+                    borderRadius: BorderRadius.circular(DesignTokens.radiusS),
+                  ),
+                  child: const Icon(
+                    Icons.filter_list_rounded,
+                    color: DesignTokens.primary,
+                  ),
+                ),
+                const SizedBox(width: 12),
+                Text(
+                  context.l10n.filters,
+                  style: theme.textTheme.headlineSmall?.copyWith(
+                    fontWeight: FontWeight.w700,
+                  ),
+                ),
+              ],
+            ),
+            const SizedBox(height: 24),
+
+            // Date range filter
+            Text(
+              context.l10n.filterByDate,
+              style: theme.textTheme.titleSmall?.copyWith(
+                fontWeight: FontWeight.w600,
+              ),
+            ),
+            const SizedBox(height: 8),
+            Row(
+              children: [
+                Expanded(
+                  child: OutlinedButton.icon(
+                    onPressed: () => _pickDate(isStart: true),
+                    icon: const Icon(Icons.calendar_today_rounded, size: 16),
+                    label: Text(_formatDate(_startDate)),
+                  ),
+                ),
+                const Padding(
+                  padding: EdgeInsets.symmetric(horizontal: 8),
+                  child: Icon(
+                    Icons.arrow_forward_rounded,
+                    size: 16,
+                    color: DesignTokens.onSurfaceVariant,
+                  ),
+                ),
+                Expanded(
+                  child: OutlinedButton.icon(
+                    onPressed: () => _pickDate(isStart: false),
+                    icon: const Icon(Icons.calendar_today_rounded, size: 16),
+                    label: Text(_formatDate(_endDate)),
+                  ),
+                ),
+              ],
+            ),
+            const SizedBox(height: 20),
+
+            // Source filter
+            if (sources.isNotEmpty) ...[
+              Text(
+                context.l10n.filterBySource,
+                style: theme.textTheme.titleSmall?.copyWith(
+                  fontWeight: FontWeight.w600,
+                ),
+              ),
+              const SizedBox(height: 8),
+              Wrap(
+                spacing: 8,
+                runSpacing: 8,
+                children: [
+                  ChoiceChip(
+                    label: Text(context.l10n.allSources),
+                    selected: _selectedSource == null,
+                    onSelected: (_) => setState(() => _selectedSource = null),
+                  ),
+                  ...sources.map(
+                    (source) => ChoiceChip(
+                      label: Text(source),
+                      selected: _selectedSource == source,
+                      onSelected: (_) =>
+                          setState(() => _selectedSource = source),
+                    ),
+                  ),
+                ],
+              ),
+              const SizedBox(height: 20),
+            ],
+
+            // Actions
+            Row(
+              children: [
+                Expanded(
+                  child: OutlinedButton(
+                    onPressed: () {
+                      ref.read(dateRangeFilterProvider.notifier).state = null;
+                      ref.read(sourceFilterProvider.notifier).state = null;
+                      Navigator.pop(context);
+                    },
+                    child: Text(context.l10n.clearFilters),
+                  ),
+                ),
+                const SizedBox(width: 12),
+                Expanded(
+                  child: Container(
+                    decoration: BoxDecoration(
+                      gradient: DesignTokens.primaryGradient,
+                      borderRadius: BorderRadius.circular(DesignTokens.radiusM),
+                    ),
+                    child: ElevatedButton(
+                      onPressed: () {
+                        // Apply date range
+                        if (_startDate != null && _endDate != null) {
+                          ref.read(dateRangeFilterProvider.notifier).state =
+                              DateTimeRange(start: _startDate!, end: _endDate!);
+                        } else {
+                          ref.read(dateRangeFilterProvider.notifier).state =
+                              null;
+                        }
+                        // Apply source
+                        ref.read(sourceFilterProvider.notifier).state =
+                            _selectedSource;
+                        Navigator.pop(context);
+                      },
+                      style: ElevatedButton.styleFrom(
+                        backgroundColor: Colors.transparent,
+                        shadowColor: Colors.transparent,
+                      ),
+                      child: Text(context.l10n.apply),
+                    ),
+                  ),
+                ),
+              ],
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+}
+
+// ── Metrics Sheet ──────────────────────────────────────────
+
+class _MetricsSheet extends ConsumerWidget {
+  final ScrollController scrollController;
+  const _MetricsSheet({required this.scrollController});
+
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
+    final metricsAsync = ref.watch(metricsProvider);
+    final theme = Theme.of(context);
+
+    return Padding(
+      padding: const EdgeInsets.all(24),
+      child: metricsAsync.when(
+        loading: () => const Center(
+          child: CircularProgressIndicator(color: DesignTokens.primary),
+        ),
+        error: (err, _) => Center(child: Text('Error: $err')),
+        data: (metrics) => ListView(
+          controller: scrollController,
+          children: [
+            Row(
+              children: [
+                Container(
+                  padding: const EdgeInsets.all(10),
+                  decoration: BoxDecoration(
+                    color: DesignTokens.primaryContainer.withValues(
+                      alpha: 0.15,
+                    ),
+                    borderRadius: BorderRadius.circular(DesignTokens.radiusS),
+                  ),
+                  child: const Icon(
+                    Icons.bar_chart_rounded,
+                    color: DesignTokens.primary,
+                  ),
+                ),
+                const SizedBox(width: 12),
+                Text(
+                  context.l10n.metrics,
+                  style: theme.textTheme.headlineSmall?.copyWith(
+                    fontWeight: FontWeight.w700,
+                  ),
+                ),
+              ],
+            ),
+            const SizedBox(height: 24),
+
+            // KPI cards row
+            Row(
+              children: [
+                Expanded(
+                  child: _MetricCard(
+                    label: context.l10n.totalClients,
+                    value: '${metrics.totalActive}',
+                    icon: Icons.people_rounded,
+                    color: DesignTokens.primary,
+                  ),
+                ),
+                const SizedBox(width: 12),
+                Expanded(
+                  child: _MetricCard(
+                    label: context.l10n.conversionRate,
+                    value:
+                        '${(metrics.conversionRate * 100).toStringAsFixed(1)}%',
+                    icon: Icons.trending_up_rounded,
+                    color: DesignTokens.statusClosedWon,
+                  ),
+                ),
+              ],
+            ),
+            const SizedBox(height: 12),
+            Row(
+              children: [
+                Expanded(
+                  child: _MetricCard(
+                    label: context.l10n.newThisWeek,
+                    value: '${metrics.newThisWeek}',
+                    icon: Icons.calendar_today_rounded,
+                    color: DesignTokens.info,
+                  ),
+                ),
+                const SizedBox(width: 12),
+                Expanded(
+                  child: _MetricCard(
+                    label: context.l10n.newThisMonth,
+                    value: '${metrics.newThisMonth}',
+                    icon: Icons.date_range_rounded,
+                    color: DesignTokens.statusInterested,
+                  ),
+                ),
+              ],
+            ),
+            if (metrics.overdueTasks > 0) ...[
+              const SizedBox(height: 12),
+              _MetricCard(
+                label: context.l10n.overdueTasks,
+                value: '${metrics.overdueTasks}',
+                icon: Icons.warning_rounded,
+                color: DesignTokens.errorBright,
+              ),
+            ],
+
+            const SizedBox(height: 24),
+
+            // By status breakdown
+            Text(
+              context.l10n.byStatus,
+              style: theme.textTheme.titleSmall?.copyWith(
+                fontWeight: FontWeight.w600,
+              ),
+            ),
+            const SizedBox(height: 12),
+            ...ClientStatus.values.map((status) {
+              final count = metrics.byStatus[status] ?? 0;
+              final total = metrics.totalActive;
+              final pct = total > 0 ? count / total : 0.0;
+              final color = DesignTokens.statusColor(status.value);
+              return Padding(
+                padding: const EdgeInsets.only(bottom: 10),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        Text(
+                          status.localizedLabel(context),
+                          style: theme.textTheme.bodyMedium?.copyWith(
+                            fontWeight: FontWeight.w500,
+                          ),
+                        ),
+                        Text(
+                          '$count',
+                          style: theme.textTheme.bodyMedium?.copyWith(
+                            fontWeight: FontWeight.w700,
+                            color: color,
+                          ),
+                        ),
+                      ],
+                    ),
+                    const SizedBox(height: 4),
+                    ClipRRect(
+                      borderRadius: BorderRadius.circular(4),
+                      child: LinearProgressIndicator(
+                        value: pct,
+                        backgroundColor: color.withValues(alpha: 0.1),
+                        valueColor: AlwaysStoppedAnimation(color),
+                        minHeight: 6,
+                      ),
+                    ),
+                  ],
+                ),
+              );
+            }),
+          ],
+        ),
+      ),
+    );
+  }
+}
+
+class _MetricCard extends StatelessWidget {
+  final String label;
+  final String value;
+  final IconData icon;
+  final Color color;
+
+  const _MetricCard({
+    required this.label,
+    required this.value,
+    required this.icon,
+    required this.color,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    final theme = Theme.of(context);
+    return Container(
+      padding: const EdgeInsets.all(16),
+      decoration: BoxDecoration(
+        color: color.withValues(alpha: 0.08),
+        borderRadius: BorderRadius.circular(DesignTokens.radiusM),
+        border: Border.all(color: color.withValues(alpha: 0.15)),
+      ),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Icon(icon, color: color, size: 20),
+          const SizedBox(height: 8),
+          Text(
+            value,
+            style: theme.textTheme.headlineSmall?.copyWith(
+              fontWeight: FontWeight.w700,
+              color: color,
+            ),
+          ),
+          const SizedBox(height: 2),
+          Text(
+            label,
+            style: theme.textTheme.bodySmall?.copyWith(
+              color: DesignTokens.onSurfaceVariant,
             ),
           ),
         ],

@@ -675,6 +675,108 @@ abstract class AppLocalizations {
   /// In es, this message translates to:
   /// **'Nuevo'**
   String get newLabel;
+
+  /// No description provided for @filters.
+  ///
+  /// In es, this message translates to:
+  /// **'Filtros'**
+  String get filters;
+
+  /// No description provided for @clearFilters.
+  ///
+  /// In es, this message translates to:
+  /// **'Limpiar filtros'**
+  String get clearFilters;
+
+  /// No description provided for @filterByDate.
+  ///
+  /// In es, this message translates to:
+  /// **'Filtrar por fecha'**
+  String get filterByDate;
+
+  /// No description provided for @filterBySource.
+  ///
+  /// In es, this message translates to:
+  /// **'Filtrar por origen'**
+  String get filterBySource;
+
+  /// No description provided for @dateRange.
+  ///
+  /// In es, this message translates to:
+  /// **'Rango de fechas'**
+  String get dateRange;
+
+  /// No description provided for @from.
+  ///
+  /// In es, this message translates to:
+  /// **'Desde'**
+  String get from;
+
+  /// No description provided for @to.
+  ///
+  /// In es, this message translates to:
+  /// **'Hasta'**
+  String get to;
+
+  /// No description provided for @allSources.
+  ///
+  /// In es, this message translates to:
+  /// **'Todos'**
+  String get allSources;
+
+  /// No description provided for @apply.
+  ///
+  /// In es, this message translates to:
+  /// **'Aplicar'**
+  String get apply;
+
+  /// No description provided for @activeFilters.
+  ///
+  /// In es, this message translates to:
+  /// **'{count} filtro(s) activo(s)'**
+  String activeFilters(int count);
+
+  /// No description provided for @metrics.
+  ///
+  /// In es, this message translates to:
+  /// **'Métricas'**
+  String get metrics;
+
+  /// No description provided for @conversionRate.
+  ///
+  /// In es, this message translates to:
+  /// **'Tasa de conversión'**
+  String get conversionRate;
+
+  /// No description provided for @newThisWeek.
+  ///
+  /// In es, this message translates to:
+  /// **'Nuevos esta semana'**
+  String get newThisWeek;
+
+  /// No description provided for @newThisMonth.
+  ///
+  /// In es, this message translates to:
+  /// **'Nuevos este mes'**
+  String get newThisMonth;
+
+  /// No description provided for @overdueTasks.
+  ///
+  /// In es, this message translates to:
+  /// **'Tareas vencidas'**
+  String get overdueTasks;
+
+  /// No description provided for @totalClients.
+  ///
+  /// In es, this message translates to:
+  /// **'Total clientes'**
+  String get totalClients;
+
+  /// No description provided for @byStatus.
+  ///
+  /// In es, this message translates to:
+  /// **'Por estado'**
+  String get byStatus;
 }
 
 class _AppLocalizationsDelegate

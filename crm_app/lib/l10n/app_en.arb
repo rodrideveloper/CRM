@@ -118,5 +118,29 @@
   "statusClosedWon": "Won",
   "statusClosedLost": "Lost",
 
-  "newLabel": "New"
+  "newLabel": "New",
+
+  "filters": "Filters",
+  "clearFilters": "Clear filters",
+  "filterByDate": "Filter by date",
+  "filterBySource": "Filter by source",
+  "dateRange": "Date range",
+  "from": "From",
+  "to": "To",
+  "allSources": "All",
+  "apply": "Apply",
+  "activeFilters": "{count} active filter(s)",
+  "@activeFilters": {
+    "placeholders": {
+      "count": { "type": "int" }
+    }
+  },
+
+  "metrics": "Metrics",
+  "conversionRate": "Conversion rate",
+  "newThisWeek": "New this week",
+  "newThisMonth": "New this month",
+  "overdueTasks": "Overdue tasks",
+  "totalClients": "Total clients",
+  "byStatus": "By status"
 }

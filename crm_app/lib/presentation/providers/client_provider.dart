@@ -1,3 +1,4 @@
+import 'package:flutter/material.dart' show DateTimeRange;
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../../domain/entities/client.dart';
 import 'repository_providers.dart';
@@ -7,6 +8,10 @@ enum ClientSortOrder { recent, name, oldest }
 final clientSortOrderProvider = StateProvider<ClientSortOrder>(
   (ref) => ClientSortOrder.recent,
 );
+
+// ── Filters ────────────────────────────────────────────────
+final dateRangeFilterProvider = StateProvider<DateTimeRange?>((ref) => null);
+final sourceFilterProvider = StateProvider<String?>((ref) => null);
 
 final clientsProvider = AsyncNotifierProvider<ClientsNotifier, List<Client>>(
   ClientsNotifier.new,
@@ -71,29 +76,72 @@ class ClientsNotifier extends AsyncNotifier<List<Client>> {
   }
 }
 
-// Groups clients by status for pipeline view
+// Groups clients by status for pipeline view (with filters applied)
 final pipelineProvider = Provider<AsyncValue<Map<ClientStatus, List<Client>>>>((
   ref,
 ) {
   final sortOrder = ref.watch(clientSortOrderProvider);
+  final dateRange = ref.watch(dateRangeFilterProvider);
+  final sourceFilter = ref.watch(sourceFilterProvider);
+
   return ref.watch(clientsProvider).whenData((clients) {
+    // Apply filters
+    var filtered = clients;
+
+    if (dateRange != null) {
+      filtered = filtered.where((c) {
+        return !c.createdAt.isBefore(dateRange.start) &&
+            c.createdAt.isBefore(dateRange.end.add(const Duration(days: 1)));
+      }).toList();
+    }
+
+    if (sourceFilter != null && sourceFilter.isNotEmpty) {
+      filtered = filtered.where((c) {
+        return c.source?.toLowerCase() == sourceFilter.toLowerCase();
+      }).toList();
+    }
+
     final map = <ClientStatus, List<Client>>{};
     for (final status in ClientStatus.values) {
-      final filtered = clients.where((c) => c.status == status).toList();
+      final byStatus = filtered.where((c) => c.status == status).toList();
       switch (sortOrder) {
         case ClientSortOrder.recent:
-          filtered.sort((a, b) => b.createdAt.compareTo(a.createdAt));
+          byStatus.sort((a, b) => b.createdAt.compareTo(a.createdAt));
         case ClientSortOrder.oldest:
-          filtered.sort((a, b) => a.createdAt.compareTo(b.createdAt));
+          byStatus.sort((a, b) => a.createdAt.compareTo(b.createdAt));
         case ClientSortOrder.name:
-          filtered.sort(
+          byStatus.sort(
             (a, b) => a.name.toLowerCase().compareTo(b.name.toLowerCase()),
           );
       }
-      map[status] = filtered;
+      map[status] = byStatus;
     }
     return map;
   });
+});
+
+// All unique sources from clients (for filter chips)
+final availableSourcesProvider = Provider<List<String>>((ref) {
+  final clients = ref.watch(clientsProvider);
+  return clients.whenOrNull(
+        data: (list) {
+          final sources = list
+              .map((c) => c.source)
+              .where((s) => s != null && s.isNotEmpty)
+              .cast<String>()
+              .toSet()
+              .toList();
+          sources.sort();
+          return sources;
+        },
+      ) ??
+      [];
+});
+
+// Whether any filter is active
+final hasActiveFiltersProvider = Provider<bool>((ref) {
+  return ref.watch(dateRangeFilterProvider) != null ||
+      ref.watch(sourceFilterProvider) != null;
 });
 
 // Search

@@ -133,5 +133,29 @@
   "statusClosedWon": "Ganado",
   "statusClosedLost": "Perdido",
 
-  "newLabel": "Nuevo"
+  "newLabel": "Nuevo",
+
+  "filters": "Filtros",
+  "clearFilters": "Limpiar filtros",
+  "filterByDate": "Filtrar por fecha",
+  "filterBySource": "Filtrar por origen",
+  "dateRange": "Rango de fechas",
+  "from": "Desde",
+  "to": "Hasta",
+  "allSources": "Todos",
+  "apply": "Aplicar",
+  "activeFilters": "{count} filtro(s) activo(s)",
+  "@activeFilters": {
+    "placeholders": {
+      "count": { "type": "int" }
+    }
+  },
+
+  "metrics": "Métricas",
+  "conversionRate": "Tasa de conversión",
+  "newThisWeek": "Nuevos esta semana",
+  "newThisMonth": "Nuevos este mes",
+  "overdueTasks": "Tareas vencidas",
+  "totalClients": "Total clientes",
+  "byStatus": "Por estado"
 }
