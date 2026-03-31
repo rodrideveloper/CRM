@@ -15,7 +15,7 @@ class PipelineScreen extends ConsumerStatefulWidget {
 }
 
 class _PipelineScreenState extends ConsumerState<PipelineScreen> {
-  final PageController _pageController = PageController(viewportFraction: 0.85);
+  final PageController _pageController = PageController(viewportFraction: 1.0);
   int _currentPage = 0;
 
   @override
@@ -52,7 +52,9 @@ class _PipelineScreenState extends ConsumerState<PipelineScreen> {
                   Container(
                     padding: const EdgeInsets.all(10),
                     decoration: BoxDecoration(
-                      color: DesignTokens.primaryLight,
+                      color: DesignTokens.primaryContainer.withValues(
+                        alpha: 0.15,
+                      ),
                       borderRadius: BorderRadius.circular(DesignTokens.radiusS),
                     ),
                     child: const Icon(
@@ -63,8 +65,8 @@ class _PipelineScreenState extends ConsumerState<PipelineScreen> {
                   const SizedBox(width: 12),
                   Text(
                     context.l10n.newClient,
-                    style: Theme.of(ctx).textTheme.titleLarge?.copyWith(
-                      fontWeight: FontWeight.w800,
+                    style: Theme.of(ctx).textTheme.headlineSmall?.copyWith(
+                      fontWeight: FontWeight.w700,
                     ),
                   ),
                 ],
@@ -112,26 +114,36 @@ class _PipelineScreenState extends ConsumerState<PipelineScreen> {
                 textInputAction: TextInputAction.done,
               ),
               const SizedBox(height: 20),
-              ElevatedButton(
-                onPressed: () async {
-                  if (!formKey.currentState!.validate()) return;
-                  Navigator.pop(ctx);
-                  await ref
-                      .read(clientsProvider.notifier)
-                      .createClient(
-                        name: nameController.text.trim(),
-                        phone: phoneController.text.trim().isNotEmpty
-                            ? phoneController.text.trim()
-                            : null,
-                        email: emailController.text.trim().isNotEmpty
-                            ? emailController.text.trim()
-                            : null,
-                        company: companyController.text.trim().isNotEmpty
-                            ? companyController.text.trim()
-                            : null,
-                      );
-                },
-                child: Text(context.l10n.createClient),
+              Container(
+                decoration: BoxDecoration(
+                  gradient: DesignTokens.primaryGradient,
+                  borderRadius: BorderRadius.circular(DesignTokens.radiusM),
+                ),
+                child: ElevatedButton(
+                  onPressed: () async {
+                    if (!formKey.currentState!.validate()) return;
+                    Navigator.pop(ctx);
+                    await ref
+                        .read(clientsProvider.notifier)
+                        .createClient(
+                          name: nameController.text.trim(),
+                          phone: phoneController.text.trim().isNotEmpty
+                              ? phoneController.text.trim()
+                              : null,
+                          email: emailController.text.trim().isNotEmpty
+                              ? emailController.text.trim()
+                              : null,
+                          company: companyController.text.trim().isNotEmpty
+                              ? companyController.text.trim()
+                              : null,
+                        );
+                  },
+                  style: ElevatedButton.styleFrom(
+                    backgroundColor: Colors.transparent,
+                    shadowColor: Colors.transparent,
+                  ),
+                  child: Text(context.l10n.createClient),
+                ),
               ),
             ],
           ),
@@ -222,97 +234,32 @@ class _PipelineScreenState extends ConsumerState<PipelineScreen> {
 
     return Scaffold(
       appBar: AppBar(
-        title: Text(context.l10n.pipelineTitle),
-        actions: [
-          PopupMenuButton<ClientSortOrder>(
-            icon: Container(
-              padding: const EdgeInsets.all(8),
-              decoration: BoxDecoration(
-                color: DesignTokens.bgSubtle,
-                borderRadius: BorderRadius.circular(DesignTokens.radiusS),
-              ),
-              child: const Icon(Icons.sort_rounded, size: 20),
-            ),
-            tooltip: context.l10n.sort,
-            onSelected: (order) {
-              ref.read(clientSortOrderProvider.notifier).state = order;
-            },
-            itemBuilder: (context) {
-              final current = ref.read(clientSortOrderProvider);
-              return [
-                PopupMenuItem(
-                  value: ClientSortOrder.recent,
-                  child: Row(
-                    children: [
-                      Icon(
-                        Icons.schedule_rounded,
-                        size: 18,
-                        color: current == ClientSortOrder.recent
-                            ? DesignTokens.primary
-                            : null,
-                      ),
-                      const SizedBox(width: 8),
-                      Text(context.l10n.sortRecent),
-                    ],
-                  ),
-                ),
-                PopupMenuItem(
-                  value: ClientSortOrder.name,
-                  child: Row(
-                    children: [
-                      Icon(
-                        Icons.sort_by_alpha_rounded,
-                        size: 18,
-                        color: current == ClientSortOrder.name
-                            ? DesignTokens.primary
-                            : null,
-                      ),
-                      const SizedBox(width: 8),
-                      Text(context.l10n.sortName),
-                    ],
-                  ),
-                ),
-                PopupMenuItem(
-                  value: ClientSortOrder.oldest,
-                  child: Row(
-                    children: [
-                      Icon(
-                        Icons.history_rounded,
-                        size: 18,
-                        color: current == ClientSortOrder.oldest
-                            ? DesignTokens.primary
-                            : null,
-                      ),
-                      const SizedBox(width: 8),
-                      Text(context.l10n.sortOldest),
-                    ],
-                  ),
-                ),
-              ];
-            },
+        title: Text(
+          context.l10n.pipelineTitle,
+          style: theme.textTheme.headlineSmall?.copyWith(
+            fontWeight: FontWeight.w700,
           ),
+        ),
+        actions: [
           IconButton(
-            icon: Container(
-              padding: const EdgeInsets.all(8),
-              decoration: BoxDecoration(
-                color: DesignTokens.bgSubtle,
-                borderRadius: BorderRadius.circular(DesignTokens.radiusS),
-              ),
-              child: const Icon(Icons.search_rounded, size: 20),
-            ),
+            icon: const Icon(Icons.search_rounded, size: 22),
             onPressed: () => _showSearchSheet(),
           ),
-          const SizedBox(width: 8),
+          IconButton(
+            icon: const Icon(Icons.notifications_outlined, size: 22),
+            onPressed: () {},
+          ),
+          const SizedBox(width: 4),
         ],
       ),
       body: pipeline.when(
-        loading: () => const Center(child: CircularProgressIndicator()),
+        loading: () => const Center(
+          child: CircularProgressIndicator(color: DesignTokens.primary),
+        ),
         error: (err, _) => Center(
           child: Column(
             mainAxisSize: MainAxisSize.min,
             children: [
-              const Text('😕', style: TextStyle(fontSize: 48)),
-              const SizedBox(height: 12),
               Text(
                 context.l10n.somethingWentWrong,
                 style: theme.textTheme.titleMedium?.copyWith(
@@ -323,7 +270,7 @@ class _PipelineScreenState extends ConsumerState<PipelineScreen> {
               Text(
                 '$err',
                 style: theme.textTheme.bodySmall?.copyWith(
-                  color: theme.colorScheme.onSurfaceVariant,
+                  color: DesignTokens.onSurfaceVariant,
                 ),
                 textAlign: TextAlign.center,
               ),
@@ -338,11 +285,69 @@ class _PipelineScreenState extends ConsumerState<PipelineScreen> {
         ),
         data: (pipelineMap) {
           final statuses = ClientStatus.values;
+          final totalClients = pipelineMap.values.fold<int>(
+            0,
+            (sum, list) => sum + list.length,
+          );
+          final currentCount = pipelineMap[statuses[_currentPage]]?.length ?? 0;
+
           return Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
             children: [
+              // Stats header
+              Padding(
+                padding: const EdgeInsets.fromLTRB(16, 4, 16, 16),
+                child: Row(
+                  crossAxisAlignment: CrossAxisAlignment.end,
+                  children: [
+                    // Left: count
+                    Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Text(
+                          '$currentCount',
+                          style: theme.textTheme.displayMedium?.copyWith(
+                            color: DesignTokens.primary,
+                            fontWeight: FontWeight.w700,
+                            height: 1,
+                          ),
+                        ),
+                        const SizedBox(height: 2),
+                        Text(
+                          '${statuses[_currentPage].localizedLabel(context).toUpperCase()} LEADS',
+                          style: theme.textTheme.labelMedium?.copyWith(
+                            color: DesignTokens.onSurfaceVariant,
+                            letterSpacing: 1.2,
+                          ),
+                        ),
+                      ],
+                    ),
+                    const Spacer(),
+                    // Right: total
+                    Column(
+                      crossAxisAlignment: CrossAxisAlignment.end,
+                      children: [
+                        Text(
+                          '$totalClients',
+                          style: theme.textTheme.headlineSmall?.copyWith(
+                            color: DesignTokens.onSurface,
+                            fontWeight: FontWeight.w600,
+                          ),
+                        ),
+                        Text(
+                          'Total',
+                          style: theme.textTheme.bodyMedium?.copyWith(
+                            color: DesignTokens.onSurfaceVariant,
+                          ),
+                        ),
+                      ],
+                    ),
+                  ],
+                ),
+              ),
               // Status chips
               SizedBox(
-                height: 48,
+                height: 44,
                 child: ListView.separated(
                   scrollDirection: Axis.horizontal,
                   padding: const EdgeInsets.symmetric(horizontal: 16),
@@ -353,35 +358,78 @@ class _PipelineScreenState extends ConsumerState<PipelineScreen> {
                     final count = pipelineMap[status]?.length ?? 0;
                     final isSelected = _currentPage == index;
                     final statusColor = _statusColor(status);
-                    return ChoiceChip(
-                      label: Text('${status.localizedLabel(context)} ($count)'),
-                      selected: isSelected,
-                      selectedColor: statusColor.withValues(alpha: 0.15),
-                      labelStyle: TextStyle(
-                        color: isSelected
-                            ? statusColor
-                            : theme.colorScheme.onSurfaceVariant,
-                        fontWeight: isSelected
-                            ? FontWeight.w700
-                            : FontWeight.w500,
-                      ),
-                      side: isSelected
-                          ? BorderSide(
-                              color: statusColor.withValues(alpha: 0.3),
-                            )
-                          : BorderSide(color: Colors.grey.shade200),
-                      onSelected: (_) {
+                    return GestureDetector(
+                      onTap: () {
                         _pageController.animateToPage(
                           index,
                           duration: const Duration(milliseconds: 300),
                           curve: Curves.easeInOut,
                         );
                       },
+                      child: AnimatedContainer(
+                        duration: const Duration(milliseconds: 200),
+                        padding: const EdgeInsets.symmetric(
+                          horizontal: 16,
+                          vertical: 10,
+                        ),
+                        decoration: BoxDecoration(
+                          color: isSelected
+                              ? statusColor.withValues(alpha: 0.15)
+                              : DesignTokens.surfaceContainer,
+                          borderRadius: BorderRadius.circular(
+                            DesignTokens.radiusFull,
+                          ),
+                          border: Border.all(
+                            color: isSelected
+                                ? statusColor.withValues(alpha: 0.3)
+                                : DesignTokens.outlineVariant.withValues(
+                                    alpha: 0.12,
+                                  ),
+                          ),
+                        ),
+                        child: Row(
+                          mainAxisSize: MainAxisSize.min,
+                          children: [
+                            Container(
+                              width: 8,
+                              height: 8,
+                              decoration: BoxDecoration(
+                                color: statusColor,
+                                shape: BoxShape.circle,
+                              ),
+                            ),
+                            const SizedBox(width: 8),
+                            Text(
+                              status.localizedLabel(context),
+                              style: TextStyle(
+                                color: isSelected
+                                    ? statusColor
+                                    : DesignTokens.onSurfaceVariant,
+                                fontWeight: isSelected
+                                    ? FontWeight.w700
+                                    : FontWeight.w500,
+                                fontSize: 13,
+                              ),
+                            ),
+                            const SizedBox(width: 6),
+                            Text(
+                              '$count',
+                              style: TextStyle(
+                                color: isSelected
+                                    ? statusColor
+                                    : DesignTokens.onSurfaceVariant,
+                                fontWeight: FontWeight.w600,
+                                fontSize: 13,
+                              ),
+                            ),
+                          ],
+                        ),
+                      ),
                     );
                   },
                 ),
               ),
-              const SizedBox(height: 8),
+              const SizedBox(height: 12),
               // Pipeline columns
               Expanded(
                 child: PageView.builder(
@@ -392,15 +440,12 @@ class _PipelineScreenState extends ConsumerState<PipelineScreen> {
                   itemBuilder: (context, index) {
                     final status = statuses[index];
                     final clients = pipelineMap[status] ?? [];
-                    return Padding(
-                      padding: const EdgeInsets.symmetric(horizontal: 4),
-                      child: PipelineColumn(
-                        status: status,
-                        clients: clients,
-                        onChangeStatus: _showChangeStatusSheet,
-                        onRefresh: () =>
-                            ref.read(clientsProvider.notifier).refresh(),
-                      ),
+                    return PipelineColumn(
+                      status: status,
+                      clients: clients,
+                      onChangeStatus: _showChangeStatusSheet,
+                      onRefresh: () =>
+                          ref.read(clientsProvider.notifier).refresh(),
                     );
                   },
                 ),
@@ -409,10 +454,9 @@ class _PipelineScreenState extends ConsumerState<PipelineScreen> {
           );
         },
       ),
-      floatingActionButton: FloatingActionButton.extended(
+      floatingActionButton: FloatingActionButton(
         onPressed: _showCreateClientDialog,
-        icon: const Icon(Icons.person_add_rounded),
-        label: Text(context.l10n.newLabel),
+        child: const Icon(Icons.add_rounded),
       ),
     );
   }
@@ -477,35 +521,21 @@ class _SearchSheetState extends ConsumerState<_SearchSheet> {
               data: (clients) {
                 if (_searchController.text.isEmpty) {
                   return Center(
-                    child: Column(
-                      mainAxisSize: MainAxisSize.min,
-                      children: [
-                        const Text('🔍', style: TextStyle(fontSize: 40)),
-                        const SizedBox(height: 8),
-                        Text(
-                          context.l10n.typeToSearch,
-                          style: theme.textTheme.bodyLarge?.copyWith(
-                            color: theme.colorScheme.onSurfaceVariant,
-                          ),
-                        ),
-                      ],
+                    child: Text(
+                      context.l10n.typeToSearch,
+                      style: theme.textTheme.bodyMedium?.copyWith(
+                        color: DesignTokens.onSurfaceVariant,
+                      ),
                     ),
                   );
                 }
                 if (clients.isEmpty) {
                   return Center(
-                    child: Column(
-                      mainAxisSize: MainAxisSize.min,
-                      children: [
-                        const Text('🤷', style: TextStyle(fontSize: 40)),
-                        const SizedBox(height: 8),
-                        Text(
-                          context.l10n.noResults,
-                          style: theme.textTheme.bodyLarge?.copyWith(
-                            color: theme.colorScheme.onSurfaceVariant,
-                          ),
-                        ),
-                      ],
+                    child: Text(
+                      context.l10n.noResults,
+                      style: theme.textTheme.bodyMedium?.copyWith(
+                        color: DesignTokens.onSurfaceVariant,
+                      ),
                     ),
                   );
                 }
@@ -514,17 +544,16 @@ class _SearchSheetState extends ConsumerState<_SearchSheet> {
                   itemCount: clients.length,
                   itemBuilder: (context, index) {
                     final client = clients[index];
+                    final statusColor = DesignTokens.statusColor(
+                      client.status.value,
+                    );
                     return ListTile(
                       leading: CircleAvatar(
-                        backgroundColor: DesignTokens.statusColor(
-                          client.status.value,
-                        ).withValues(alpha: 0.15),
+                        backgroundColor: statusColor.withValues(alpha: 0.15),
                         child: Text(
                           client.name[0].toUpperCase(),
                           style: TextStyle(
-                            color: DesignTokens.statusColor(
-                              client.status.value,
-                            ),
+                            color: statusColor,
                             fontWeight: FontWeight.w700,
                           ),
                         ),

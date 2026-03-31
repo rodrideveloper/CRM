@@ -129,112 +129,185 @@ class _ClientInfoTabState extends ConsumerState<ClientInfoTab> {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.stretch,
           children: [
-            // Status badge
-            Center(
-              child: Container(
-                padding: const EdgeInsets.symmetric(
-                  horizontal: 16,
-                  vertical: 8,
-                ),
-                decoration: BoxDecoration(
-                  color: statusColor.withValues(alpha: 0.12),
-                  borderRadius: BorderRadius.circular(DesignTokens.radiusL),
-                  border: Border.all(color: statusColor.withValues(alpha: 0.3)),
-                ),
-                child: Row(
-                  mainAxisSize: MainAxisSize.min,
-                  children: [
-                    Container(
-                      width: 8,
-                      height: 8,
-                      decoration: BoxDecoration(
-                        color: statusColor,
-                        shape: BoxShape.circle,
-                      ),
-                    ),
-                    const SizedBox(width: 8),
-                    Text(
-                      widget.client.status.localizedLabel(context),
-                      style: TextStyle(
-                        fontWeight: FontWeight.w700,
-                        color: statusColor,
-                      ),
-                    ),
-                  ],
-                ),
-              ),
-            ),
-            const SizedBox(height: 24),
-            // Form fields in a card
+            // Info card
             Container(
               padding: const EdgeInsets.all(20),
               decoration: BoxDecoration(
-                color: Colors.white,
-                borderRadius: BorderRadius.circular(DesignTokens.radiusM),
-                boxShadow: DesignTokens.shadowSoft,
+                color: DesignTokens.surfaceContainerLow,
+                borderRadius: BorderRadius.circular(DesignTokens.radiusL),
+                border: Border.all(
+                  color: DesignTokens.outlineVariant.withValues(alpha: 0.12),
+                ),
               ),
               child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  TextFormField(
-                    controller: _nameController,
-                    decoration: InputDecoration(
-                      labelText: context.l10n.name,
-                      prefixIcon: const Icon(Icons.person_outlined),
-                    ),
-                    enabled: _editing,
-                    validator: (v) => v == null || v.trim().isEmpty
-                        ? context.l10n.required
-                        : null,
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      Text(
+                        'NOMBRE COMPLETO',
+                        style: theme.textTheme.labelMedium?.copyWith(
+                          color: DesignTokens.onSurfaceVariant,
+                          letterSpacing: 1.2,
+                        ),
+                      ),
+                      if (!_editing)
+                        GestureDetector(
+                          onTap: () => setState(() => _editing = true),
+                          child: const Icon(
+                            Icons.edit_rounded,
+                            size: 18,
+                            color: DesignTokens.primary,
+                          ),
+                        ),
+                    ],
                   ),
-                  const SizedBox(height: 12),
-                  TextFormField(
-                    controller: _phoneController,
-                    decoration: InputDecoration(
-                      labelText: context.l10n.phone,
-                      prefixIcon: const Icon(Icons.phone_outlined),
-                      hintText: context.l10n.phoneHint,
+                  const SizedBox(height: 4),
+                  if (_editing)
+                    TextFormField(
+                      controller: _nameController,
+                      validator: (v) => v == null || v.trim().isEmpty
+                          ? context.l10n.required
+                          : null,
+                    )
+                  else
+                    Text(
+                      widget.client.name,
+                      style: theme.textTheme.headlineSmall?.copyWith(
+                        fontWeight: FontWeight.w600,
+                      ),
                     ),
-                    enabled: _editing,
-                    keyboardType: TextInputType.phone,
+                  const SizedBox(height: 20),
+                  Row(
+                    children: [
+                      Expanded(
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Text(
+                              'TELÉFONO',
+                              style: theme.textTheme.labelMedium?.copyWith(
+                                color: DesignTokens.onSurfaceVariant,
+                                letterSpacing: 1.2,
+                              ),
+                            ),
+                            const SizedBox(height: 4),
+                            if (_editing)
+                              TextFormField(
+                                controller: _phoneController,
+                                keyboardType: TextInputType.phone,
+                              )
+                            else
+                              Text(
+                                widget.client.phone ?? '—',
+                                style: theme.textTheme.bodyMedium?.copyWith(
+                                  color: DesignTokens.primary,
+                                  fontWeight: FontWeight.w500,
+                                ),
+                              ),
+                          ],
+                        ),
+                      ),
+                      const SizedBox(width: 16),
+                      Expanded(
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Text(
+                              'ESTADO',
+                              style: theme.textTheme.labelMedium?.copyWith(
+                                color: DesignTokens.onSurfaceVariant,
+                                letterSpacing: 1.2,
+                              ),
+                            ),
+                            const SizedBox(height: 4),
+                            Container(
+                              padding: const EdgeInsets.symmetric(
+                                horizontal: 10,
+                                vertical: 4,
+                              ),
+                              decoration: BoxDecoration(
+                                color: statusColor.withValues(alpha: 0.15),
+                                borderRadius: BorderRadius.circular(
+                                  DesignTokens.radiusFull,
+                                ),
+                              ),
+                              child: Text(
+                                widget.client.status
+                                    .localizedLabel(context)
+                                    .toUpperCase(),
+                                style: TextStyle(
+                                  color: statusColor,
+                                  fontWeight: FontWeight.w700,
+                                  fontSize: 11,
+                                  letterSpacing: 0.5,
+                                ),
+                              ),
+                            ),
+                          ],
+                        ),
+                      ),
+                    ],
                   ),
-                  const SizedBox(height: 12),
-                  TextFormField(
-                    controller: _emailController,
-                    decoration: InputDecoration(
-                      labelText: context.l10n.email,
-                      prefixIcon: const Icon(Icons.email_outlined),
+                  if (_editing) ...[
+                    const SizedBox(height: 12),
+                    TextFormField(
+                      controller: _emailController,
+                      decoration: InputDecoration(
+                        labelText: context.l10n.email,
+                      ),
+                      keyboardType: TextInputType.emailAddress,
                     ),
-                    enabled: _editing,
-                    keyboardType: TextInputType.emailAddress,
+                    const SizedBox(height: 12),
+                    TextFormField(
+                      controller: _companyController,
+                      decoration: InputDecoration(
+                        labelText: context.l10n.company,
+                      ),
+                    ),
+                    const SizedBox(height: 12),
+                    TextFormField(
+                      controller: _sourceController,
+                      decoration: InputDecoration(
+                        labelText: context.l10n.source,
+                      ),
+                    ),
+                  ],
+                  const SizedBox(height: 20),
+                  Text(
+                    'FECHA DE CREACIÓN',
+                    style: theme.textTheme.labelMedium?.copyWith(
+                      color: DesignTokens.onSurfaceVariant,
+                      letterSpacing: 1.2,
+                    ),
                   ),
-                  const SizedBox(height: 12),
-                  TextFormField(
-                    controller: _companyController,
-                    decoration: InputDecoration(
-                      labelText: context.l10n.company,
-                      prefixIcon: const Icon(Icons.business_outlined),
+                  const SizedBox(height: 4),
+                  Text(
+                    _formatDateLong(widget.client.createdAt),
+                    style: theme.textTheme.bodyMedium?.copyWith(
+                      color: DesignTokens.onSurface,
                     ),
-                    enabled: _editing,
-                  ),
-                  const SizedBox(height: 12),
-                  TextFormField(
-                    controller: _sourceController,
-                    decoration: InputDecoration(
-                      labelText: context.l10n.source,
-                      prefixIcon: const Icon(Icons.source_outlined),
-                      hintText: context.l10n.sourceHint,
-                    ),
-                    enabled: _editing,
                   ),
                 ],
               ),
             ),
-            const SizedBox(height: 20),
+            const SizedBox(height: 16),
             if (_editing) ...[
-              ElevatedButton.icon(
-                onPressed: _save,
-                icon: const Icon(Icons.save_rounded),
-                label: Text(context.l10n.save),
+              Container(
+                decoration: BoxDecoration(
+                  gradient: DesignTokens.primaryGradient,
+                  borderRadius: BorderRadius.circular(DesignTokens.radiusM),
+                ),
+                child: ElevatedButton.icon(
+                  onPressed: _save,
+                  icon: const Icon(Icons.save_rounded),
+                  label: Text(context.l10n.save),
+                  style: ElevatedButton.styleFrom(
+                    backgroundColor: Colors.transparent,
+                    shadowColor: Colors.transparent,
+                  ),
+                ),
               ),
               const SizedBox(height: 8),
               OutlinedButton(
@@ -248,39 +321,8 @@ class _ClientInfoTabState extends ConsumerState<ClientInfoTab> {
                 },
                 child: Text(context.l10n.cancel),
               ),
-            ] else
-              OutlinedButton.icon(
-                onPressed: () => setState(() => _editing = true),
-                icon: const Icon(Icons.edit_rounded),
-                label: Text(context.l10n.edit),
-              ),
-            const SizedBox(height: 20),
-            // Metadata
-            Container(
-              padding: const EdgeInsets.all(14),
-              decoration: BoxDecoration(
-                color: DesignTokens.bgSubtle,
-                borderRadius: BorderRadius.circular(DesignTokens.radiusS),
-              ),
-              child: Column(
-                children: [
-                  _buildMetaRow(
-                    Icons.calendar_today_rounded,
-                    context.l10n.created,
-                    _formatDate(widget.client.createdAt),
-                    theme,
-                  ),
-                  const SizedBox(height: 6),
-                  _buildMetaRow(
-                    Icons.update_rounded,
-                    context.l10n.updated,
-                    _formatDate(widget.client.updatedAt),
-                    theme,
-                  ),
-                ],
-              ),
-            ),
-            const SizedBox(height: 24),
+              const SizedBox(height: 16),
+            ],
             // Delete button
             OutlinedButton.icon(
               onPressed: () => _confirmDelete(context),
@@ -289,7 +331,7 @@ class _ClientInfoTabState extends ConsumerState<ClientInfoTab> {
               style: OutlinedButton.styleFrom(
                 foregroundColor: DesignTokens.error,
                 side: BorderSide(
-                  color: DesignTokens.error.withValues(alpha: 0.3),
+                  color: DesignTokens.error.withValues(alpha: 0.2),
                 ),
                 minimumSize: const Size.fromHeight(50),
               ),
@@ -300,27 +342,21 @@ class _ClientInfoTabState extends ConsumerState<ClientInfoTab> {
     );
   }
 
-  Widget _buildMetaRow(
-    IconData icon,
-    String label,
-    String value,
-    ThemeData theme,
-  ) {
-    return Row(
-      children: [
-        Icon(icon, size: 14, color: theme.colorScheme.onSurfaceVariant),
-        const SizedBox(width: 8),
-        Text(
-          '$label: $value',
-          style: theme.textTheme.bodySmall?.copyWith(
-            color: theme.colorScheme.onSurfaceVariant,
-          ),
-        ),
-      ],
-    );
-  }
-
-  String _formatDate(DateTime dt) {
-    return '${dt.day}/${dt.month}/${dt.year} ${dt.hour}:${dt.minute.toString().padLeft(2, '0')}';
+  String _formatDateLong(DateTime dt) {
+    const months = [
+      'Enero',
+      'Febrero',
+      'Marzo',
+      'Abril',
+      'Mayo',
+      'Junio',
+      'Julio',
+      'Agosto',
+      'Septiembre',
+      'Octubre',
+      'Noviembre',
+      'Diciembre',
+    ];
+    return '${dt.day} de ${months[dt.month - 1]}, ${dt.year}';
   }
 }

@@ -1,5 +1,8 @@
+import 'dart:ui';
+
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
+import '../../core/theme/design_tokens.dart';
 import '../../core/utils/l10n_extension.dart';
 
 class ShellScreen extends StatelessWidget {
@@ -18,36 +21,110 @@ class ShellScreen extends StatelessWidget {
     final index = _currentIndex(context);
 
     return Scaffold(
+      extendBody: true,
       body: child,
-      bottomNavigationBar: NavigationBar(
-        selectedIndex: index,
-        onDestinationSelected: (i) {
-          switch (i) {
-            case 0:
-              context.go('/pipeline');
-            case 1:
-              context.go('/tasks');
-            case 2:
-              context.go('/profile');
-          }
-        },
-        destinations: [
-          NavigationDestination(
-            icon: const Icon(Icons.view_kanban_outlined),
-            selectedIcon: const Icon(Icons.view_kanban_rounded),
-            label: context.l10n.pipeline,
+      bottomNavigationBar: ClipRect(
+        child: BackdropFilter(
+          filter: DesignTokens.glassBlur,
+          child: Container(
+            decoration: DesignTokens.glassDecoration,
+            child: SafeArea(
+              top: false,
+              child: Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 8),
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceAround,
+                  children: [
+                    _NavItem(
+                      icon: Icons.view_kanban_outlined,
+                      selectedIcon: Icons.view_kanban_rounded,
+                      label: context.l10n.pipeline.toUpperCase(),
+                      isSelected: index == 0,
+                      onTap: () => context.go('/pipeline'),
+                    ),
+                    _NavItem(
+                      icon: Icons.checklist_rounded,
+                      selectedIcon: Icons.checklist_rounded,
+                      label: context.l10n.tasks.toUpperCase(),
+                      isSelected: index == 1,
+                      onTap: () => context.go('/tasks'),
+                    ),
+                    _NavItem(
+                      icon: Icons.person_outlined,
+                      selectedIcon: Icons.person_rounded,
+                      label: context.l10n.profile.toUpperCase(),
+                      isSelected: index == 2,
+                      onTap: () => context.go('/profile'),
+                    ),
+                  ],
+                ),
+              ),
+            ),
           ),
-          NavigationDestination(
-            icon: const Icon(Icons.task_outlined),
-            selectedIcon: const Icon(Icons.task_alt_rounded),
-            label: context.l10n.tasks,
-          ),
-          NavigationDestination(
-            icon: const Icon(Icons.person_outlined),
-            selectedIcon: const Icon(Icons.person_rounded),
-            label: context.l10n.profile,
-          ),
-        ],
+        ),
+      ),
+    );
+  }
+}
+
+class _NavItem extends StatelessWidget {
+  final IconData icon;
+  final IconData selectedIcon;
+  final String label;
+  final bool isSelected;
+  final VoidCallback onTap;
+
+  const _NavItem({
+    required this.icon,
+    required this.selectedIcon,
+    required this.label,
+    required this.isSelected,
+    required this.onTap,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return GestureDetector(
+      onTap: onTap,
+      behavior: HitTestBehavior.opaque,
+      child: AnimatedContainer(
+        duration: const Duration(milliseconds: 200),
+        padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 10),
+        decoration: BoxDecoration(
+          color: isSelected
+              ? DesignTokens.surfaceContainerHigh
+              : Colors.transparent,
+          borderRadius: BorderRadius.circular(DesignTokens.radiusM),
+          border: isSelected
+              ? Border.all(
+                  color: DesignTokens.outlineVariant.withValues(alpha: 0.12),
+                )
+              : null,
+        ),
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            Icon(
+              isSelected ? selectedIcon : icon,
+              size: 22,
+              color: isSelected
+                  ? DesignTokens.primary
+                  : DesignTokens.onSurfaceVariant,
+            ),
+            const SizedBox(height: 4),
+            Text(
+              label,
+              style: TextStyle(
+                fontSize: 10,
+                fontWeight: isSelected ? FontWeight.w700 : FontWeight.w500,
+                color: isSelected
+                    ? DesignTokens.primary
+                    : DesignTokens.onSurfaceVariant,
+                letterSpacing: 0.5,
+              ),
+            ),
+          ],
+        ),
       ),
     );
   }

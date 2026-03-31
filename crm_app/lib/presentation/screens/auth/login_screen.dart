@@ -70,161 +70,225 @@ class _LoginScreenState extends ConsumerState<LoginScreen>
     final authState = ref.watch(authNotifierProvider);
 
     return Scaffold(
-      body: Container(
-        decoration: const BoxDecoration(
-          gradient: LinearGradient(
-            begin: Alignment.topCenter,
-            end: Alignment.bottomCenter,
-            colors: [DesignTokens.primaryLight, DesignTokens.bgBase],
-            stops: [0.0, 0.4],
-          ),
-        ),
-        child: SafeArea(
-          child: Center(
-            child: SingleChildScrollView(
-              padding: const EdgeInsets.symmetric(horizontal: 28),
-              child: FadeTransition(
-                opacity: _fadeIn,
-                child: SlideTransition(
-                  position: _slideUp,
-                  child: Form(
-                    key: _formKey,
-                    child: Column(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      crossAxisAlignment: CrossAxisAlignment.stretch,
-                      children: [
-                        const SizedBox(height: 24),
-                        Container(
-                          width: 80,
-                          height: 80,
+      backgroundColor: DesignTokens.surface,
+      body: SafeArea(
+        child: Center(
+          child: SingleChildScrollView(
+            padding: const EdgeInsets.symmetric(horizontal: 28),
+            child: FadeTransition(
+              opacity: _fadeIn,
+              child: SlideTransition(
+                position: _slideUp,
+                child: Form(
+                  key: _formKey,
+                  child: Column(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    crossAxisAlignment: CrossAxisAlignment.stretch,
+                    children: [
+                      const SizedBox(height: 24),
+                      // App icon
+                      Center(
+                        child: Container(
+                          width: 72,
+                          height: 72,
                           decoration: BoxDecoration(
                             gradient: DesignTokens.primaryGradient,
                             borderRadius: BorderRadius.circular(
                               DesignTokens.radiusL,
                             ),
-                            boxShadow: [
-                              BoxShadow(
-                                color: DesignTokens.primary.withValues(
-                                  alpha: 0.3,
-                                ),
-                                blurRadius: 20,
-                                offset: const Offset(0, 8),
-                              ),
-                            ],
                           ),
                           child: const Icon(
                             Icons.rocket_launch_rounded,
-                            size: 40,
+                            size: 36,
                             color: Colors.white,
                           ),
                         ),
-                        const SizedBox(height: 24),
-                        Text(
-                          context.l10n.loginWelcome,
-                          style: Theme.of(context).textTheme.headlineSmall
-                              ?.copyWith(fontWeight: FontWeight.w800),
-                          textAlign: TextAlign.center,
-                        ),
-                        const SizedBox(height: 8),
-                        Text(
-                          context.l10n.loginSubtitle,
-                          style: Theme.of(context).textTheme.bodyLarge
-                              ?.copyWith(
-                                color: Theme.of(
-                                  context,
-                                ).colorScheme.onSurfaceVariant,
-                              ),
-                          textAlign: TextAlign.center,
-                        ),
-                        const SizedBox(height: 36),
-                        Container(
-                          padding: const EdgeInsets.all(24),
-                          decoration: BoxDecoration(
-                            color: Colors.white,
-                            borderRadius: BorderRadius.circular(
-                              DesignTokens.radiusL,
+                      ),
+                      const SizedBox(height: 20),
+                      Text(
+                        context.l10n.loginWelcome,
+                        style: Theme.of(context).textTheme.headlineSmall
+                            ?.copyWith(
+                              fontWeight: FontWeight.w700,
+                              color: DesignTokens.onSurface,
                             ),
-                            boxShadow: DesignTokens.shadowSoft,
+                        textAlign: TextAlign.center,
+                      ),
+                      const SizedBox(height: 8),
+                      Text(
+                        context.l10n.loginSubtitle,
+                        style: Theme.of(context).textTheme.bodyMedium?.copyWith(
+                          color: DesignTokens.onSurfaceVariant,
+                        ),
+                        textAlign: TextAlign.center,
+                      ),
+                      const SizedBox(height: 40),
+                      // Email label
+                      Text(
+                        context.l10n.email.toUpperCase(),
+                        style: Theme.of(context).textTheme.labelMedium
+                            ?.copyWith(
+                              color: DesignTokens.onSurfaceVariant,
+                              letterSpacing: 1.2,
+                            ),
+                      ),
+                      const SizedBox(height: 8),
+                      TextFormField(
+                        controller: _emailController,
+                        decoration: InputDecoration(
+                          hintText: 'nombre@empresa.com',
+                          prefixIcon: const Icon(Icons.email_outlined),
+                        ),
+                        keyboardType: TextInputType.emailAddress,
+                        textInputAction: TextInputAction.next,
+                        validator: (v) => v == null || !v.contains('@')
+                            ? context.l10n.emailInvalid
+                            : null,
+                      ),
+                      const SizedBox(height: 20),
+                      // Password label with forgot link
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: [
+                          Text(
+                            context.l10n.password.toUpperCase(),
+                            style: Theme.of(context).textTheme.labelMedium
+                                ?.copyWith(
+                                  color: DesignTokens.onSurfaceVariant,
+                                  letterSpacing: 1.2,
+                                ),
                           ),
-                          child: Column(
-                            children: [
-                              TextFormField(
-                                controller: _emailController,
-                                decoration: InputDecoration(
-                                  labelText: context.l10n.email,
-                                  prefixIcon: const Icon(Icons.email_outlined),
-                                ),
-                                keyboardType: TextInputType.emailAddress,
-                                textInputAction: TextInputAction.next,
-                                validator: (v) => v == null || !v.contains('@')
-                                    ? context.l10n.emailInvalid
-                                    : null,
-                              ),
-                              const SizedBox(height: 16),
-                              TextFormField(
-                                controller: _passwordController,
-                                decoration: InputDecoration(
-                                  labelText: context.l10n.password,
-                                  prefixIcon: const Icon(Icons.lock_outlined),
-                                  suffixIcon: IconButton(
-                                    icon: Icon(
-                                      _obscurePassword
-                                          ? Icons.visibility_off_outlined
-                                          : Icons.visibility_outlined,
-                                    ),
-                                    onPressed: () => setState(
-                                      () =>
-                                          _obscurePassword = !_obscurePassword,
-                                    ),
+                          GestureDetector(
+                            onTap: () {},
+                            child: Text(
+                              '¿OLVIDASTE?',
+                              style: Theme.of(context).textTheme.labelMedium
+                                  ?.copyWith(
+                                    color: DesignTokens.error,
+                                    letterSpacing: 1.2,
                                   ),
+                            ),
+                          ),
+                        ],
+                      ),
+                      const SizedBox(height: 8),
+                      TextFormField(
+                        controller: _passwordController,
+                        decoration: InputDecoration(
+                          hintText: '••••••••',
+                          prefixIcon: const Icon(Icons.lock_outlined),
+                          suffixIcon: IconButton(
+                            icon: Icon(
+                              _obscurePassword
+                                  ? Icons.visibility_off_outlined
+                                  : Icons.visibility_outlined,
+                            ),
+                            onPressed: () => setState(
+                              () => _obscurePassword = !_obscurePassword,
+                            ),
+                          ),
+                        ),
+                        obscureText: _obscurePassword,
+                        textInputAction: TextInputAction.done,
+                        onFieldSubmitted: (_) => _submit(),
+                        validator: (v) => v == null || v.length < 6
+                            ? context.l10n.passwordMinLength
+                            : null,
+                      ),
+                      const SizedBox(height: 28),
+                      // Gradient login button
+                      Container(
+                        decoration: BoxDecoration(
+                          gradient: DesignTokens.primaryGradient,
+                          borderRadius: BorderRadius.circular(
+                            DesignTokens.radiusM,
+                          ),
+                        ),
+                        child: ElevatedButton(
+                          onPressed: authState.isLoading ? null : _submit,
+                          style: ElevatedButton.styleFrom(
+                            backgroundColor: Colors.transparent,
+                            shadowColor: Colors.transparent,
+                          ),
+                          child: authState.isLoading
+                              ? const SizedBox(
+                                  height: 20,
+                                  width: 20,
+                                  child: CircularProgressIndicator(
+                                    strokeWidth: 2,
+                                    color: Colors.white,
+                                  ),
+                                )
+                              : Row(
+                                  mainAxisAlignment: MainAxisAlignment.center,
+                                  children: [
+                                    Text(context.l10n.loginButton),
+                                    const SizedBox(width: 8),
+                                    const Icon(Icons.login_rounded, size: 20),
+                                  ],
                                 ),
-                                obscureText: _obscurePassword,
-                                textInputAction: TextInputAction.done,
-                                onFieldSubmitted: (_) => _submit(),
-                                validator: (v) => v == null || v.length < 6
-                                    ? context.l10n.passwordMinLength
-                                    : null,
-                              ),
-                              const SizedBox(height: 24),
-                              ElevatedButton(
-                                onPressed: authState.isLoading ? null : _submit,
-                                child: authState.isLoading
-                                    ? const SizedBox(
-                                        height: 20,
-                                        width: 20,
-                                        child: CircularProgressIndicator(
-                                          strokeWidth: 2,
-                                          color: Colors.white,
-                                        ),
-                                      )
-                                    : Text(context.l10n.loginButton),
+                        ),
+                      ),
+                      const SizedBox(height: 24),
+                      TextButton(
+                        onPressed: () => context.go('/register'),
+                        child: Text.rich(
+                          TextSpan(
+                            text: context.l10n.loginNoAccount,
+                            style: const TextStyle(
+                              color: DesignTokens.onSurfaceVariant,
+                            ),
+                            children: [
+                              TextSpan(
+                                text: context.l10n.loginRegisterLink,
+                                style: const TextStyle(
+                                  fontWeight: FontWeight.w700,
+                                  color: DesignTokens.primary,
+                                ),
                               ),
                             ],
                           ),
                         ),
-                        const SizedBox(height: 20),
-                        TextButton(
-                          onPressed: () => context.go('/register'),
-                          child: Text.rich(
-                            TextSpan(
-                              text: context.l10n.loginNoAccount,
-                              children: [
-                                TextSpan(
-                                  text: context.l10n.loginRegisterLink,
-                                  style: TextStyle(
-                                    fontWeight: FontWeight.w700,
-                                    color: Theme.of(
-                                      context,
-                                    ).colorScheme.primary,
-                                  ),
+                      ),
+                      const SizedBox(height: 32),
+                      // Version footer
+                      Center(
+                        child: Row(
+                          mainAxisSize: MainAxisSize.min,
+                          children: [
+                            Expanded(
+                              child: Divider(
+                                color: DesignTokens.outlineVariant.withValues(
+                                  alpha: 0.2,
                                 ),
-                              ],
+                              ),
                             ),
-                          ),
+                            Padding(
+                              padding: const EdgeInsets.symmetric(
+                                horizontal: 16,
+                              ),
+                              child: Text(
+                                'OBSIDIAN CRM V2.4',
+                                style: Theme.of(context).textTheme.labelMedium
+                                    ?.copyWith(
+                                      color: DesignTokens.onSurfaceVariant
+                                          .withValues(alpha: 0.5),
+                                      letterSpacing: 1.5,
+                                    ),
+                              ),
+                            ),
+                            Expanded(
+                              child: Divider(
+                                color: DesignTokens.outlineVariant.withValues(
+                                  alpha: 0.2,
+                                ),
+                              ),
+                            ),
+                          ],
                         ),
-                        const SizedBox(height: 24),
-                      ],
-                    ),
+                      ),
+                      const SizedBox(height: 24),
+                    ],
                   ),
                 ),
               ),

@@ -89,31 +89,41 @@ class TaskListTab extends ConsumerWidget {
                 },
               ),
               const SizedBox(height: 16),
-              ElevatedButton(
-                onPressed: () {
-                  if (titleController.text.trim().isEmpty) return;
-                  Navigator.pop(ctx);
-                  if (isEditing) {
-                    ref
-                        .read(clientTasksProvider(clientId).notifier)
-                        .updateTask(
-                          taskId,
-                          title: titleController.text.trim(),
-                          dueDate: selectedDate,
-                        );
-                  } else {
-                    ref
-                        .read(clientTasksProvider(clientId).notifier)
-                        .addTask(
-                          title: titleController.text.trim(),
-                          dueDate: selectedDate,
-                        );
-                  }
-                },
-                child: Text(
-                  isEditing
-                      ? context.l10n.saveChanges
-                      : context.l10n.createTask,
+              Container(
+                decoration: BoxDecoration(
+                  gradient: DesignTokens.primaryGradient,
+                  borderRadius: BorderRadius.circular(DesignTokens.radiusM),
+                ),
+                child: ElevatedButton(
+                  onPressed: () {
+                    if (titleController.text.trim().isEmpty) return;
+                    Navigator.pop(ctx);
+                    if (isEditing) {
+                      ref
+                          .read(clientTasksProvider(clientId).notifier)
+                          .updateTask(
+                            taskId,
+                            title: titleController.text.trim(),
+                            dueDate: selectedDate,
+                          );
+                    } else {
+                      ref
+                          .read(clientTasksProvider(clientId).notifier)
+                          .addTask(
+                            title: titleController.text.trim(),
+                            dueDate: selectedDate,
+                          );
+                    }
+                  },
+                  style: ElevatedButton.styleFrom(
+                    backgroundColor: Colors.transparent,
+                    shadowColor: Colors.transparent,
+                  ),
+                  child: Text(
+                    isEditing
+                        ? context.l10n.saveChanges
+                        : context.l10n.createTask,
+                  ),
                 ),
               ),
             ],
@@ -138,7 +148,11 @@ class TaskListTab extends ConsumerWidget {
               child: Column(
                 mainAxisSize: MainAxisSize.min,
                 children: [
-                  const Text('✅', style: TextStyle(fontSize: 48)),
+                  Icon(
+                    Icons.task_alt_rounded,
+                    size: 48,
+                    color: DesignTokens.onSurfaceVariant,
+                  ),
                   const SizedBox(height: 12),
                   Text(
                     context.l10n.noTasks,
@@ -150,7 +164,7 @@ class TaskListTab extends ConsumerWidget {
                   Text(
                     context.l10n.noTasksHint,
                     style: theme.textTheme.bodyMedium?.copyWith(
-                      color: theme.colorScheme.onSurfaceVariant,
+                      color: DesignTokens.onSurfaceVariant,
                     ),
                   ),
                 ],
@@ -200,15 +214,14 @@ class TaskListTab extends ConsumerWidget {
                   margin: const EdgeInsets.only(bottom: 8),
                   decoration: BoxDecoration(
                     color: isOverdue
-                        ? DesignTokens.error.withValues(alpha: 0.06)
-                        : Colors.white,
+                        ? DesignTokens.error.withValues(alpha: 0.08)
+                        : DesignTokens.surfaceContainer,
                     borderRadius: BorderRadius.circular(DesignTokens.radiusM),
-                    border: isOverdue
-                        ? Border.all(
-                            color: DesignTokens.error.withValues(alpha: 0.2),
-                          )
-                        : null,
-                    boxShadow: DesignTokens.shadowSoft,
+                    border: Border.all(
+                      color: isOverdue
+                          ? DesignTokens.error.withValues(alpha: 0.3)
+                          : DesignTokens.outlineVariant.withValues(alpha: 0.12),
+                    ),
                   ),
                   child: ListTile(
                     contentPadding: const EdgeInsets.symmetric(
@@ -226,7 +239,7 @@ class TaskListTab extends ConsumerWidget {
                       scale: 1.2,
                       child: Checkbox(
                         value: task.completed,
-                        activeColor: DesignTokens.primary,
+                        activeColor: DesignTokens.primaryContainer,
                         shape: RoundedRectangleBorder(
                           borderRadius: BorderRadius.circular(4),
                         ),
@@ -245,7 +258,7 @@ class TaskListTab extends ConsumerWidget {
                             : null,
                         fontWeight: FontWeight.w600,
                         color: task.completed
-                            ? theme.colorScheme.onSurfaceVariant
+                            ? DesignTokens.onSurfaceVariant
                             : null,
                       ),
                     ),
@@ -257,7 +270,7 @@ class TaskListTab extends ConsumerWidget {
                                 size: 13,
                                 color: isOverdue
                                     ? DesignTokens.error
-                                    : theme.colorScheme.onSurfaceVariant,
+                                    : DesignTokens.onSurfaceVariant,
                               ),
                               const SizedBox(width: 4),
                               Text(
@@ -265,7 +278,9 @@ class TaskListTab extends ConsumerWidget {
                                   '${task.dueDate!.day}/${task.dueDate!.month}/${task.dueDate!.year}',
                                 ),
                                 style: TextStyle(
-                                  color: isOverdue ? DesignTokens.error : null,
+                                  color: isOverdue
+                                      ? DesignTokens.error
+                                      : DesignTokens.onSurfaceVariant,
                                   fontWeight: isOverdue
                                       ? FontWeight.w700
                                       : null,
