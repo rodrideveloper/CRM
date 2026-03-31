@@ -36,14 +36,16 @@ class NoteListTab extends ConsumerWidget {
                 Container(
                   padding: const EdgeInsets.all(10),
                   decoration: BoxDecoration(
-                    color: DesignTokens.accentLight,
+                    color: DesignTokens.primaryContainer.withValues(
+                      alpha: 0.15,
+                    ),
                     borderRadius: BorderRadius.circular(DesignTokens.radiusS),
                   ),
                   child: Icon(
                     isEditing
                         ? Icons.edit_note_rounded
                         : Icons.note_add_rounded,
-                    color: DesignTokens.accent,
+                    color: DesignTokens.primary,
                   ),
                 ),
                 const SizedBox(width: 12),
@@ -64,22 +66,32 @@ class NoteListTab extends ConsumerWidget {
               autofocus: true,
             ),
             const SizedBox(height: 16),
-            ElevatedButton(
-              onPressed: () {
-                if (controller.text.trim().isEmpty) return;
-                Navigator.pop(ctx);
-                if (isEditing) {
-                  ref
-                      .read(notesProvider(clientId).notifier)
-                      .updateNote(noteId, controller.text.trim());
-                } else {
-                  ref
-                      .read(notesProvider(clientId).notifier)
-                      .addNote(controller.text.trim());
-                }
-              },
-              child: Text(
-                isEditing ? context.l10n.saveChanges : context.l10n.saveNote,
+            Container(
+              decoration: BoxDecoration(
+                gradient: DesignTokens.primaryGradient,
+                borderRadius: BorderRadius.circular(DesignTokens.radiusM),
+              ),
+              child: ElevatedButton(
+                onPressed: () {
+                  if (controller.text.trim().isEmpty) return;
+                  Navigator.pop(ctx);
+                  if (isEditing) {
+                    ref
+                        .read(notesProvider(clientId).notifier)
+                        .updateNote(noteId, controller.text.trim());
+                  } else {
+                    ref
+                        .read(notesProvider(clientId).notifier)
+                        .addNote(controller.text.trim());
+                  }
+                },
+                style: ElevatedButton.styleFrom(
+                  backgroundColor: Colors.transparent,
+                  shadowColor: Colors.transparent,
+                ),
+                child: Text(
+                  isEditing ? context.l10n.saveChanges : context.l10n.saveNote,
+                ),
               ),
             ),
           ],
@@ -103,7 +115,11 @@ class NoteListTab extends ConsumerWidget {
               child: Column(
                 mainAxisSize: MainAxisSize.min,
                 children: [
-                  const Text('📝', style: TextStyle(fontSize: 48)),
+                  Icon(
+                    Icons.note_alt_outlined,
+                    size: 48,
+                    color: DesignTokens.onSurfaceVariant,
+                  ),
                   const SizedBox(height: 12),
                   Text(
                     context.l10n.noNotes,
@@ -115,7 +131,7 @@ class NoteListTab extends ConsumerWidget {
                   Text(
                     context.l10n.noNotesHint,
                     style: theme.textTheme.bodyMedium?.copyWith(
-                      color: theme.colorScheme.onSurfaceVariant,
+                      color: DesignTokens.onSurfaceVariant,
                     ),
                   ),
                 ],
@@ -170,15 +186,14 @@ class NoteListTab extends ConsumerWidget {
                     margin: const EdgeInsets.only(bottom: 8),
                     padding: const EdgeInsets.all(16),
                     decoration: BoxDecoration(
-                      color: Colors.white,
+                      color: DesignTokens.surfaceContainer,
                       borderRadius: BorderRadius.circular(DesignTokens.radiusM),
                       border: Border(
                         left: BorderSide(
-                          color: DesignTokens.accent.withValues(alpha: 0.5),
+                          color: DesignTokens.primaryContainer,
                           width: 3,
                         ),
                       ),
-                      boxShadow: DesignTokens.shadowSoft,
                     ),
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
@@ -190,13 +205,13 @@ class NoteListTab extends ConsumerWidget {
                             Icon(
                               Icons.schedule_rounded,
                               size: 13,
-                              color: theme.colorScheme.onSurfaceVariant,
+                              color: DesignTokens.onSurfaceVariant,
                             ),
                             const SizedBox(width: 4),
                             Text(
                               '${note.createdAt.day}/${note.createdAt.month}/${note.createdAt.year}',
                               style: theme.textTheme.bodySmall?.copyWith(
-                                color: theme.colorScheme.onSurfaceVariant,
+                                color: DesignTokens.onSurfaceVariant,
                               ),
                             ),
                           ],

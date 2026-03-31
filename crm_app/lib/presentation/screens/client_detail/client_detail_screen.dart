@@ -24,20 +24,14 @@ class ClientDetailScreen extends ConsumerWidget {
     final clientAsync = ref.watch(clientDetailProvider(clientId));
 
     return clientAsync.when(
-      loading: () =>
-          const Scaffold(body: Center(child: CircularProgressIndicator())),
+      loading: () => const Scaffold(
+        body: Center(
+          child: CircularProgressIndicator(color: DesignTokens.primary),
+        ),
+      ),
       error: (err, _) => Scaffold(
         appBar: AppBar(),
-        body: Center(
-          child: Column(
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              const Text('😕', style: TextStyle(fontSize: 40)),
-              const SizedBox(height: 8),
-              Text('Error: $err'),
-            ],
-          ),
-        ),
+        body: Center(child: Text('Error: $err')),
       ),
       data: (client) => _ClientDetailView(client: client),
     );
@@ -50,8 +44,6 @@ class _ClientDetailView extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final statusColor = DesignTokens.statusColor(client.status.value);
-
     return DefaultTabController(
       length: 3,
       child: Scaffold(
@@ -63,13 +55,15 @@ class _ClientDetailView extends ConsumerWidget {
                 padding: const EdgeInsets.only(right: 8),
                 child: Container(
                   decoration: BoxDecoration(
-                    color: DesignTokens.primaryLight,
-                    borderRadius: BorderRadius.circular(DesignTokens.radiusS),
+                    color: DesignTokens.primaryContainer.withValues(
+                      alpha: 0.15,
+                    ),
+                    borderRadius: BorderRadius.circular(DesignTokens.radiusM),
                   ),
                   child: IconButton(
                     icon: const Icon(
                       Icons.chat_rounded,
-                      color: DesignTokens.primary,
+                      color: DesignTokens.primaryContainer,
                       size: 20,
                     ),
                     tooltip: 'WhatsApp',
@@ -86,22 +80,31 @@ class _ClientDetailView extends ConsumerWidget {
                 ),
               ),
           ],
-          bottom: TabBar(
-            indicatorWeight: 3,
-            tabs: [
-              Tab(
-                icon: Icon(Icons.person_rounded, size: 20, color: statusColor),
-                text: context.l10n.info,
+          bottom: PreferredSize(
+            preferredSize: const Size.fromHeight(48),
+            child: Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 16),
+              child: Container(
+                height: 40,
+                decoration: BoxDecoration(
+                  color: DesignTokens.surfaceContainer,
+                  borderRadius: BorderRadius.circular(DesignTokens.radiusFull),
+                  border: Border.all(
+                    color: DesignTokens.outlineVariant.withValues(alpha: 0.12),
+                  ),
+                ),
+                child: TabBar(
+                  indicatorSize: TabBarIndicatorSize.tab,
+                  dividerHeight: 0,
+                  labelPadding: EdgeInsets.zero,
+                  tabs: [
+                    Tab(text: context.l10n.info.toUpperCase()),
+                    Tab(text: context.l10n.notes.toUpperCase()),
+                    Tab(text: context.l10n.tasks.toUpperCase()),
+                  ],
+                ),
               ),
-              Tab(
-                icon: const Icon(Icons.note_rounded, size: 20),
-                text: context.l10n.notes,
-              ),
-              Tab(
-                icon: const Icon(Icons.task_alt_rounded, size: 20),
-                text: context.l10n.tasks,
-              ),
-            ],
+            ),
           ),
         ),
         body: TabBarView(
