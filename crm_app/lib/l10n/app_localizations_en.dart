@@ -354,4 +354,25 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get byStatus => 'By status';
+
+  @override
+  String get followUpReminder => 'Follow-up reminder';
+
+  @override
+  String get setFollowUp => 'Set follow-up';
+
+  @override
+  String get followUpDate => 'Follow-up date';
+
+  @override
+  String get followUpDue => 'Follow-up overdue';
+
+  @override
+  String get followUpScheduled => 'Follow-up scheduled';
+
+  @override
+  String get removeFollowUp => 'Remove reminder';
+
+  @override
+  String get followUpUpdated => 'Follow-up updated';
 }

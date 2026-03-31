@@ -142,5 +142,13 @@
   "newThisMonth": "New this month",
   "overdueTasks": "Overdue tasks",
   "totalClients": "Total clients",
-  "byStatus": "By status"
+  "byStatus": "By status",
+
+  "followUpReminder": "Follow-up reminder",
+  "setFollowUp": "Set follow-up",
+  "followUpDate": "Follow-up date",
+  "followUpDue": "Follow-up overdue",
+  "followUpScheduled": "Follow-up scheduled",
+  "removeFollowUp": "Remove reminder",
+  "followUpUpdated": "Follow-up updated"
 }

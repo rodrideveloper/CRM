@@ -24,6 +24,7 @@ class Client {
   final String? company;
   final String? source;
   final ClientStatus status;
+  final DateTime? nextFollowUp;
   final DateTime createdAt;
   final DateTime updatedAt;
 
@@ -36,9 +37,13 @@ class Client {
     this.company,
     this.source,
     required this.status,
+    this.nextFollowUp,
     required this.createdAt,
     required this.updatedAt,
   });
+
+  bool get hasFollowUpDue =>
+      nextFollowUp != null && nextFollowUp!.isBefore(DateTime.now());
 
   Client copyWith({
     String? id,
@@ -49,6 +54,8 @@ class Client {
     String? company,
     String? source,
     ClientStatus? status,
+    DateTime? nextFollowUp,
+    bool clearFollowUp = false,
     DateTime? createdAt,
     DateTime? updatedAt,
   }) {
@@ -61,6 +68,7 @@ class Client {
       company: company ?? this.company,
       source: source ?? this.source,
       status: status ?? this.status,
+      nextFollowUp: clearFollowUp ? null : (nextFollowUp ?? this.nextFollowUp),
       createdAt: createdAt ?? this.createdAt,
       updatedAt: updatedAt ?? this.updatedAt,
     );

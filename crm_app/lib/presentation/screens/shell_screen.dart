@@ -1,11 +1,11 @@
-import 'dart:ui';
-
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import '../../core/theme/design_tokens.dart';
 import '../../core/utils/l10n_extension.dart';
+import '../providers/task_provider.dart';
 
-class ShellScreen extends StatelessWidget {
+class ShellScreen extends ConsumerWidget {
   final Widget child;
   const ShellScreen({super.key, required this.child});
 
@@ -17,8 +17,9 @@ class ShellScreen extends StatelessWidget {
   }
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
     final index = _currentIndex(context);
+    final overdueCount = ref.watch(overdueTaskCountProvider);
 
     return Scaffold(
       extendBody: true,
@@ -48,6 +49,7 @@ class ShellScreen extends StatelessWidget {
                       label: context.l10n.tasks.toUpperCase(),
                       isSelected: index == 1,
                       onTap: () => context.go('/tasks'),
+                      badgeCount: overdueCount,
                     ),
                     _NavItem(
                       icon: Icons.person_outlined,
@@ -73,6 +75,7 @@ class _NavItem extends StatelessWidget {
   final String label;
   final bool isSelected;
   final VoidCallback onTap;
+  final int badgeCount;
 
   const _NavItem({
     required this.icon,
@@ -80,6 +83,7 @@ class _NavItem extends StatelessWidget {
     required this.label,
     required this.isSelected,
     required this.onTap,
+    this.badgeCount = 0,
   });
 
   @override
@@ -104,12 +108,24 @@ class _NavItem extends StatelessWidget {
         child: Column(
           mainAxisSize: MainAxisSize.min,
           children: [
-            Icon(
-              isSelected ? selectedIcon : icon,
-              size: 22,
-              color: isSelected
-                  ? DesignTokens.primary
-                  : DesignTokens.onSurfaceVariant,
+            Badge(
+              isLabelVisible: badgeCount > 0,
+              label: Text(
+                '$badgeCount',
+                style: const TextStyle(
+                  fontSize: 9,
+                  fontWeight: FontWeight.w700,
+                  color: Colors.white,
+                ),
+              ),
+              backgroundColor: DesignTokens.error,
+              child: Icon(
+                isSelected ? selectedIcon : icon,
+                size: 22,
+                color: isSelected
+                    ? DesignTokens.primary
+                    : DesignTokens.onSurfaceVariant,
+              ),
             ),
             const SizedBox(height: 4),
             Text(

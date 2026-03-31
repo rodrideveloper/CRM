@@ -142,5 +142,13 @@
   "newThisMonth": "Novos este mês",
   "overdueTasks": "Tarefas atrasadas",
   "totalClients": "Total de clientes",
-  "byStatus": "Por status"
+  "byStatus": "Por status",
+
+  "followUpReminder": "Lembrete de acompanhamento",
+  "setFollowUp": "Agendar acompanhamento",
+  "followUpDate": "Data de acompanhamento",
+  "followUpDue": "Acompanhamento atrasado",
+  "followUpScheduled": "Acompanhamento agendado",
+  "removeFollowUp": "Remover lembrete",
+  "followUpUpdated": "Acompanhamento atualizado"
 }

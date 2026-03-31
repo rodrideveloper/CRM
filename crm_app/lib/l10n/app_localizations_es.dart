@@ -355,4 +355,25 @@ class AppLocalizationsEs extends AppLocalizations {
 
   @override
   String get byStatus => 'Por estado';
+
+  @override
+  String get followUpReminder => 'Recordatorio de seguimiento';
+
+  @override
+  String get setFollowUp => 'Programar seguimiento';
+
+  @override
+  String get followUpDate => 'Fecha de seguimiento';
+
+  @override
+  String get followUpDue => 'Seguimiento vencido';
+
+  @override
+  String get followUpScheduled => 'Seguimiento programado';
+
+  @override
+  String get removeFollowUp => 'Quitar recordatorio';
+
+  @override
+  String get followUpUpdated => 'Seguimiento actualizado';
 }

@@ -82,6 +82,8 @@ class ClientRepositoryImpl implements ClientRepository {
     String? company,
     String? source,
     ClientStatus? status,
+    DateTime? nextFollowUp,
+    bool clearFollowUp = false,
   }) async {
     final updates = ClientModel.toUpdateJson(
       name: name,
@@ -90,6 +92,8 @@ class ClientRepositoryImpl implements ClientRepository {
       company: company,
       source: source,
       status: status,
+      nextFollowUp: nextFollowUp,
+      clearFollowUp: clearFollowUp,
     );
     if (updates.isEmpty) return getClient(id);
     final data = await _client

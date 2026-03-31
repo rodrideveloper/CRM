@@ -355,4 +355,25 @@ class AppLocalizationsPt extends AppLocalizations {
 
   @override
   String get byStatus => 'Por status';
+
+  @override
+  String get followUpReminder => 'Lembrete de acompanhamento';
+
+  @override
+  String get setFollowUp => 'Agendar acompanhamento';
+
+  @override
+  String get followUpDate => 'Data de acompanhamento';
+
+  @override
+  String get followUpDue => 'Acompanhamento atrasado';
+
+  @override
+  String get followUpScheduled => 'Acompanhamento agendado';
+
+  @override
+  String get removeFollowUp => 'Remover lembrete';
+
+  @override
+  String get followUpUpdated => 'Acompanhamento atualizado';
 }
