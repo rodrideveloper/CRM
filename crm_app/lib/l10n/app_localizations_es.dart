@@ -376,4 +376,31 @@ class AppLocalizationsEs extends AppLocalizations {
 
   @override
   String get followUpUpdated => 'Seguimiento actualizado';
+
+  @override
+  String get dealValue => 'Monto de venta';
+
+  @override
+  String get currency => 'Moneda';
+
+  @override
+  String get totalRevenue => 'Revenue total';
+
+  @override
+  String get revenueThisMonth => 'Revenue este mes';
+
+  @override
+  String get revenueWon => 'Revenue ganado';
+
+  @override
+  String get revenueByStatus => 'Revenue por estado';
+
+  @override
+  String get metricsTitle => 'Métricas 📊';
+
+  @override
+  String get exportCsv => 'Exportar datos (CSV)';
+
+  @override
+  String get settings => 'Configuración';
 }

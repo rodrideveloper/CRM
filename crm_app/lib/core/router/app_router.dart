@@ -5,6 +5,7 @@ import '../../presentation/providers/auth_provider.dart';
 import '../../presentation/screens/auth/login_screen.dart';
 import '../../presentation/screens/auth/register_screen.dart';
 import '../../presentation/screens/client_detail/client_detail_screen.dart';
+import '../../presentation/screens/metrics/metrics_screen.dart';
 import '../../presentation/screens/shell_screen.dart';
 import '../../presentation/screens/pipeline/pipeline_screen.dart';
 import '../../presentation/screens/tasks/tasks_screen.dart';
@@ -62,6 +63,26 @@ final routerProvider = Provider<GoRouter>((ref) {
         pageBuilder: (context, state) => CustomTransitionPage(
           key: state.pageKey,
           child: ClientDetailScreen(clientId: state.pathParameters['id']!),
+          transitionsBuilder: (context, animation, secondaryAnimation, child) {
+            return SlideTransition(
+              position:
+                  Tween<Offset>(
+                    begin: const Offset(1.0, 0.0),
+                    end: Offset.zero,
+                  ).animate(
+                    CurvedAnimation(parent: animation, curve: Curves.easeInOut),
+                  ),
+              child: child,
+            );
+          },
+        ),
+      ),
+      GoRoute(
+        path: '/metrics',
+        parentNavigatorKey: _rootNavigatorKey,
+        pageBuilder: (context, state) => CustomTransitionPage(
+          key: state.pageKey,
+          child: const MetricsScreen(),
           transitionsBuilder: (context, animation, secondaryAnimation, child) {
             return SlideTransition(
               position:

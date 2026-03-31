@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:intl/intl.dart';
 import 'package:url_launcher/url_launcher.dart';
 import 'package:go_router/go_router.dart';
 import '../../../core/theme/design_tokens.dart';
@@ -139,6 +140,30 @@ class ClientCard extends StatelessWidget {
                                   fontSize: 10,
                                   fontWeight: FontWeight.w700,
                                   letterSpacing: 0.5,
+                                ),
+                              ),
+                            ),
+                            const SizedBox(width: 8),
+                          ],
+                          if (client.dealValue != null) ...[
+                            Container(
+                              padding: const EdgeInsets.symmetric(
+                                horizontal: 8,
+                                vertical: 3,
+                              ),
+                              decoration: BoxDecoration(
+                                color: DesignTokens.primary.withValues(alpha: 0.15),
+                                borderRadius: BorderRadius.circular(
+                                  DesignTokens.radiusFull,
+                                ),
+                              ),
+                              child: Text(
+                                '\$ ${NumberFormat.compact(locale: 'es').format(client.dealValue)} ${client.currency ?? 'ARS'}',
+                                style: const TextStyle(
+                                  color: DesignTokens.primary,
+                                  fontSize: 10,
+                                  fontWeight: FontWeight.w700,
+                                  letterSpacing: 0.3,
                                 ),
                               ),
                             ),

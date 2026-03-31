@@ -150,5 +150,15 @@
   "followUpDue": "Follow-up overdue",
   "followUpScheduled": "Follow-up scheduled",
   "removeFollowUp": "Remove reminder",
-  "followUpUpdated": "Follow-up updated"
+  "followUpUpdated": "Follow-up updated",
+
+  "dealValue": "Deal value",
+  "currency": "Currency",
+  "totalRevenue": "Total revenue",
+  "revenueThisMonth": "Revenue this month",
+  "revenueWon": "Revenue won",
+  "revenueByStatus": "Revenue by status",
+  "metricsTitle": "Metrics 📊",
+  "exportCsv": "Export data (CSV)",
+  "settings": "Settings"
 }

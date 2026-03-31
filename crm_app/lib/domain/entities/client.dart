@@ -24,6 +24,8 @@ class Client {
   final String? company;
   final String? source;
   final ClientStatus status;
+  final double? dealValue;
+  final String? currency;
   final DateTime? nextFollowUp;
   final DateTime createdAt;
   final DateTime updatedAt;
@@ -37,6 +39,8 @@ class Client {
     this.company,
     this.source,
     required this.status,
+    this.dealValue,
+    this.currency,
     this.nextFollowUp,
     required this.createdAt,
     required this.updatedAt,
@@ -54,6 +58,9 @@ class Client {
     String? company,
     String? source,
     ClientStatus? status,
+    double? dealValue,
+    String? currency,
+    bool clearDealValue = false,
     DateTime? nextFollowUp,
     bool clearFollowUp = false,
     DateTime? createdAt,
@@ -68,6 +75,8 @@ class Client {
       company: company ?? this.company,
       source: source ?? this.source,
       status: status ?? this.status,
+      dealValue: clearDealValue ? null : (dealValue ?? this.dealValue),
+      currency: currency ?? this.currency,
       nextFollowUp: clearFollowUp ? null : (nextFollowUp ?? this.nextFollowUp),
       createdAt: createdAt ?? this.createdAt,
       updatedAt: updatedAt ?? this.updatedAt,

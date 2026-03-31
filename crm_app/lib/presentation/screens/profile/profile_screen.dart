@@ -1,10 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:go_router/go_router.dart';
 import '../../../core/theme/design_tokens.dart';
 import '../../../core/utils/l10n_extension.dart';
 import '../../providers/auth_provider.dart';
+import '../../providers/client_provider.dart';
 import '../../providers/locale_provider.dart';
 import '../../providers/theme_provider.dart';
+import '../../../core/services/export_service.dart';
 
 class ProfileScreen extends ConsumerWidget {
   const ProfileScreen({super.key});
@@ -79,9 +82,9 @@ class ProfileScreen extends ConsumerWidget {
             // Menu cards
             _MenuCard(
               icon: Icons.bar_chart_rounded,
-              label: 'Mi Rendimiento',
+              label: context.l10n.metricsTitle,
               color: DesignTokens.primary,
-              onTap: () {},
+              onTap: () => context.push('/metrics'),
             ),
             const SizedBox(height: 8),
             _MenuCard(
@@ -93,11 +96,18 @@ class ProfileScreen extends ConsumerWidget {
             const SizedBox(height: 8),
             _MenuCard(
               icon: Icons.settings_outlined,
-              label: 'Configuración',
+              label: context.l10n.settings,
               color: DesignTokens.info,
               onTap: () {
                 _showSettingsSheet(context, ref);
               },
+            ),
+            const SizedBox(height: 8),
+            _MenuCard(
+              icon: Icons.file_download_outlined,
+              label: context.l10n.exportCsv,
+              color: DesignTokens.secondaryFixed,
+              onTap: () => _exportClients(context, ref),
             ),
             const SizedBox(height: 48),
             // Logout button
@@ -128,6 +138,25 @@ class ProfileScreen extends ConsumerWidget {
         ),
       ),
     );
+  }
+
+  Future<void> _exportClients(BuildContext context, WidgetRef ref) async {
+    final clients = ref.read(clientsProvider).valueOrNull;
+    if (clients == null || clients.isEmpty) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text(context.l10n.noClients)),
+      );
+      return;
+    }
+    try {
+      await ExportService().exportClientsCsv(clients);
+    } catch (e) {
+      if (context.mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text(context.l10n.somethingWentWrong)),
+        );
+      }
+    }
   }
 
   void _showSettingsSheet(BuildContext context, WidgetRef ref) {

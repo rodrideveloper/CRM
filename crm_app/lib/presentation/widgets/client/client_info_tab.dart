@@ -22,6 +22,8 @@ class _ClientInfoTabState extends ConsumerState<ClientInfoTab> {
   late TextEditingController _emailController;
   late TextEditingController _companyController;
   late TextEditingController _sourceController;
+  late TextEditingController _dealValueController;
+  String _currency = 'ARS';
   bool _editing = false;
   final _formKey = GlobalKey<FormState>();
 
@@ -35,6 +37,12 @@ class _ClientInfoTabState extends ConsumerState<ClientInfoTab> {
       text: widget.client.company ?? '',
     );
     _sourceController = TextEditingController(text: widget.client.source ?? '');
+    _dealValueController = TextEditingController(
+      text: widget.client.dealValue != null
+          ? widget.client.dealValue!.toStringAsFixed(2)
+          : '',
+    );
+    _currency = widget.client.currency ?? 'ARS';
   }
 
   @override
@@ -44,6 +52,7 @@ class _ClientInfoTabState extends ConsumerState<ClientInfoTab> {
     _emailController.dispose();
     _companyController.dispose();
     _sourceController.dispose();
+    _dealValueController.dispose();
     super.dispose();
   }
 
@@ -93,6 +102,9 @@ class _ClientInfoTabState extends ConsumerState<ClientInfoTab> {
     if (!_formKey.currentState!.validate()) return;
 
     final repo = ref.read(clientRepositoryProvider);
+    final dealVal = _dealValueController.text.trim().isNotEmpty
+        ? double.tryParse(_dealValueController.text.trim())
+        : null;
     await repo.updateClient(
       widget.client.id,
       name: _nameController.text.trim(),
@@ -108,6 +120,9 @@ class _ClientInfoTabState extends ConsumerState<ClientInfoTab> {
       source: _sourceController.text.trim().isNotEmpty
           ? _sourceController.text.trim()
           : null,
+      dealValue: dealVal,
+      currency: _currency,
+      clearDealValue: _dealValueController.text.trim().isEmpty,
     );
     await ref.read(clientsProvider.notifier).refresh();
     if (mounted) {
@@ -274,6 +289,59 @@ class _ClientInfoTabState extends ConsumerState<ClientInfoTab> {
                         labelText: context.l10n.source,
                       ),
                     ),
+                    const SizedBox(height: 12),
+                    Row(
+                      children: [
+                        Expanded(
+                          flex: 2,
+                          child: TextFormField(
+                            controller: _dealValueController,
+                            decoration: InputDecoration(
+                              labelText: context.l10n.dealValue,
+                              prefixText: '\$ ',
+                            ),
+                            keyboardType: const TextInputType.numberWithOptions(decimal: true),
+                          ),
+                        ),
+                        const SizedBox(width: 8),
+                        Expanded(
+                          child: DropdownButtonFormField<String>(
+                            value: _currency,
+                            decoration: InputDecoration(
+                              labelText: context.l10n.currency,
+                            ),
+                            items: const [
+                              DropdownMenuItem(value: 'ARS', child: Text('ARS')),
+                              DropdownMenuItem(value: 'USD', child: Text('USD')),
+                              DropdownMenuItem(value: 'BRL', child: Text('BRL')),
+                              DropdownMenuItem(value: 'EUR', child: Text('EUR')),
+                            ],
+                            onChanged: (v) {
+                              if (v != null) setState(() => _currency = v);
+                            },
+                          ),
+                        ),
+                      ],
+                    ),
+                  ],
+                  // Deal value display (always visible)
+                  if (widget.client.dealValue != null && !_editing) ...[
+                    const SizedBox(height: 20),
+                    Text(
+                      context.l10n.dealValue.toUpperCase(),
+                      style: theme.textTheme.labelMedium?.copyWith(
+                        color: DesignTokens.onSurfaceVariant,
+                        letterSpacing: 1.2,
+                      ),
+                    ),
+                    const SizedBox(height: 4),
+                    Text(
+                      '\$ ${NumberFormat('#,##0.00', 'es_AR').format(widget.client.dealValue)} ${widget.client.currency ?? 'ARS'}',
+                      style: theme.textTheme.headlineSmall?.copyWith(
+                        fontWeight: FontWeight.w700,
+                        color: DesignTokens.primary,
+                      ),
+                    ),
                   ],
                   const SizedBox(height: 20),
                   Text(
@@ -321,6 +389,10 @@ class _ClientInfoTabState extends ConsumerState<ClientInfoTab> {
                   _emailController.text = widget.client.email ?? '';
                   _companyController.text = widget.client.company ?? '';
                   _sourceController.text = widget.client.source ?? '';
+                  _dealValueController.text = widget.client.dealValue != null
+                      ? widget.client.dealValue!.toStringAsFixed(2)
+                      : '';
+                  _currency = widget.client.currency ?? 'ARS';
                   setState(() => _editing = false);
                 },
                 child: Text(context.l10n.cancel),
