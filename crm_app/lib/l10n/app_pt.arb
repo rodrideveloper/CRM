@@ -150,5 +150,15 @@
   "followUpDue": "Acompanhamento atrasado",
   "followUpScheduled": "Acompanhamento agendado",
   "removeFollowUp": "Remover lembrete",
-  "followUpUpdated": "Acompanhamento atualizado"
+  "followUpUpdated": "Acompanhamento atualizado",
+
+  "dealValue": "Valor da venda",
+  "currency": "Moeda",
+  "totalRevenue": "Receita total",
+  "revenueThisMonth": "Receita este mês",
+  "revenueWon": "Receita ganha",
+  "revenueByStatus": "Receita por status",
+  "metricsTitle": "Métricas 📊",
+  "exportCsv": "Exportar dados (CSV)",
+  "settings": "Configurações"
 }

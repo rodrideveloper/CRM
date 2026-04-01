@@ -10,6 +10,8 @@ class ClientModel extends Client {
     super.company,
     super.source,
     required super.status,
+    super.dealValue,
+    super.currency,
     super.nextFollowUp,
     required super.createdAt,
     required super.updatedAt,
@@ -25,6 +27,10 @@ class ClientModel extends Client {
       company: json['company'] as String?,
       source: json['source'] as String?,
       status: ClientStatus.fromString(json['status'] as String),
+      dealValue: json['deal_value'] != null
+          ? (json['deal_value'] as num).toDouble()
+          : null,
+      currency: json['currency'] as String?,
       nextFollowUp: json['next_follow_up'] != null
           ? DateTime.parse(json['next_follow_up'] as String)
           : null,
@@ -40,6 +46,8 @@ class ClientModel extends Client {
     String? email,
     String? company,
     String? source,
+    double? dealValue,
+    String? currency,
   }) {
     return {
       'user_id': userId,
@@ -48,6 +56,8 @@ class ClientModel extends Client {
       if (email != null) 'email': email,
       if (company != null) 'company': company,
       if (source != null) 'source': source,
+      if (dealValue != null) 'deal_value': dealValue,
+      if (currency != null) 'currency': currency,
     };
   }
 
@@ -58,6 +68,9 @@ class ClientModel extends Client {
     String? company,
     String? source,
     ClientStatus? status,
+    double? dealValue,
+    String? currency,
+    bool clearDealValue = false,
     DateTime? nextFollowUp,
     bool clearFollowUp = false,
   }) {
@@ -68,6 +81,9 @@ class ClientModel extends Client {
       if (company != null) 'company': company,
       if (source != null) 'source': source,
       if (status != null) 'status': status.value,
+      if (clearDealValue) 'deal_value': null,
+      if (dealValue != null) 'deal_value': dealValue,
+      if (currency != null) 'currency': currency,
       if (clearFollowUp) 'next_follow_up': null,
       if (nextFollowUp != null)
         'next_follow_up': nextFollowUp.toIso8601String(),

@@ -20,6 +20,9 @@ abstract class ClientRepository {
     String? company,
     String? source,
     ClientStatus? status,
+    double? dealValue,
+    String? currency,
+    bool clearDealValue = false,
     DateTime? nextFollowUp,
     bool clearFollowUp = false,
   });

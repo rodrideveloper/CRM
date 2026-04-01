@@ -165,5 +165,15 @@
   "followUpDue": "Seguimiento vencido",
   "followUpScheduled": "Seguimiento programado",
   "removeFollowUp": "Quitar recordatorio",
-  "followUpUpdated": "Seguimiento actualizado"
+  "followUpUpdated": "Seguimiento actualizado",
+
+  "dealValue": "Monto de venta",
+  "currency": "Moneda",
+  "totalRevenue": "Revenue total",
+  "revenueThisMonth": "Revenue este mes",
+  "revenueWon": "Revenue ganado",
+  "revenueByStatus": "Revenue por estado",
+  "metricsTitle": "Métricas 📊",
+  "exportCsv": "Exportar datos (CSV)",
+  "settings": "Configuración"
 }

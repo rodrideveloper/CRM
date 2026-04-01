@@ -82,6 +82,9 @@ class ClientRepositoryImpl implements ClientRepository {
     String? company,
     String? source,
     ClientStatus? status,
+    double? dealValue,
+    String? currency,
+    bool clearDealValue = false,
     DateTime? nextFollowUp,
     bool clearFollowUp = false,
   }) async {
@@ -92,6 +95,9 @@ class ClientRepositoryImpl implements ClientRepository {
       company: company,
       source: source,
       status: status,
+      dealValue: dealValue,
+      currency: currency,
+      clearDealValue: clearDealValue,
       nextFollowUp: nextFollowUp,
       clearFollowUp: clearFollowUp,
     );

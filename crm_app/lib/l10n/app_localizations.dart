@@ -819,6 +819,60 @@ abstract class AppLocalizations {
   /// In es, this message translates to:
   /// **'Seguimiento actualizado'**
   String get followUpUpdated;
+
+  /// No description provided for @dealValue.
+  ///
+  /// In es, this message translates to:
+  /// **'Monto de venta'**
+  String get dealValue;
+
+  /// No description provided for @currency.
+  ///
+  /// In es, this message translates to:
+  /// **'Moneda'**
+  String get currency;
+
+  /// No description provided for @totalRevenue.
+  ///
+  /// In es, this message translates to:
+  /// **'Revenue total'**
+  String get totalRevenue;
+
+  /// No description provided for @revenueThisMonth.
+  ///
+  /// In es, this message translates to:
+  /// **'Revenue este mes'**
+  String get revenueThisMonth;
+
+  /// No description provided for @revenueWon.
+  ///
+  /// In es, this message translates to:
+  /// **'Revenue ganado'**
+  String get revenueWon;
+
+  /// No description provided for @revenueByStatus.
+  ///
+  /// In es, this message translates to:
+  /// **'Revenue por estado'**
+  String get revenueByStatus;
+
+  /// No description provided for @metricsTitle.
+  ///
+  /// In es, this message translates to:
+  /// **'Métricas 📊'**
+  String get metricsTitle;
+
+  /// No description provided for @exportCsv.
+  ///
+  /// In es, this message translates to:
+  /// **'Exportar datos (CSV)'**
+  String get exportCsv;
+
+  /// No description provided for @settings.
+  ///
+  /// In es, this message translates to:
+  /// **'Configuración'**
+  String get settings;
 }
 
 class _AppLocalizationsDelegate

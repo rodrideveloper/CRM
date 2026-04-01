@@ -10,6 +10,9 @@ class PipelineMetrics {
   final int newThisWeek;
   final int newThisMonth;
   final int overdueTasks;
+  final double totalRevenue;
+  final double revenueThisMonth;
+  final Map<ClientStatus, double> revenueByStatus;
 
   const PipelineMetrics({
     required this.totalActive,
@@ -18,6 +21,9 @@ class PipelineMetrics {
     required this.newThisWeek,
     required this.newThisMonth,
     required this.overdueTasks,
+    required this.totalRevenue,
+    required this.revenueThisMonth,
+    required this.revenueByStatus,
   });
 }
 
@@ -60,6 +66,23 @@ final metricsProvider = Provider<AsyncValue<PipelineMetrics>>((ref) {
         ) ??
         0;
 
+    // Revenue calculations
+    final totalRevenue = clients.fold<double>(
+      0,
+      (sum, c) => sum + (c.dealValue ?? 0),
+    );
+
+    final revenueThisMonth = clients
+        .where((c) => c.createdAt.isAfter(monthStart))
+        .fold<double>(0, (sum, c) => sum + (c.dealValue ?? 0));
+
+    final revenueByStatus = <ClientStatus, double>{};
+    for (final status in ClientStatus.values) {
+      revenueByStatus[status] = clients
+          .where((c) => c.status == status)
+          .fold<double>(0, (sum, c) => sum + (c.dealValue ?? 0));
+    }
+
     return PipelineMetrics(
       totalActive: totalActive,
       byStatus: byStatus,
@@ -67,6 +90,9 @@ final metricsProvider = Provider<AsyncValue<PipelineMetrics>>((ref) {
       newThisWeek: newThisWeek,
       newThisMonth: newThisMonth,
       overdueTasks: overdueTasks,
+      totalRevenue: totalRevenue,
+      revenueThisMonth: revenueThisMonth,
+      revenueByStatus: revenueByStatus,
     );
   });
 });
