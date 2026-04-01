@@ -152,3 +152,18 @@ final filteredClientsProvider = FutureProvider<List<Client>>((ref) async {
   if (query.isEmpty) return [];
   return ref.read(clientRepositoryProvider).searchClients(query);
 });
+
+// Count of new leads from the public form
+final newLeadsCountProvider = Provider<int>((ref) {
+  final clients = ref.watch(clientsProvider);
+  return clients.whenOrNull(
+        data: (list) => list
+            .where(
+              (c) =>
+                  c.source?.toLowerCase() == 'formulario' &&
+                  c.status == ClientStatus.newClient,
+            )
+            .length,
+      ) ??
+      0;
+});

@@ -1,12 +1,15 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
+import 'package:share_plus/share_plus.dart';
 import '../../../core/theme/design_tokens.dart';
 import '../../../core/utils/l10n_extension.dart';
 import '../../providers/auth_provider.dart';
 import '../../providers/client_provider.dart';
 import '../../providers/locale_provider.dart';
 import '../../providers/theme_provider.dart';
+import '../../providers/user_profile_provider.dart';
 import '../../../core/services/export_service.dart';
 
 class ProfileScreen extends ConsumerWidget {
@@ -109,6 +112,9 @@ class ProfileScreen extends ConsumerWidget {
               color: DesignTokens.secondaryFixed,
               onTap: () => _exportClients(context, ref),
             ),
+            const SizedBox(height: 24),
+            // Lead capture form card
+            _LeadFormCard(),
             const SizedBox(height: 48),
             // Logout button
             OutlinedButton.icon(
@@ -143,9 +149,9 @@ class ProfileScreen extends ConsumerWidget {
   Future<void> _exportClients(BuildContext context, WidgetRef ref) async {
     final clients = ref.read(clientsProvider).valueOrNull;
     if (clients == null || clients.isEmpty) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text(context.l10n.noClients)),
-      );
+      ScaffoldMessenger.of(
+        context,
+      ).showSnackBar(SnackBar(content: Text(context.l10n.noClients)));
       return;
     }
     try {
@@ -322,6 +328,148 @@ class _MenuCard extends StatelessWidget {
             ),
           ],
         ),
+      ),
+    );
+  }
+}
+
+class _LeadFormCard extends ConsumerWidget {
+  static const _formBaseUrl = 'trat.ar/f/';
+
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
+    final theme = Theme.of(context);
+    final profileAsync = ref.watch(userProfileProvider);
+
+    return Container(
+      padding: const EdgeInsets.all(20),
+      decoration: BoxDecoration(
+        color: DesignTokens.surfaceContainer,
+        borderRadius: BorderRadius.circular(DesignTokens.radiusL),
+        border: Border.all(
+          color: DesignTokens.primary.withValues(alpha: 0.2),
+        ),
+      ),
+      child: profileAsync.when(
+        loading: () => const Center(
+          child: Padding(
+            padding: EdgeInsets.all(16),
+            child: CircularProgressIndicator(strokeWidth: 2),
+          ),
+        ),
+        error: (_, __) => Text(
+          context.l10n.somethingWentWrong,
+          style: theme.textTheme.bodyMedium?.copyWith(
+            color: DesignTokens.error,
+          ),
+        ),
+        data: (profile) {
+          final formUrl = '$_formBaseUrl${profile.formToken}';
+          return Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Row(
+                children: [
+                  Icon(
+                    Icons.assignment_rounded,
+                    color: DesignTokens.primary,
+                    size: 20,
+                  ),
+                  const SizedBox(width: 8),
+                  Text(
+                    context.l10n.myLeadForm,
+                    style: theme.textTheme.titleSmall?.copyWith(
+                      fontWeight: FontWeight.w700,
+                    ),
+                  ),
+                ],
+              ),
+              const SizedBox(height: 12),
+              Container(
+                width: double.infinity,
+                padding: const EdgeInsets.symmetric(
+                  horizontal: 14,
+                  vertical: 10,
+                ),
+                decoration: BoxDecoration(
+                  color: DesignTokens.surfaceContainerLow,
+                  borderRadius: BorderRadius.circular(DesignTokens.radiusS),
+                ),
+                child: Text(
+                  formUrl,
+                  style: theme.textTheme.bodyMedium?.copyWith(
+                    color: DesignTokens.primary,
+                    fontWeight: FontWeight.w600,
+                    letterSpacing: 0.3,
+                  ),
+                ),
+              ),
+              const SizedBox(height: 14),
+              Row(
+                children: [
+                  Expanded(
+                    child: OutlinedButton.icon(
+                      onPressed: () {
+                        Clipboard.setData(ClipboardData(text: formUrl));
+                        ScaffoldMessenger.of(context).showSnackBar(
+                          SnackBar(
+                            content: Text(context.l10n.linkCopied),
+                          ),
+                        );
+                      },
+                      icon: const Icon(Icons.copy_rounded, size: 16),
+                      label: Text(context.l10n.copyLink),
+                    ),
+                  ),
+                  const SizedBox(width: 8),
+                  Expanded(
+                    child: OutlinedButton.icon(
+                      onPressed: () {
+                        Share.share(
+                          '${context.l10n.shareFormText}\n$formUrl',
+                        );
+                      },
+                      icon: const Icon(Icons.share_rounded, size: 16),
+                      label: Text(context.l10n.share),
+                      style: OutlinedButton.styleFrom(
+                        foregroundColor: DesignTokens.primary,
+                        side: BorderSide(
+                          color: DesignTokens.primary.withValues(alpha: 0.3),
+                        ),
+                      ),
+                    ),
+                  ),
+                ],
+              ),
+              const SizedBox(height: 10),
+              Row(
+                children: [
+                  Icon(
+                    profile.formEnabled
+                        ? Icons.check_circle_rounded
+                        : Icons.cancel_rounded,
+                    size: 16,
+                    color: profile.formEnabled
+                        ? DesignTokens.primary
+                        : DesignTokens.error,
+                  ),
+                  const SizedBox(width: 6),
+                  Text(
+                    profile.formEnabled
+                        ? context.l10n.formActive
+                        : context.l10n.formInactive,
+                    style: theme.textTheme.bodySmall?.copyWith(
+                      color: profile.formEnabled
+                          ? DesignTokens.primary
+                          : DesignTokens.error,
+                      fontWeight: FontWeight.w600,
+                    ),
+                  ),
+                ],
+              ),
+            ],
+          );
+        },
       ),
     );
   }

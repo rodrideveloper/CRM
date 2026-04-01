@@ -160,5 +160,13 @@
   "revenueByStatus": "Revenue by status",
   "metricsTitle": "Metrics 📊",
   "exportCsv": "Export data (CSV)",
-  "settings": "Settings"
+  "settings": "Settings",
+
+  "myLeadForm": "My lead capture form",
+  "copyLink": "Copy link",
+  "share": "Share",
+  "linkCopied": "Link copied to clipboard",
+  "shareFormText": "Leave your info here!",
+  "formActive": "Form active",
+  "formInactive": "Form disabled"
 }

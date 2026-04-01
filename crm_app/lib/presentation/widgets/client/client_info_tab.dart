@@ -300,7 +300,9 @@ class _ClientInfoTabState extends ConsumerState<ClientInfoTab> {
                               labelText: context.l10n.dealValue,
                               prefixText: '\$ ',
                             ),
-                            keyboardType: const TextInputType.numberWithOptions(decimal: true),
+                            keyboardType: const TextInputType.numberWithOptions(
+                              decimal: true,
+                            ),
                           ),
                         ),
                         const SizedBox(width: 8),
@@ -311,10 +313,22 @@ class _ClientInfoTabState extends ConsumerState<ClientInfoTab> {
                               labelText: context.l10n.currency,
                             ),
                             items: const [
-                              DropdownMenuItem(value: 'ARS', child: Text('ARS')),
-                              DropdownMenuItem(value: 'USD', child: Text('USD')),
-                              DropdownMenuItem(value: 'BRL', child: Text('BRL')),
-                              DropdownMenuItem(value: 'EUR', child: Text('EUR')),
+                              DropdownMenuItem(
+                                value: 'ARS',
+                                child: Text('ARS'),
+                              ),
+                              DropdownMenuItem(
+                                value: 'USD',
+                                child: Text('USD'),
+                              ),
+                              DropdownMenuItem(
+                                value: 'BRL',
+                                child: Text('BRL'),
+                              ),
+                              DropdownMenuItem(
+                                value: 'EUR',
+                                child: Text('EUR'),
+                              ),
                             ],
                             onChanged: (v) {
                               if (v != null) setState(() => _currency = v);

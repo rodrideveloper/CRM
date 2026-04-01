@@ -403,4 +403,25 @@ class AppLocalizationsPt extends AppLocalizations {
 
   @override
   String get settings => 'Configurações';
+
+  @override
+  String get myLeadForm => 'Meu formulário de captação';
+
+  @override
+  String get copyLink => 'Copiar link';
+
+  @override
+  String get share => 'Compartilhar';
+
+  @override
+  String get linkCopied => 'Link copiado';
+
+  @override
+  String get shareFormText => 'Deixe seus dados aqui!';
+
+  @override
+  String get formActive => 'Formulário ativo';
+
+  @override
+  String get formInactive => 'Formulário desabilitado';
 }

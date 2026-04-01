@@ -175,5 +175,13 @@
   "revenueByStatus": "Revenue por estado",
   "metricsTitle": "Métricas 📊",
   "exportCsv": "Exportar datos (CSV)",
-  "settings": "Configuración"
+  "settings": "Configuración",
+
+  "myLeadForm": "Mi formulario de captación",
+  "copyLink": "Copiar link",
+  "share": "Compartir",
+  "linkCopied": "Link copiado al portapapeles",
+  "shareFormText": "¡Dejame tus datos acá!",
+  "formActive": "Formulario activo",
+  "formInactive": "Formulario deshabilitado"
 }

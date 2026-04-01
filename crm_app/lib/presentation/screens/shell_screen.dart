@@ -3,6 +3,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import '../../core/theme/design_tokens.dart';
 import '../../core/utils/l10n_extension.dart';
+import '../providers/client_provider.dart';
 import '../providers/task_provider.dart';
 
 class ShellScreen extends ConsumerWidget {
@@ -20,6 +21,7 @@ class ShellScreen extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final index = _currentIndex(context);
     final overdueCount = ref.watch(overdueTaskCountProvider);
+    final newLeadsCount = ref.watch(newLeadsCountProvider);
 
     return Scaffold(
       extendBody: true,
@@ -42,6 +44,7 @@ class ShellScreen extends ConsumerWidget {
                       label: context.l10n.pipeline.toUpperCase(),
                       isSelected: index == 0,
                       onTap: () => context.go('/pipeline'),
+                      badgeCount: newLeadsCount,
                     ),
                     _NavItem(
                       icon: Icons.checklist_rounded,

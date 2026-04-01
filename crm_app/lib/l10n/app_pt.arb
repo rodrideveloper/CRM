@@ -160,5 +160,13 @@
   "revenueByStatus": "Receita por status",
   "metricsTitle": "Métricas 📊",
   "exportCsv": "Exportar dados (CSV)",
-  "settings": "Configurações"
+  "settings": "Configurações",
+
+  "myLeadForm": "Meu formulário de captação",
+  "copyLink": "Copiar link",
+  "share": "Compartilhar",
+  "linkCopied": "Link copiado",
+  "shareFormText": "Deixe seus dados aqui!",
+  "formActive": "Formulário ativo",
+  "formInactive": "Formulário desabilitado"
 }
