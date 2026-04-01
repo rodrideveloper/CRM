@@ -346,9 +346,7 @@ class _LeadFormCard extends ConsumerWidget {
       decoration: BoxDecoration(
         color: DesignTokens.surfaceContainer,
         borderRadius: BorderRadius.circular(DesignTokens.radiusL),
-        border: Border.all(
-          color: DesignTokens.primary.withValues(alpha: 0.2),
-        ),
+        border: Border.all(color: DesignTokens.primary.withValues(alpha: 0.2)),
       ),
       child: profileAsync.when(
         loading: () => const Center(
@@ -412,9 +410,7 @@ class _LeadFormCard extends ConsumerWidget {
                       onPressed: () {
                         Clipboard.setData(ClipboardData(text: formUrl));
                         ScaffoldMessenger.of(context).showSnackBar(
-                          SnackBar(
-                            content: Text(context.l10n.linkCopied),
-                          ),
+                          SnackBar(content: Text(context.l10n.linkCopied)),
                         );
                       },
                       icon: const Icon(Icons.copy_rounded, size: 16),
@@ -425,9 +421,7 @@ class _LeadFormCard extends ConsumerWidget {
                   Expanded(
                     child: OutlinedButton.icon(
                       onPressed: () {
-                        Share.share(
-                          '${context.l10n.shareFormText}\n$formUrl',
-                        );
+                        Share.share('${context.l10n.shareFormText}\n$formUrl');
                       },
                       icon: const Icon(Icons.share_rounded, size: 16),
                       label: Text(context.l10n.share),
