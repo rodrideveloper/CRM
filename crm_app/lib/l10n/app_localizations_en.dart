@@ -402,4 +402,25 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get settings => 'Settings';
+
+  @override
+  String get myLeadForm => 'My lead capture form';
+
+  @override
+  String get copyLink => 'Copy link';
+
+  @override
+  String get share => 'Share';
+
+  @override
+  String get linkCopied => 'Link copied to clipboard';
+
+  @override
+  String get shareFormText => 'Leave your info here!';
+
+  @override
+  String get formActive => 'Form active';
+
+  @override
+  String get formInactive => 'Form disabled';
 }

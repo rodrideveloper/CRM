@@ -873,6 +873,48 @@ abstract class AppLocalizations {
   /// In es, this message translates to:
   /// **'Configuración'**
   String get settings;
+
+  /// No description provided for @myLeadForm.
+  ///
+  /// In es, this message translates to:
+  /// **'Mi formulario de captación'**
+  String get myLeadForm;
+
+  /// No description provided for @copyLink.
+  ///
+  /// In es, this message translates to:
+  /// **'Copiar link'**
+  String get copyLink;
+
+  /// No description provided for @share.
+  ///
+  /// In es, this message translates to:
+  /// **'Compartir'**
+  String get share;
+
+  /// No description provided for @linkCopied.
+  ///
+  /// In es, this message translates to:
+  /// **'Link copiado al portapapeles'**
+  String get linkCopied;
+
+  /// No description provided for @shareFormText.
+  ///
+  /// In es, this message translates to:
+  /// **'¡Dejame tus datos acá!'**
+  String get shareFormText;
+
+  /// No description provided for @formActive.
+  ///
+  /// In es, this message translates to:
+  /// **'Formulario activo'**
+  String get formActive;
+
+  /// No description provided for @formInactive.
+  ///
+  /// In es, this message translates to:
+  /// **'Formulario deshabilitado'**
+  String get formInactive;
 }
 
 class _AppLocalizationsDelegate

@@ -152,7 +152,9 @@ class ClientCard extends StatelessWidget {
                                 vertical: 3,
                               ),
                               decoration: BoxDecoration(
-                                color: DesignTokens.primary.withValues(alpha: 0.15),
+                                color: DesignTokens.primary.withValues(
+                                  alpha: 0.15,
+                                ),
                                 borderRadius: BorderRadius.circular(
                                   DesignTokens.radiusFull,
                                 ),
