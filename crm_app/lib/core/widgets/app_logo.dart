@@ -49,28 +49,28 @@ class AppLogo extends StatelessWidget {
             child: Padding(
               padding: EdgeInsets.all(imagePadding),
               child: Image.asset(
-                  assetPath,
-                  fit: fit,
-                  filterQuality: FilterQuality.high,
-                  errorBuilder: (context, error, stackTrace) {
-                    return DecoratedBox(
-                      decoration: BoxDecoration(
-                        gradient: DesignTokens.primaryGradient,
-                        borderRadius: innerRadius,
+                assetPath,
+                fit: fit,
+                filterQuality: FilterQuality.high,
+                errorBuilder: (context, error, stackTrace) {
+                  return DecoratedBox(
+                    decoration: BoxDecoration(
+                      gradient: DesignTokens.primaryGradient,
+                      borderRadius: innerRadius,
+                    ),
+                    child: Center(
+                      child: Text(
+                        'TRATAR',
+                        style: Theme.of(context).textTheme.titleMedium
+                            ?.copyWith(
+                              color: Colors.white,
+                              fontWeight: FontWeight.w800,
+                              letterSpacing: 1.6,
+                            ),
                       ),
-                      child: Center(
-                        child: Text(
-                          'TRATAR',
-                          style: Theme.of(context).textTheme.titleMedium
-                              ?.copyWith(
-                                color: Colors.white,
-                                fontWeight: FontWeight.w800,
-                                letterSpacing: 1.6,
-                              ),
-                        ),
-                      ),
-                    );
-                  },
+                    ),
+                  );
+                },
               ),
             ),
           ),

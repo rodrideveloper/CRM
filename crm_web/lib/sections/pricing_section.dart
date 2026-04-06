@@ -89,7 +89,7 @@ class PricingSection extends StatelessWidget {
 }
 
 final _mainPlan = _Plan(
-  name: 'VentasApp',
+  name: 'TRATAR',
   price: '\$5.999',
   period: '/mes',
   description: 'Todo lo que necesitás para vender más por WhatsApp',

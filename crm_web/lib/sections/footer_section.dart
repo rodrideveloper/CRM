@@ -39,11 +39,12 @@ class FooterSection extends StatelessWidget {
                   Icon(Icons.chat, color: WebTheme.primaryColor, size: 24),
                   const SizedBox(width: 8),
                   const Text(
-                    'VentasApp',
+                    'TRATAR',
                     style: TextStyle(
                       color: Colors.white,
                       fontSize: 18,
                       fontWeight: FontWeight.bold,
+                      letterSpacing: 1.2,
                     ),
                   ),
                 ],
@@ -53,26 +54,33 @@ class FooterSection extends StatelessWidget {
                 'CRM para ventas por WhatsApp.\nPensado para PyMEs argentinas.',
                 style: TextStyle(color: Colors.white38, fontSize: 14),
               ),
+              const SizedBox(height: 16),
+              const Text(
+                '© 2026 TRATAR. Todos los derechos reservados.',
+                style: TextStyle(color: Colors.white24, fontSize: 12),
+              ),
             ],
           ),
         ),
-        // Links
+        // Contact
         Expanded(
-          child: _FooterColumn(
-            title: 'Producto',
-            links: ['Funciones', 'Precios', 'Demo'],
-          ),
-        ),
-        Expanded(
-          child: _FooterColumn(
-            title: 'Empresa',
-            links: ['Sobre nosotros', 'Contacto', 'Blog'],
-          ),
-        ),
-        Expanded(
-          child: _FooterColumn(
-            title: 'Legal',
-            links: ['Términos', 'Privacidad'],
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              const Text(
+                'Contacto',
+                style: TextStyle(
+                  color: Colors.white70,
+                  fontSize: 14,
+                  fontWeight: FontWeight.w600,
+                ),
+              ),
+              const SizedBox(height: 16),
+              const Text(
+                'hola@tratar.app',
+                style: TextStyle(color: Colors.white38, fontSize: 14),
+              ),
+            ],
           ),
         ),
       ],
@@ -89,11 +97,12 @@ class FooterSection extends StatelessWidget {
             Icon(Icons.chat, color: WebTheme.primaryColor, size: 24),
             const SizedBox(width: 8),
             const Text(
-              'VentasApp',
+              'TRATAR',
               style: TextStyle(
                 color: Colors.white,
                 fontSize: 18,
                 fontWeight: FontWeight.bold,
+                letterSpacing: 1.2,
               ),
             ),
           ],
@@ -106,41 +115,8 @@ class FooterSection extends StatelessWidget {
         ),
         const SizedBox(height: 24),
         const Text(
-          '© 2026 VentasApp. Todos los derechos reservados.',
+          '© 2026 TRATAR. Todos los derechos reservados.',
           style: TextStyle(color: Colors.white24, fontSize: 12),
-        ),
-      ],
-    );
-  }
-}
-
-class _FooterColumn extends StatelessWidget {
-  final String title;
-  final List<String> links;
-  const _FooterColumn({required this.title, required this.links});
-
-  @override
-  Widget build(BuildContext context) {
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        Text(
-          title,
-          style: const TextStyle(
-            color: Colors.white70,
-            fontSize: 14,
-            fontWeight: FontWeight.w600,
-          ),
-        ),
-        const SizedBox(height: 16),
-        ...links.map(
-          (l) => Padding(
-            padding: const EdgeInsets.only(bottom: 10),
-            child: Text(
-              l,
-              style: const TextStyle(color: Colors.white38, fontSize: 14),
-            ),
-          ),
         ),
       ],
     );

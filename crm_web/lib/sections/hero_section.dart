@@ -3,7 +3,8 @@ import 'package:flutter/material.dart';
 import '../core/theme/web_theme.dart';
 
 class HeroSection extends StatelessWidget {
-  const HeroSection({super.key});
+  final VoidCallback? onDemo;
+  const HeroSection({super.key, this.onDemo});
 
   @override
   Widget build(BuildContext context) {
@@ -41,7 +42,7 @@ class HeroSection extends StatelessWidget {
                 Icon(Icons.bolt, color: WebTheme.primaryColor, size: 16),
                 const SizedBox(width: 6),
                 Text(
-                  'CRM #1 para ventas por WhatsApp',
+                  'TRATAR — CRM para ventas por WhatsApp',
                   style: TextStyle(
                     color: WebTheme.primaryColor,
                     fontSize: 13,
@@ -96,7 +97,7 @@ class HeroSection extends StatelessWidget {
                 ),
               ),
               OutlinedButton.icon(
-                onPressed: () {},
+                onPressed: onDemo,
                 icon: const Icon(Icons.play_circle_outline, size: 20),
                 label: const Text('Ver demo'),
               ),
@@ -144,7 +145,7 @@ class HeroSection extends StatelessWidget {
                   ),
                   const SizedBox(height: 2),
                   const Text(
-                    'Sumate a las PyMEs que ya usan VentasApp',
+                    'Sumate a las PyMEs que ya usan TRATAR',
                     style: TextStyle(color: Colors.white54, fontSize: 13),
                   ),
                 ],

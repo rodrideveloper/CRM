@@ -89,7 +89,7 @@ class _AuthPageState extends State<AuthPage> {
         content: Text(
           _isLogin
               ? 'Iniciaste sesión correctamente.\nDescargá la app para gestionar tus ventas.'
-              : '¡Tu cuenta fue creada con éxito!\nDescargá la app para empezar a usar VentasApp.',
+              : '¡Tu cuenta fue creada con éxito!\nDescargá la app para empezar a usar TRATAR.',
           style: const TextStyle(color: Colors.white70),
         ),
         actions: [
@@ -102,8 +102,12 @@ class _AuthPageState extends State<AuthPage> {
           ),
           ElevatedButton.icon(
             onPressed: () {
-              // TODO: Replace with actual store link
               Navigator.of(ctx).pop();
+              ScaffoldMessenger.of(context).showSnackBar(
+                const SnackBar(
+                  content: Text('Próximamente disponible en Google Play'),
+                ),
+              );
             },
             icon: const Icon(Icons.download, size: 18),
             label: const Text('Descargar app'),
@@ -148,11 +152,12 @@ class _AuthPageState extends State<AuthPage> {
                     Icon(Icons.chat, color: WebTheme.primaryColor, size: 32),
                     const SizedBox(width: 10),
                     Text(
-                      'VentasApp',
+                      'TRATAR',
                       style: TextStyle(
                         color: Colors.white,
                         fontSize: isMobile ? 24 : 28,
                         fontWeight: FontWeight.bold,
+                        letterSpacing: 1.2,
                       ),
                     ),
                   ],

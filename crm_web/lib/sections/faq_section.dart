@@ -40,12 +40,12 @@ class FaqSection extends StatelessWidget {
                 _FaqItem(
                   question: '¿Se conecta directo a WhatsApp?',
                   answer:
-                      'VentasApp te permite contactar a tus clientes por WhatsApp en un toque. Abrís la conversación directamente desde la app, sin integraciones complicadas.',
+                      'TRATAR te permite contactar a tus clientes por WhatsApp en un toque. Abrís la conversación directamente desde la app, sin integraciones complicadas.',
                 ),
                 _FaqItem(
                   question: '¿Funciona en iPhone y Android?',
                   answer:
-                      'Sí, VentasApp funciona en ambos sistemas operativos. Es una app nativa que podés descargar e instalar en tu celular.',
+                      'Sí, TRATAR funciona en ambos sistemas operativos. Es una app nativa que podés descargar e instalar en tu celular.',
                 ),
                 _FaqItem(
                   question: '¿Mis datos están seguros?',

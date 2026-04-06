@@ -3,7 +3,16 @@ import 'package:flutter/material.dart';
 import '../core/theme/web_theme.dart';
 
 class Navbar extends StatelessWidget {
-  const Navbar({super.key});
+  final VoidCallback? onFeatures;
+  final VoidCallback? onPricing;
+  final VoidCallback? onHowItWorks;
+
+  const Navbar({
+    super.key,
+    this.onFeatures,
+    this.onPricing,
+    this.onHowItWorks,
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -26,21 +35,22 @@ class Navbar extends StatelessWidget {
               Icon(Icons.chat, color: WebTheme.primaryColor, size: 28),
               const SizedBox(width: 8),
               Text(
-                'VentasApp',
+                'TRATAR',
                 style: Theme.of(context).textTheme.titleLarge?.copyWith(
                   color: Colors.white,
                   fontWeight: FontWeight.bold,
+                  letterSpacing: 1.2,
                 ),
               ),
             ],
           ),
           const Spacer(),
           if (!isMobile) ...[
-            _NavLink(label: 'Funciones', onTap: () {}),
+            _NavLink(label: 'Funciones', onTap: () => onFeatures?.call()),
             const SizedBox(width: 32),
-            _NavLink(label: 'Precios', onTap: () {}),
+            _NavLink(label: 'Precios', onTap: () => onPricing?.call()),
             const SizedBox(width: 32),
-            _NavLink(label: 'Cómo funciona', onTap: () {}),
+            _NavLink(label: 'Cómo funciona', onTap: () => onHowItWorks?.call()),
             const SizedBox(width: 32),
           ],
           OutlinedButton(
