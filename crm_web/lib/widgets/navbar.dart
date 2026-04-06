@@ -27,8 +27,8 @@ class Navbar extends StatelessWidget {
           Row(
             mainAxisSize: MainAxisSize.min,
             children: [
-              Icon(Icons.chat, color: WebTheme.primaryColor, size: 28),
-              const SizedBox(width: 8),
+              Image.network('/icons/logo.png', height: 36, width: 36),
+              const SizedBox(width: 10),
               Text(
                 'TRATAR',
                 style: Theme.of(context).textTheme.titleLarge?.copyWith(

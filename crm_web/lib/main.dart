@@ -19,7 +19,7 @@ class CrmWebApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      title: 'TRATAR - CRM para WhatsApp',
+      title: 'TRATAR - CRM de seguimiento comercial',
       debugShowCheckedModeBanner: false,
       theme: WebTheme.dark,
       initialRoute: AppRouter.landing,

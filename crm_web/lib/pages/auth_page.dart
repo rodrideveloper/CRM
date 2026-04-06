@@ -149,7 +149,7 @@ class _AuthPageState extends State<AuthPage> {
                 Row(
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
-                    Icon(Icons.chat, color: WebTheme.primaryColor, size: 32),
+                    Image.network('/icons/logo.png', height: 40, width: 40),
                     const SizedBox(width: 10),
                     Text(
                       'TRATAR',

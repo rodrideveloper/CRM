@@ -1,7 +1,5 @@
 import 'package:flutter/material.dart';
 
-import '../core/theme/web_theme.dart';
-
 class FooterSection extends StatelessWidget {
   const FooterSection({super.key});
 
@@ -36,7 +34,7 @@ class FooterSection extends StatelessWidget {
               Row(
                 mainAxisSize: MainAxisSize.min,
                 children: [
-                  Icon(Icons.chat, color: WebTheme.primaryColor, size: 24),
+                  Image.network('/icons/logo.png', height: 28, width: 28),
                   const SizedBox(width: 8),
                   const Text(
                     'TRATAR',
@@ -51,7 +49,7 @@ class FooterSection extends StatelessWidget {
               ),
               const SizedBox(height: 12),
               const Text(
-                'CRM para ventas por WhatsApp.\nPensado para PyMEs argentinas.',
+                'CRM de seguimiento comercial.\nPensado para PyMEs argentinas.',
                 style: TextStyle(color: Colors.white38, fontSize: 14),
               ),
               const SizedBox(height: 16),
@@ -94,7 +92,7 @@ class FooterSection extends StatelessWidget {
         Row(
           mainAxisSize: MainAxisSize.min,
           children: [
-            Icon(Icons.chat, color: WebTheme.primaryColor, size: 24),
+            Image.network('/icons/logo.png', height: 28, width: 28),
             const SizedBox(width: 8),
             const Text(
               'TRATAR',
@@ -109,7 +107,7 @@ class FooterSection extends StatelessWidget {
         ),
         const SizedBox(height: 12),
         const Text(
-          'CRM para ventas por WhatsApp.',
+          'CRM de seguimiento comercial.',
           style: TextStyle(color: Colors.white38, fontSize: 14),
           textAlign: TextAlign.center,
         ),

@@ -28,7 +28,7 @@ class HowItWorksSection extends StatelessWidget {
         number: '3',
         title: 'Gestioná y vendé',
         description:
-            'Hacé seguimiento, enviá WhatsApp y cerrá más ventas desde tu celular.',
+            'Hacé seguimiento, contactá clientes y cerrá más ventas desde tu celular.',
         icon: Icons.trending_up,
       ),
     ];

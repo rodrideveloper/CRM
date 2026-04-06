@@ -1,12 +1,19 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 
-/// Design tokens for VentasApp web.
+/// Design tokens for TRATAR web.
 /// Must stay in sync with crm_app/lib/core/theme/design_tokens.dart
 class WebTheme {
-  // ── Primary ──────────────────────────────────────────────
+  // ── Primary (WhatsApp Green) ─────────────────────────────
   static const primaryColor = Color(0xFF25D366);
+  static const primaryBright = Color(0xFF4FF07F);
   static const primaryDark = Color(0xFF128C7E);
+
+  // ── Warm Accents ─────────────────────────────────────────
+  static const teal = Color(0xFF8FF4E3);
+  static const orange = Color(0xFFFFB59B);
+  static const amber = Color(0xFFFFB347);
+  static const infoBright = Color(0xFF54A0FF);
 
   // ── Backgrounds (dark) ───────────────────────────────────
   static const bgDeep = Color(0xFF0B1121);

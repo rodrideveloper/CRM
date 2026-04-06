@@ -32,9 +32,7 @@ class HeroSection extends StatelessWidget {
             decoration: BoxDecoration(
               color: WebTheme.primaryColor.withValues(alpha: 0.1),
               borderRadius: BorderRadius.circular(20),
-              border: Border.all(
-                color: WebTheme.primaryColor.withValues(alpha: 0.3),
-              ),
+              border: Border.all(color: WebTheme.teal.withValues(alpha: 0.3)),
             ),
             child: Row(
               mainAxisSize: MainAxisSize.min,
@@ -42,7 +40,7 @@ class HeroSection extends StatelessWidget {
                 Icon(Icons.bolt, color: WebTheme.primaryColor, size: 16),
                 const SizedBox(width: 6),
                 Text(
-                  'TRATAR — CRM para ventas por WhatsApp',
+                  'TRATAR — CRM de seguimiento comercial',
                   style: TextStyle(
                     color: WebTheme.primaryColor,
                     fontSize: 13,
@@ -55,7 +53,7 @@ class HeroSection extends StatelessWidget {
           SizedBox(height: isMobile ? 32 : 40),
           // Main headline
           Text(
-            'Vendé más por WhatsApp\ncon un CRM pensado para vos',
+            'Organizá tus clientes,\ndejá de perder ventas',
             textAlign: TextAlign.center,
             style: TextStyle(
               color: Colors.white,
@@ -71,7 +69,7 @@ class HeroSection extends StatelessWidget {
             constraints: const BoxConstraints(maxWidth: 600),
             child: Text(
               'Organizá tus clientes en un pipeline visual, registrá notas, '
-              'creá tareas de seguimiento y contactá por WhatsApp en un toque. '
+              'creá tareas de seguimiento y contactalos en un toque. '
               'Todo desde tu celular.',
               textAlign: TextAlign.center,
               style: TextStyle(

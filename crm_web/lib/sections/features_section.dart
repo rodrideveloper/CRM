@@ -18,14 +18,14 @@ class FeaturesSection extends StatelessWidget {
         description:
             'Visualizá todos tus clientes organizados por etapa de venta. '
             'Movelos con un toque a medida que avanzan.',
-        color: Colors.blue,
+        color: WebTheme.primaryBright,
       ),
       _Feature(
         icon: Icons.chat,
-        title: 'WhatsApp en un toque',
+        title: 'Contacto rápido',
         description:
-            'Contactá a tus clientes directamente desde la app. '
-            'Sin copiar números, sin perder tiempo.',
+            'Contactá a tus clientes por WhatsApp u otros canales '
+            'directamente desde la app, en un solo toque.',
         color: WebTheme.primaryColor,
       ),
       _Feature(
@@ -34,7 +34,7 @@ class FeaturesSection extends StatelessWidget {
         description:
             'Creá recordatorios para cada cliente. '
             'Nunca más pierdas una oportunidad por olvidarte de hacer follow-up.',
-        color: Colors.orange,
+        color: WebTheme.amber,
       ),
       _Feature(
         icon: Icons.note_alt,
@@ -42,7 +42,7 @@ class FeaturesSection extends StatelessWidget {
         description:
             'Registrá toda la información importante de cada conversación. '
             'Tené el contexto siempre a mano.',
-        color: Colors.purple,
+        color: WebTheme.orange,
       ),
       _Feature(
         icon: Icons.phone_android,
@@ -50,7 +50,7 @@ class FeaturesSection extends StatelessWidget {
         description:
             'Diseñado para usar desde el celular. '
             'Gestioná tus ventas desde donde estés, cuando quieras.',
-        color: Colors.cyan,
+        color: WebTheme.teal,
       ),
       _Feature(
         icon: Icons.dark_mode,
@@ -58,7 +58,7 @@ class FeaturesSection extends StatelessWidget {
         description:
             'Cuidá tus ojos con el tema oscuro. '
             'Perfecto para usar de noche o en ambientes con poca luz.',
-        color: Colors.indigo,
+        color: WebTheme.infoBright,
       ),
     ];
 

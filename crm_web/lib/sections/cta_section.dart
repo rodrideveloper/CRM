@@ -39,7 +39,7 @@ class CtaSection extends StatelessWidget {
             ConstrainedBox(
               constraints: const BoxConstraints(maxWidth: 500),
               child: const Text(
-                'Empezá hoy gratis y llevá tus ventas por WhatsApp al siguiente nivel.',
+                'Empezá hoy gratis y llevá tu seguimiento comercial al siguiente nivel.',
                 textAlign: TextAlign.center,
                 style: TextStyle(
                   color: Colors.white70,

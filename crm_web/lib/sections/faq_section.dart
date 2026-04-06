@@ -40,7 +40,7 @@ class FaqSection extends StatelessWidget {
                 _FaqItem(
                   question: '¿Se conecta directo a WhatsApp?',
                   answer:
-                      'TRATAR te permite contactar a tus clientes por WhatsApp en un toque. Abrís la conversación directamente desde la app, sin integraciones complicadas.',
+                      'TRATAR no es una integración de WhatsApp. Lo que hace es permitirte abrir una conversación con tu cliente en WhatsApp desde la app, en un toque, sin copiar números. Simple y directo.',
                 ),
                 _FaqItem(
                   question: '¿Funciona en iPhone y Android?',

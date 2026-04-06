@@ -5,7 +5,7 @@
     "display": "standalone",
     "background_color": "#0B1326",
     "theme_color": "#25D366",
-    "description": "CRM de ventas por WhatsApp para seguimiento comercial.",
+    "description": "CRM de seguimiento comercial para PyMEs.",
     "orientation": "portrait-primary",
     "prefer_related_applications": false,
     "icons": [

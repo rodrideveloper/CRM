@@ -27,7 +27,7 @@ class _LeadCaptureSectionState extends State<LeadCaptureSection> {
   Future<void> _submit() async {
     final phone = _phoneController.text.trim();
     if (phone.isEmpty) {
-      setState(() => _error = 'Ingresá tu número de WhatsApp');
+      setState(() => _error = 'Ingresá tu número de teléfono');
       return;
     }
 
@@ -84,11 +84,7 @@ class _LeadCaptureSectionState extends State<LeadCaptureSection> {
       ),
       child: Column(
         children: [
-          Icon(
-            Icons.chat_bubble_outline,
-            color: WebTheme.primaryColor,
-            size: 40,
-          ),
+          Icon(Icons.chat_bubble_outline, color: WebTheme.teal, size: 40),
           const SizedBox(height: 20),
           Text(
             '¿Querés ver cómo funciona?',
@@ -101,7 +97,7 @@ class _LeadCaptureSectionState extends State<LeadCaptureSection> {
           ),
           const SizedBox(height: 12),
           const Text(
-            'Dejanos tu WhatsApp y te hacemos una demo personalizada',
+            'Dejanos tu teléfono y te hacemos una demo personalizada',
             textAlign: TextAlign.center,
             style: TextStyle(color: Colors.white54, fontSize: 17),
           ),
@@ -148,7 +144,7 @@ class _LeadCaptureSectionState extends State<LeadCaptureSection> {
           ),
           const SizedBox(height: 8),
           const Text(
-            'Te vamos a escribir por WhatsApp para coordinar la demo.',
+            'Te vamos a contactar para coordinar la demo.',
             textAlign: TextAlign.center,
             style: TextStyle(color: Colors.white54, fontSize: 15),
           ),
@@ -183,7 +179,7 @@ class _LeadCaptureSectionState extends State<LeadCaptureSection> {
             style: const TextStyle(color: Colors.white),
             keyboardType: TextInputType.phone,
             decoration: const InputDecoration(
-              labelText: 'Tu número de WhatsApp',
+              labelText: 'Tu número de teléfono',
               labelStyle: TextStyle(color: Colors.white38),
               hintText: 'Ej: 11 2345-6789',
               hintStyle: TextStyle(color: Colors.white24),
