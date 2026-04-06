@@ -236,43 +236,7 @@ class _LoginScreenState extends ConsumerState<LoginScreen>
                           ),
                         ),
                       ),
-                      const SizedBox(height: 32),
-                      // Version footer
-                      Center(
-                        child: Row(
-                          mainAxisSize: MainAxisSize.min,
-                          children: [
-                            Expanded(
-                              child: Divider(
-                                color: DesignTokens.outlineVariant.withValues(
-                                  alpha: 0.2,
-                                ),
-                              ),
-                            ),
-                            Padding(
-                              padding: const EdgeInsets.symmetric(
-                                horizontal: 16,
-                              ),
-                              child: Text(
-                                'OBSIDIAN CRM V2.4',
-                                style: Theme.of(context).textTheme.labelMedium
-                                    ?.copyWith(
-                                      color: DesignTokens.onSurfaceVariant
-                                          .withValues(alpha: 0.5),
-                                      letterSpacing: 1.5,
-                                    ),
-                              ),
-                            ),
-                            Expanded(
-                              child: Divider(
-                                color: DesignTokens.outlineVariant.withValues(
-                                  alpha: 0.2,
-                                ),
-                              ),
-                            ),
-                          ],
-                        ),
-                      ),
+
                       const SizedBox(height: 24),
                     ],
                   ),

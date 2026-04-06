@@ -44,16 +44,11 @@ class AppLogo extends StatelessWidget {
         ),
         child: Padding(
           padding: const EdgeInsets.all(10),
-          child: DecoratedBox(
-            decoration: BoxDecoration(
-              color: Colors.white,
-              borderRadius: innerRadius,
-            ),
-            child: ClipRRect(
-              borderRadius: innerRadius,
-              child: Padding(
-                padding: EdgeInsets.all(imagePadding),
-                child: Image.asset(
+          child: ClipRRect(
+            borderRadius: innerRadius,
+            child: Padding(
+              padding: EdgeInsets.all(imagePadding),
+              child: Image.asset(
                   assetPath,
                   fit: fit,
                   filterQuality: FilterQuality.high,
@@ -76,7 +71,6 @@ class AppLogo extends StatelessWidget {
                       ),
                     );
                   },
-                ),
               ),
             ),
           ),
