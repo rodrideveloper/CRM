@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
+import '../../../core/widgets/app_logo.dart';
 import '../../../core/theme/design_tokens.dart';
 import '../../../core/utils/l10n_extension.dart';
 import '../../providers/auth_provider.dart';
@@ -88,24 +89,7 @@ class _LoginScreenState extends ConsumerState<LoginScreen>
                     crossAxisAlignment: CrossAxisAlignment.stretch,
                     children: [
                       const SizedBox(height: 24),
-                      // App icon
-                      Center(
-                        child: Container(
-                          width: 72,
-                          height: 72,
-                          decoration: BoxDecoration(
-                            gradient: DesignTokens.primaryGradient,
-                            borderRadius: BorderRadius.circular(
-                              DesignTokens.radiusL,
-                            ),
-                          ),
-                          child: const Icon(
-                            Icons.rocket_launch_rounded,
-                            size: 36,
-                            color: Colors.white,
-                          ),
-                        ),
-                      ),
+                      Center(child: const AppLogo()),
                       const SizedBox(height: 20),
                       Text(
                         context.l10n.loginWelcome,

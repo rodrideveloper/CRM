@@ -29,6 +29,20 @@ class ProfileScreen extends ConsumerWidget {
             letterSpacing: 1.2,
           ),
         ),
+        actions: [
+          Padding(
+            padding: const EdgeInsets.only(right: 8),
+            child: IconButton.filledTonal(
+              tooltip: context.l10n.logout,
+              onPressed: () => _confirmLogout(context, ref),
+              style: IconButton.styleFrom(
+                backgroundColor: DesignTokens.error.withValues(alpha: 0.14),
+                foregroundColor: DesignTokens.error,
+              ),
+              icon: const Icon(Icons.logout_rounded),
+            ),
+          ),
+        ],
       ),
       body: SingleChildScrollView(
         padding: const EdgeInsets.all(24),

@@ -28,7 +28,7 @@ class CrmApp extends ConsumerWidget {
     final themeMode = ref.watch(themeModeProvider);
 
     return MaterialApp.router(
-      title: 'CRM WhatsApp',
+      title: 'TRATAR',
       theme: AppTheme.light,
       darkTheme: AppTheme.dark,
       themeMode: themeMode,
