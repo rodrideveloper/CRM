@@ -57,26 +57,28 @@ class PricingSection extends StatelessWidget {
                   size: 20,
                 ),
                 const SizedBox(width: 10),
-                Text.rich(
-                  TextSpan(
-                    children: [
-                      const TextSpan(
-                        text: 'Precio fundador: ',
-                        style: TextStyle(color: Colors.white70, fontSize: 14),
-                      ),
-                      TextSpan(
-                        text: '\$2.999/mes',
-                        style: TextStyle(
-                          color: WebTheme.primaryColor,
-                          fontSize: 14,
-                          fontWeight: FontWeight.w700,
+                Flexible(
+                  child: Text.rich(
+                    TextSpan(
+                      children: [
+                        const TextSpan(
+                          text: 'Precio fundador: ',
+                          style: TextStyle(color: Colors.white70, fontSize: 14),
                         ),
-                      ),
-                      const TextSpan(
-                        text: ' para los primeros 50 usuarios',
-                        style: TextStyle(color: Colors.white70, fontSize: 14),
-                      ),
-                    ],
+                        TextSpan(
+                          text: '\$2.999/mes',
+                          style: TextStyle(
+                            color: WebTheme.primaryColor,
+                            fontSize: 14,
+                            fontWeight: FontWeight.w700,
+                          ),
+                        ),
+                        const TextSpan(
+                          text: ' para los primeros 50 usuarios',
+                          style: TextStyle(color: Colors.white70, fontSize: 14),
+                        ),
+                      ],
+                    ),
                   ),
                 ),
               ],

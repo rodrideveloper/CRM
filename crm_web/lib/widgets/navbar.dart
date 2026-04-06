@@ -7,12 +7,7 @@ class Navbar extends StatelessWidget {
   final VoidCallback? onPricing;
   final VoidCallback? onHowItWorks;
 
-  const Navbar({
-    super.key,
-    this.onFeatures,
-    this.onPricing,
-    this.onHowItWorks,
-  });
+  const Navbar({super.key, this.onFeatures, this.onPricing, this.onHowItWorks});
 
   @override
   Widget build(BuildContext context) {
