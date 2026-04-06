@@ -168,5 +168,20 @@
   "linkCopied": "Link copiado",
   "shareFormText": "Deixe seus dados aqui!",
   "formActive": "Formulário ativo",
-  "formInactive": "Formulário desabilitado"
+  "formInactive": "Formulário desabilitado",
+
+  "upgradeToPro": "Passe para Pro \uD83D\uDE80",
+  "clientLimitReached": "Você usou {count} de {limit} clientes no plano Free",
+  "upToNClients": "Até {n} clientes",
+  "unlimitedClients": "Clientes ilimitados",
+  "basicPipeline": "Pipeline de vendas",
+  "notesAndTasks": "Notas e tarefas",
+  "subscribePro": "Assinar Pro",
+  "cancelAnytime": "Cancele quando quiser. Sem compromisso.",
+  "myPlan": "Meu plano",
+  "freePlan": "Plano Free",
+  "proPlan": "Plano Pro",
+  "clientsUsed": "{count}/{limit} clientes",
+  "clientsUnlimited": "{count} clientes (ilimitado)",
+  "upgrade": "Melhorar plano"
 }

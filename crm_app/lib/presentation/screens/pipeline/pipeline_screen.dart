@@ -6,6 +6,8 @@ import '../../../core/utils/l10n_extension.dart';
 import '../../../domain/entities/client.dart';
 import '../../providers/client_provider.dart';
 import '../../providers/metrics_provider.dart';
+import '../../providers/user_profile_provider.dart';
+import '../../widgets/paywall_bottom_sheet.dart';
 import '../../widgets/pipeline/pipeline_column.dart';
 
 class PipelineScreen extends ConsumerStatefulWidget {
@@ -373,24 +375,95 @@ class _PipelineScreenState extends ConsumerState<PipelineScreen> {
                       ],
                     ),
                     const Spacer(),
-                    // Right: total
-                    Column(
-                      crossAxisAlignment: CrossAxisAlignment.end,
-                      children: [
-                        Text(
-                          '$totalClients',
-                          style: theme.textTheme.headlineSmall?.copyWith(
-                            color: DesignTokens.onSurface,
-                            fontWeight: FontWeight.w600,
+                    // Right: total with plan limit
+                    Consumer(
+                      builder: (context, ref, _) {
+                        final limitsAsync = ref.watch(userLimitsProvider);
+                        return limitsAsync.when(
+                          loading: () => Column(
+                            crossAxisAlignment: CrossAxisAlignment.end,
+                            children: [
+                              Text(
+                                '$totalClients',
+                                style: theme.textTheme.headlineSmall?.copyWith(
+                                  color: DesignTokens.onSurface,
+                                  fontWeight: FontWeight.w600,
+                                ),
+                              ),
+                              Text(
+                                'Total',
+                                style: theme.textTheme.bodyMedium?.copyWith(
+                                  color: DesignTokens.onSurfaceVariant,
+                                ),
+                              ),
+                            ],
                           ),
-                        ),
-                        Text(
-                          'Total',
-                          style: theme.textTheme.bodyMedium?.copyWith(
-                            color: DesignTokens.onSurfaceVariant,
+                          error: (_, __) => Column(
+                            crossAxisAlignment: CrossAxisAlignment.end,
+                            children: [
+                              Text(
+                                '$totalClients',
+                                style: theme.textTheme.headlineSmall?.copyWith(
+                                  color: DesignTokens.onSurface,
+                                  fontWeight: FontWeight.w600,
+                                ),
+                              ),
+                              Text(
+                                'Total',
+                                style: theme.textTheme.bodyMedium?.copyWith(
+                                  color: DesignTokens.onSurfaceVariant,
+                                ),
+                              ),
+                            ],
                           ),
-                        ),
-                      ],
+                          data: (limits) {
+                            final isNearLimit =
+                                !limits.isUnlimited &&
+                                limits.remaining <= 3 &&
+                                limits.remaining > 0;
+                            final isAtLimit =
+                                !limits.canCreateClient && !limits.isUnlimited;
+                            return GestureDetector(
+                              onTap: isAtLimit
+                                  ? () => showPaywallBottomSheet(
+                                      context,
+                                      limits: limits,
+                                    )
+                                  : null,
+                              child: Column(
+                                crossAxisAlignment: CrossAxisAlignment.end,
+                                children: [
+                                  Text(
+                                    limits.isUnlimited
+                                        ? '$totalClients'
+                                        : '${limits.clientCount}/${limits.clientLimit}',
+                                    style: theme.textTheme.headlineSmall
+                                        ?.copyWith(
+                                          color: isAtLimit
+                                              ? DesignTokens.error
+                                              : isNearLimit
+                                              ? DesignTokens.warning
+                                              : DesignTokens.onSurface,
+                                          fontWeight: FontWeight.w600,
+                                        ),
+                                  ),
+                                  Text(
+                                    limits.isUnlimited ? 'Pro ∞' : 'Free',
+                                    style: theme.textTheme.bodyMedium?.copyWith(
+                                      color: limits.isUnlimited
+                                          ? DesignTokens.primary
+                                          : DesignTokens.onSurfaceVariant,
+                                      fontWeight: limits.isUnlimited
+                                          ? FontWeight.w600
+                                          : FontWeight.w400,
+                                    ),
+                                  ),
+                                ],
+                              ),
+                            );
+                          },
+                        );
+                      },
                     ),
                   ],
                 ),
@@ -562,7 +635,14 @@ class _PipelineScreenState extends ConsumerState<PipelineScreen> {
               16,
         ),
         child: FloatingActionButton(
-          onPressed: _showCreateClientDialog,
+          onPressed: () {
+            final limits = ref.read(userLimitsProvider).valueOrNull;
+            if (limits != null && !limits.canCreateClient) {
+              showPaywallBottomSheet(context, limits: limits);
+            } else {
+              _showCreateClientDialog();
+            }
+          },
           child: const Icon(Icons.add_rounded),
         ),
       ),

@@ -168,5 +168,20 @@
   "linkCopied": "Link copied to clipboard",
   "shareFormText": "Leave your info here!",
   "formActive": "Form active",
-  "formInactive": "Form disabled"
+  "formInactive": "Form disabled",
+
+  "upgradeToPro": "Upgrade to Pro \uD83D\uDE80",
+  "clientLimitReached": "You've used {count} of {limit} clients on the Free plan",
+  "upToNClients": "Up to {n} clients",
+  "unlimitedClients": "Unlimited clients",
+  "basicPipeline": "Sales pipeline",
+  "notesAndTasks": "Notes & tasks",
+  "subscribePro": "Subscribe to Pro",
+  "cancelAnytime": "Cancel anytime. No commitment.",
+  "myPlan": "My plan",
+  "freePlan": "Free Plan",
+  "proPlan": "Pro Plan",
+  "clientsUsed": "{count}/{limit} clients",
+  "clientsUnlimited": "{count} clients (unlimited)",
+  "upgrade": "Upgrade plan"
 }

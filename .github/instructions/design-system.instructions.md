@@ -2,13 +2,13 @@
 applyTo: "**/*.dart"
 ---
 
-# VentasApp — Design System
+# TRATAR — Design System
 
 > Guía de colores, tipografía, espaciado y componentes para todo el sistema (crm_app + crm_web).
 
 ## Identidad Visual
 
-- **Marca**: VentasApp
+- **Marca**: TRATAR
 - **Concepto**: CRM profesional con ADN WhatsApp. Colores amigables, modernos, que transmitan confianza y velocidad.
 - **Tono**: Oscuro (dark-first), con acentos verdes WhatsApp y fondos azul profundo (slate).
 

@@ -2,6 +2,11 @@ import 'package:flutter/material.dart' show DateTimeRange;
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../../domain/entities/client.dart';
 import 'repository_providers.dart';
+import 'user_profile_provider.dart';
+
+class ClientLimitReachedException implements Exception {
+  const ClientLimitReachedException();
+}
 
 enum ClientSortOrder { recent, name, oldest }
 
@@ -37,6 +42,12 @@ class ClientsNotifier extends AsyncNotifier<List<Client>> {
     String? company,
     String? source,
   }) async {
+    // Pre-check client limit (UI guard; DB trigger is the real gatekeeper)
+    final limits = await ref.read(userLimitsProvider.future);
+    if (!limits.canCreateClient) {
+      throw const ClientLimitReachedException();
+    }
+
     await ref
         .read(clientRepositoryProvider)
         .createClient(
@@ -46,6 +57,7 @@ class ClientsNotifier extends AsyncNotifier<List<Client>> {
           company: company,
           source: source,
         );
+    ref.invalidate(userLimitsProvider);
     await refresh();
   }
 

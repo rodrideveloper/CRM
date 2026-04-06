@@ -915,6 +915,90 @@ abstract class AppLocalizations {
   /// In es, this message translates to:
   /// **'Formulario deshabilitado'**
   String get formInactive;
+
+  /// No description provided for @upgradeToPro.
+  ///
+  /// In es, this message translates to:
+  /// **'Pasate a Pro 🚀'**
+  String get upgradeToPro;
+
+  /// No description provided for @clientLimitReached.
+  ///
+  /// In es, this message translates to:
+  /// **'Usaste {count} de {limit} clientes en el plan Free'**
+  String clientLimitReached(int count, int limit);
+
+  /// No description provided for @upToNClients.
+  ///
+  /// In es, this message translates to:
+  /// **'Hasta {n} clientes'**
+  String upToNClients(int n);
+
+  /// No description provided for @unlimitedClients.
+  ///
+  /// In es, this message translates to:
+  /// **'Clientes ilimitados'**
+  String get unlimitedClients;
+
+  /// No description provided for @basicPipeline.
+  ///
+  /// In es, this message translates to:
+  /// **'Pipeline de ventas'**
+  String get basicPipeline;
+
+  /// No description provided for @notesAndTasks.
+  ///
+  /// In es, this message translates to:
+  /// **'Notas y tareas'**
+  String get notesAndTasks;
+
+  /// No description provided for @subscribePro.
+  ///
+  /// In es, this message translates to:
+  /// **'Suscribirme a Pro'**
+  String get subscribePro;
+
+  /// No description provided for @cancelAnytime.
+  ///
+  /// In es, this message translates to:
+  /// **'Cancelá cuando quieras. Sin compromiso.'**
+  String get cancelAnytime;
+
+  /// No description provided for @myPlan.
+  ///
+  /// In es, this message translates to:
+  /// **'Mi plan'**
+  String get myPlan;
+
+  /// No description provided for @freePlan.
+  ///
+  /// In es, this message translates to:
+  /// **'Plan Free'**
+  String get freePlan;
+
+  /// No description provided for @proPlan.
+  ///
+  /// In es, this message translates to:
+  /// **'Plan Pro'**
+  String get proPlan;
+
+  /// No description provided for @clientsUsed.
+  ///
+  /// In es, this message translates to:
+  /// **'{count}/{limit} clientes'**
+  String clientsUsed(int count, int limit);
+
+  /// No description provided for @clientsUnlimited.
+  ///
+  /// In es, this message translates to:
+  /// **'{count} clientes (ilimitado)'**
+  String clientsUnlimited(int count);
+
+  /// No description provided for @upgrade.
+  ///
+  /// In es, this message translates to:
+  /// **'Mejorar plan'**
+  String get upgrade;
 }
 
 class _AppLocalizationsDelegate

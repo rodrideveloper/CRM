@@ -183,5 +183,42 @@
   "linkCopied": "Link copiado al portapapeles",
   "shareFormText": "¡Dejame tus datos acá!",
   "formActive": "Formulario activo",
-  "formInactive": "Formulario deshabilitado"
+  "formInactive": "Formulario deshabilitado",
+
+  "upgradeToPro": "Pasate a Pro 🚀",
+  "clientLimitReached": "Usaste {count} de {limit} clientes en el plan Free",
+  "@clientLimitReached": {
+    "placeholders": {
+      "count": {"type": "int"},
+      "limit": {"type": "int"}
+    }
+  },
+  "upToNClients": "Hasta {n} clientes",
+  "@upToNClients": {
+    "placeholders": {
+      "n": {"type": "int"}
+    }
+  },
+  "unlimitedClients": "Clientes ilimitados",
+  "basicPipeline": "Pipeline de ventas",
+  "notesAndTasks": "Notas y tareas",
+  "subscribePro": "Suscribirme a Pro",
+  "cancelAnytime": "Cancelá cuando quieras. Sin compromiso.",
+  "myPlan": "Mi plan",
+  "freePlan": "Plan Free",
+  "proPlan": "Plan Pro",
+  "clientsUsed": "{count}/{limit} clientes",
+  "@clientsUsed": {
+    "placeholders": {
+      "count": {"type": "int"},
+      "limit": {"type": "int"}
+    }
+  },
+  "clientsUnlimited": "{count} clientes (ilimitado)",
+  "@clientsUnlimited": {
+    "placeholders": {
+      "count": {"type": "int"}
+    }
+  },
+  "upgrade": "Mejorar plan"
 }

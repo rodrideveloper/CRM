@@ -424,4 +424,54 @@ class AppLocalizationsPt extends AppLocalizations {
 
   @override
   String get formInactive => 'Formulário desabilitado';
+
+  @override
+  String get upgradeToPro => 'Passe para Pro 🚀';
+
+  @override
+  String clientLimitReached(int count, int limit) {
+    return 'Você usou $count de $limit clientes no plano Free';
+  }
+
+  @override
+  String upToNClients(int n) {
+    return 'Até $n clientes';
+  }
+
+  @override
+  String get unlimitedClients => 'Clientes ilimitados';
+
+  @override
+  String get basicPipeline => 'Pipeline de vendas';
+
+  @override
+  String get notesAndTasks => 'Notas e tarefas';
+
+  @override
+  String get subscribePro => 'Assinar Pro';
+
+  @override
+  String get cancelAnytime => 'Cancele quando quiser. Sem compromisso.';
+
+  @override
+  String get myPlan => 'Meu plano';
+
+  @override
+  String get freePlan => 'Plano Free';
+
+  @override
+  String get proPlan => 'Plano Pro';
+
+  @override
+  String clientsUsed(int count, int limit) {
+    return '$count/$limit clientes';
+  }
+
+  @override
+  String clientsUnlimited(int count) {
+    return '$count clientes (ilimitado)';
+  }
+
+  @override
+  String get upgrade => 'Melhorar plano';
 }

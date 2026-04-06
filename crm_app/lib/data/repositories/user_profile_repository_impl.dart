@@ -18,4 +18,10 @@ class UserProfileRepositoryImpl implements UserProfileRepository {
         .single();
     return UserProfileModel.fromJson(data);
   }
+
+  @override
+  Future<UserLimits> getUserLimits() async {
+    final data = await _client.rpc('get_user_limits');
+    return UserLimitsModel.fromJson(data as Map<String, dynamic>);
+  }
 }

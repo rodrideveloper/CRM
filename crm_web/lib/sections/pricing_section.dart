@@ -20,7 +20,7 @@ class PricingSection extends StatelessWidget {
       child: Column(
         children: [
           Text(
-            'Un solo plan. Todo incluido.',
+            'Empezá gratis. Crecé sin límites.',
             style: TextStyle(
               color: Colors.white,
               fontSize: isMobile ? 28 : 40,
@@ -29,60 +29,28 @@ class PricingSection extends StatelessWidget {
           ),
           const SizedBox(height: 12),
           const Text(
-            'Probá 14 días gratis. Sin tarjeta de crédito.',
+            'Sin tarjeta de crédito. Upgrade cuando quieras.',
             style: TextStyle(color: Colors.white54, fontSize: 18),
           ),
           const SizedBox(height: 48),
           ConstrainedBox(
-            constraints: const BoxConstraints(maxWidth: 520),
-            child: _PricingCard(plan: _mainPlan),
-          ),
-          const SizedBox(height: 32),
-          // Founder badge
-          Container(
-            padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 14),
-            decoration: BoxDecoration(
-              color: WebTheme.primaryColor.withValues(alpha: 0.08),
-              borderRadius: BorderRadius.circular(16),
-              border: Border.all(
-                color: WebTheme.primaryColor.withValues(alpha: 0.25),
-              ),
-            ),
-            child: Row(
-              mainAxisSize: MainAxisSize.min,
-              children: [
-                Icon(
-                  Icons.local_fire_department,
-                  color: WebTheme.primaryColor,
-                  size: 20,
-                ),
-                const SizedBox(width: 10),
-                Flexible(
-                  child: Text.rich(
-                    TextSpan(
-                      children: [
-                        const TextSpan(
-                          text: 'Precio fundador: ',
-                          style: TextStyle(color: Colors.white70, fontSize: 14),
-                        ),
-                        TextSpan(
-                          text: '\$2.999/mes',
-                          style: TextStyle(
-                            color: WebTheme.primaryColor,
-                            fontSize: 14,
-                            fontWeight: FontWeight.w700,
-                          ),
-                        ),
-                        const TextSpan(
-                          text: ' para los primeros 50 usuarios',
-                          style: TextStyle(color: Colors.white70, fontSize: 14),
-                        ),
-                      ],
-                    ),
+            constraints: const BoxConstraints(maxWidth: 900),
+            child: isMobile
+                ? Column(
+                    children: [
+                      _PricingCard(plan: _freePlan),
+                      const SizedBox(height: 20),
+                      _PricingCard(plan: _proPlan),
+                    ],
+                  )
+                : Row(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Expanded(child: _PricingCard(plan: _freePlan)),
+                      const SizedBox(width: 24),
+                      Expanded(child: _PricingCard(plan: _proPlan)),
+                    ],
                   ),
-                ),
-              ],
-            ),
           ),
         ],
       ),
@@ -90,22 +58,40 @@ class PricingSection extends StatelessWidget {
   }
 }
 
-final _mainPlan = _Plan(
-  name: 'TRATAR',
-  price: '\$5.999',
+final _freePlan = _Plan(
+  name: 'Free',
+  price: '\$0',
+  period: '/siempre',
+  description: 'Ideal para arrancar y probar TRATAR',
+  features: [
+    'Hasta 15 clientes',
+    'Pipeline visual tipo kanban',
+    'Notas y tareas por cliente',
+    'Contacto directo por WhatsApp',
+    'Formulario de captación',
+    'Tema claro y oscuro',
+  ],
+  cta: 'Crear cuenta gratis',
+  highlighted: false,
+);
+
+final _proPlan = _Plan(
+  name: 'Pro',
+  price: '\$3.999',
   period: '/mes',
-  description: 'Todo lo que necesitás para organizar tus ventas',
+  description: 'Para los que quieren vender en serio',
   features: [
     'Clientes ilimitados',
     'Pipeline visual tipo kanban',
     'Notas y tareas por cliente',
-    'Contacto directo en 1 toque',
+    'Contacto directo por WhatsApp',
+    'Formulario de captación',
+    'Exportar datos (CSV)',
     'Tema claro y oscuro',
-    'Exportar datos',
     'Soporte prioritario',
     'Todas las actualizaciones incluidas',
   ],
-  cta: 'Empezar 14 días gratis',
+  cta: 'Empezar con Pro',
   highlighted: true,
 );
 

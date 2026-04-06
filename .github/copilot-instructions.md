@@ -1,7 +1,7 @@
-# CRM WhatsApp Sales - Project Context
+# TRATAR CRM - Project Context
 
 ## Overview
-CRM MVP for small businesses in Argentina. Manage clients through a WhatsApp sales pipeline, register notes, and create follow-up tasks. The UI language is **Spanish (Argentina)**.
+CRM MVP for small businesses in Argentina. Manage clients through a WhatsApp sales pipeline, register notes, and create follow-up tasks. The UI language is **Spanish (Argentina)**. Brand name: **TRATAR** (trat.ar).
 
 ## Stack
 - **Frontend**: Flutter 3.35.6 (via FVM), Dart 3.9.2
@@ -36,8 +36,18 @@ crm/
 - **Enum**: `client_status` → new, contacted, interested, negotiating, closed_won, closed_lost
 - **Tables**: clients, notes, tasks, user_profiles (all with UUID PKs, soft delete via `deleted_at` where applicable)
 - **RLS**: Multi-tenant isolation — users only see their own data
-- **Trigger**: Auto-update `updated_at` on row change; auto-create `user_profiles` on signup
-- **RPC**: `submit_lead(form_token, name, phone)` — SECURITY DEFINER, creates clients from public forms
+- **Trigger**: Auto-update `updated_at` on row change; auto-create `user_profiles` on signup; `check_client_limit()` BEFORE INSERT on clients enforces free plan limit
+- **RPC**: `submit_lead(form_token, name, phone)` — SECURITY DEFINER, creates clients from public forms; `get_user_limits()` — returns plan info and client count/limit
+
+## Freemium Model
+- **Free plan**: Up to 15 active clients, basic pipeline, notes, tasks
+- **Pro plan** ($3.999/mes ARS): Unlimited clients, all features, priority support
+- **Enforcement**: DB trigger `check_client_limit()` is the real gatekeeper (BEFORE INSERT ON clients). UI pre-checks via `userLimitsProvider` for UX.
+- **Paywall**: `paywall_bottom_sheet.dart` — reusable bottom sheet with Free vs Pro comparison, Mercado Pago link
+- **Plan storage**: `user_profiles.plan` (TEXT, default 'free') + `plan_expires_at` (TIMESTAMPTZ)
+- **Domain**: `UserLimits` class with `canCreateClient`, `remaining`, `isUnlimited`
+- **Pipeline counter**: Shows "12/15" (count/limit) in stats header, color-coded (warning near limit, error at limit)
+- **Profile**: "Mi Plan" card with usage bar and upgrade button
 
 ## Key Design Decisions
 - **Mobile-first**: PageView horizontal kanban (viewportFraction: 0.85), no drag-and-drop

@@ -43,3 +43,12 @@ presentation/providers/client_provider.dart            # clientsProvider, pipeli
 1. Immediately update local state via `state.whenData()`
 2. Call Supabase `updateClient(id, status: status)`
 3. On failure: `refresh()` to revert + `rethrow`
+
+## Freemium / Client Limits
+- **Stats header** shows `count/limit` (e.g., "12/15") from `userLimitsProvider`, color-coded:
+  - Normal: default text color
+  - Warning (≤3 remaining): `DesignTokens.warning`
+  - At limit (0 remaining): `DesignTokens.error` + tappable → paywall
+- **FAB** checks `userLimitsProvider` before opening create dialog. If `!canCreateClient`, shows `showPaywallBottomSheet()` instead.
+- **createClient** in `ClientsNotifier` pre-checks limits and throws `ClientLimitReachedException`. DB trigger `check_client_limit()` is the real gatekeeper.
+- After successful creation, `userLimitsProvider` is invalidated to refresh the counter.

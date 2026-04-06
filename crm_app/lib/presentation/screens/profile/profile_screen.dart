@@ -10,6 +10,7 @@ import '../../providers/client_provider.dart';
 import '../../providers/locale_provider.dart';
 import '../../providers/theme_provider.dart';
 import '../../providers/user_profile_provider.dart';
+import '../../widgets/paywall_bottom_sheet.dart';
 import '../../../core/services/export_service.dart';
 
 class ProfileScreen extends ConsumerWidget {
@@ -96,6 +97,9 @@ class ProfileScreen extends ConsumerWidget {
               textAlign: TextAlign.center,
             ),
             const SizedBox(height: 32),
+            // Plan card
+            const _PlanCard(),
+            const SizedBox(height: 16),
             // Menu cards
             _MenuCard(
               icon: Icons.bar_chart_rounded,
@@ -475,6 +479,145 @@ class _LeadFormCard extends ConsumerWidget {
                   ),
                 ],
               ),
+            ],
+          );
+        },
+      ),
+    );
+  }
+}
+
+class _PlanCard extends ConsumerWidget {
+  const _PlanCard();
+
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
+    final theme = Theme.of(context);
+    final limitsAsync = ref.watch(userLimitsProvider);
+
+    return Container(
+      padding: const EdgeInsets.all(20),
+      decoration: BoxDecoration(
+        color: DesignTokens.surfaceContainer,
+        borderRadius: BorderRadius.circular(DesignTokens.radiusL),
+        border: Border.all(
+          color: DesignTokens.outlineVariant.withValues(alpha: 0.12),
+        ),
+      ),
+      child: limitsAsync.when(
+        loading: () => const Center(
+          child: Padding(
+            padding: EdgeInsets.all(12),
+            child: CircularProgressIndicator(strokeWidth: 2),
+          ),
+        ),
+        error: (_, __) => const SizedBox.shrink(),
+        data: (limits) {
+          final isPro = limits.isUnlimited;
+          return Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Row(
+                children: [
+                  Container(
+                    padding: const EdgeInsets.all(10),
+                    decoration: BoxDecoration(
+                      color:
+                          (isPro ? DesignTokens.primary : DesignTokens.warning)
+                              .withValues(alpha: 0.12),
+                      borderRadius: BorderRadius.circular(DesignTokens.radiusS),
+                    ),
+                    child: Icon(
+                      isPro
+                          ? Icons.workspace_premium_rounded
+                          : Icons.diamond_outlined,
+                      color: isPro
+                          ? DesignTokens.primary
+                          : DesignTokens.warning,
+                      size: 20,
+                    ),
+                  ),
+                  const SizedBox(width: 14),
+                  Expanded(
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Text(
+                          context.l10n.myPlan,
+                          style: theme.textTheme.titleSmall?.copyWith(
+                            fontWeight: FontWeight.w700,
+                          ),
+                        ),
+                        const SizedBox(height: 2),
+                        Text(
+                          isPro ? context.l10n.proPlan : context.l10n.freePlan,
+                          style: theme.textTheme.bodySmall?.copyWith(
+                            color: isPro
+                                ? DesignTokens.primary
+                                : DesignTokens.onSurfaceVariant,
+                            fontWeight: FontWeight.w600,
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+                  if (!isPro)
+                    TextButton(
+                      onPressed: () =>
+                          showPaywallBottomSheet(context, limits: limits),
+                      child: Text(context.l10n.upgrade),
+                    ),
+                ],
+              ),
+              const SizedBox(height: 14),
+              // Usage bar
+              if (!isPro) ...[
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    Text(
+                      context.l10n.clientsUsed(
+                        limits.clientCount,
+                        limits.clientLimit,
+                      ),
+                      style: theme.textTheme.bodySmall?.copyWith(
+                        fontWeight: FontWeight.w600,
+                      ),
+                    ),
+                    Text(
+                      '${((limits.clientCount / limits.clientLimit) * 100).toStringAsFixed(0)}%',
+                      style: theme.textTheme.bodySmall?.copyWith(
+                        color: DesignTokens.onSurfaceVariant,
+                      ),
+                    ),
+                  ],
+                ),
+                const SizedBox(height: 6),
+                ClipRRect(
+                  borderRadius: BorderRadius.circular(4),
+                  child: LinearProgressIndicator(
+                    value: limits.clientLimit > 0
+                        ? limits.clientCount / limits.clientLimit
+                        : 0,
+                    backgroundColor: DesignTokens.primary.withValues(
+                      alpha: 0.1,
+                    ),
+                    valueColor: AlwaysStoppedAnimation(
+                      limits.canCreateClient
+                          ? DesignTokens.primary
+                          : DesignTokens.error,
+                    ),
+                    minHeight: 8,
+                  ),
+                ),
+              ] else
+                Text(
+                  context.l10n.clientsUnlimited(limits.clientCount),
+                  style: theme.textTheme.bodySmall?.copyWith(
+                    color: DesignTokens.primary,
+                    fontWeight: FontWeight.w600,
+                  ),
+                ),
             ],
           );
         },
