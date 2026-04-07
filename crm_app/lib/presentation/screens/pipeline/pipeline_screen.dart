@@ -4,6 +4,7 @@ import 'package:go_router/go_router.dart';
 import '../../../core/theme/design_tokens.dart';
 import '../../../core/utils/l10n_extension.dart';
 import '../../../domain/entities/client.dart';
+import '../../../domain/entities/pipeline_stage_config.dart';
 import '../../providers/client_provider.dart';
 import '../../providers/metrics_provider.dart';
 import '../../providers/user_profile_provider.dart';
@@ -174,42 +175,48 @@ class _PipelineScreenState extends ConsumerState<PipelineScreen> {
                 ).textTheme.titleMedium?.copyWith(fontWeight: FontWeight.w700),
               ),
               const SizedBox(height: 12),
-              ...ClientStatus.values
-                  .where((s) => s != client.status)
-                  .map(
-                    (status) => ListTile(
-                      leading: Container(
-                        width: 36,
-                        height: 36,
-                        decoration: BoxDecoration(
-                          color: _statusColor(status).withValues(alpha: 0.15),
-                          borderRadius: BorderRadius.circular(
-                            DesignTokens.radiusS,
-                          ),
-                        ),
-                        child: Icon(
-                          _statusIcon(status),
-                          color: _statusColor(status),
-                          size: 20,
-                        ),
-                      ),
-                      title: Text(
-                        status.localizedLabel(context),
-                        style: const TextStyle(fontWeight: FontWeight.w600),
-                      ),
-                      shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(
-                          DesignTokens.radiusS,
-                        ),
-                      ),
-                      onTap: () async {
-                        Navigator.pop(ctx);
-                        await ref
-                            .read(clientsProvider.notifier)
-                            .updateClientStatus(client.id, status);
-                      },
+              ...ClientStatus.values.where((s) => s != client.status).map((
+                status,
+              ) {
+                final stages = ref.read(allPipelineStagesProvider);
+                final stage = stages.firstWhere(
+                  (s) => s.key == status.value,
+                  orElse: () => PipelineStageConfig(
+                    key: status.value,
+                    label: status.label,
+                    visible: true,
+                    position: 0,
+                  ),
+                );
+                return ListTile(
+                  leading: Container(
+                    width: 36,
+                    height: 36,
+                    decoration: BoxDecoration(
+                      color: _statusColor(status).withValues(alpha: 0.15),
+                      borderRadius: BorderRadius.circular(DesignTokens.radiusS),
+                    ),
+                    child: Icon(
+                      _statusIcon(status),
+                      color: _statusColor(status),
+                      size: 20,
                     ),
                   ),
+                  title: Text(
+                    stage.label,
+                    style: const TextStyle(fontWeight: FontWeight.w600),
+                  ),
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(DesignTokens.radiusS),
+                  ),
+                  onTap: () async {
+                    Navigator.pop(ctx);
+                    await ref
+                        .read(clientsProvider.notifier)
+                        .updateClientStatus(client.id, status);
+                  },
+                );
+              }),
             ],
           ),
         ),
@@ -336,12 +343,15 @@ class _PipelineScreenState extends ConsumerState<PipelineScreen> {
           ),
         ),
         data: (pipelineMap) {
-          final statuses = ClientStatus.values;
+          final stages = ref.watch(pipelineStagesProvider);
           final totalClients = pipelineMap.values.fold<int>(
             0,
             (sum, list) => sum + list.length,
           );
-          final currentCount = pipelineMap[statuses[_currentPage]]?.length ?? 0;
+          final currentStage = _currentPage < stages.length
+              ? stages[_currentPage]
+              : stages.first;
+          final currentCount = pipelineMap[currentStage.status]?.length ?? 0;
 
           return Column(
             crossAxisAlignment: CrossAxisAlignment.start,
@@ -366,7 +376,7 @@ class _PipelineScreenState extends ConsumerState<PipelineScreen> {
                         ),
                         const SizedBox(height: 2),
                         Text(
-                          '${statuses[_currentPage].localizedLabel(context).toUpperCase()} LEADS',
+                          '${currentStage.label.toUpperCase()} LEADS',
                           style: theme.textTheme.labelMedium?.copyWith(
                             color: DesignTokens.onSurfaceVariant,
                             letterSpacing: 1.2,
@@ -524,13 +534,13 @@ class _PipelineScreenState extends ConsumerState<PipelineScreen> {
                 child: ListView.separated(
                   scrollDirection: Axis.horizontal,
                   padding: const EdgeInsets.symmetric(horizontal: 16),
-                  itemCount: statuses.length,
+                  itemCount: stages.length,
                   separatorBuilder: (_, __) => const SizedBox(width: 8),
                   itemBuilder: (context, index) {
-                    final status = statuses[index];
-                    final count = pipelineMap[status]?.length ?? 0;
+                    final stage = stages[index];
+                    final count = pipelineMap[stage.status]?.length ?? 0;
                     final isSelected = _currentPage == index;
-                    final statusColor = _statusColor(status);
+                    final statusColor = _statusColor(stage.status);
                     return GestureDetector(
                       onTap: () {
                         _pageController.animateToPage(
@@ -573,7 +583,7 @@ class _PipelineScreenState extends ConsumerState<PipelineScreen> {
                             ),
                             const SizedBox(width: 8),
                             Text(
-                              status.localizedLabel(context),
+                              stage.label,
                               style: TextStyle(
                                 color: isSelected
                                     ? statusColor
@@ -607,14 +617,14 @@ class _PipelineScreenState extends ConsumerState<PipelineScreen> {
               Expanded(
                 child: PageView.builder(
                   controller: _pageController,
-                  itemCount: statuses.length,
+                  itemCount: stages.length,
                   onPageChanged: (index) =>
                       setState(() => _currentPage = index),
                   itemBuilder: (context, index) {
-                    final status = statuses[index];
-                    final clients = pipelineMap[status] ?? [];
+                    final stage = stages[index];
+                    final clients = pipelineMap[stage.status] ?? [];
                     return PipelineColumn(
-                      status: status,
+                      status: stage.status,
                       clients: clients,
                       onChangeStatus: _showChangeStatusSheet,
                       onRefresh: () =>

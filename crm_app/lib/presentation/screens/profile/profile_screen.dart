@@ -11,6 +11,7 @@ import '../../providers/locale_provider.dart';
 import '../../providers/theme_provider.dart';
 import '../../providers/user_profile_provider.dart';
 import '../../widgets/paywall_bottom_sheet.dart';
+import '../../widgets/pipeline_settings_sheet.dart';
 import '../../../core/services/export_service.dart';
 
 class ProfileScreen extends ConsumerWidget {
@@ -106,6 +107,13 @@ class ProfileScreen extends ConsumerWidget {
               label: context.l10n.metricsTitle,
               color: DesignTokens.primary,
               onTap: () => context.push('/metrics'),
+            ),
+            const SizedBox(height: 8),
+            _MenuCard(
+              icon: Icons.view_column_rounded,
+              label: 'Configurar pipeline',
+              color: DesignTokens.secondaryFixed,
+              onTap: () => showPipelineSettingsSheet(context),
             ),
             const SizedBox(height: 8),
             _MenuCard(

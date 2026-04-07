@@ -1,3 +1,4 @@
+import '../../domain/entities/pipeline_stage_config.dart';
 import '../../domain/entities/user_profile.dart';
 
 class UserProfileModel extends UserProfile {
@@ -7,11 +8,19 @@ class UserProfileModel extends UserProfile {
     required super.formEnabled,
     super.plan,
     super.planExpiresAt,
+    super.pipelineConfig,
     required super.createdAt,
     required super.updatedAt,
   });
 
   factory UserProfileModel.fromJson(Map<String, dynamic> json) {
+    List<PipelineStageConfig>? pipelineConfig;
+    if (json['pipeline_config'] != null) {
+      pipelineConfig = (json['pipeline_config'] as List)
+          .map((e) => PipelineStageConfig.fromJson(e as Map<String, dynamic>))
+          .toList();
+    }
+
     return UserProfileModel(
       id: json['id'] as String,
       formToken: json['form_token'] as String,
@@ -20,6 +29,7 @@ class UserProfileModel extends UserProfile {
       planExpiresAt: json['plan_expires_at'] != null
           ? DateTime.parse(json['plan_expires_at'] as String)
           : null,
+      pipelineConfig: pipelineConfig,
       createdAt: DateTime.parse(json['created_at'] as String),
       updatedAt: DateTime.parse(json['updated_at'] as String),
     );
