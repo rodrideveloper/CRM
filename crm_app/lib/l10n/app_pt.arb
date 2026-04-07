@@ -183,5 +183,6 @@
   "proPlan": "Plano Pro",
   "clientsUsed": "{count}/{limit} clientes",
   "clientsUnlimited": "{count} clientes (ilimitado)",
-  "upgrade": "Melhorar plano"
+  "upgrade": "Melhorar plano",
+  "leadFormProDescription": "Compartilhe um formulário para que seus clientes se cadastrem sozinhos. Disponível no plano Pro."
 }

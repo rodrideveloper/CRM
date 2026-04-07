@@ -5,6 +5,7 @@ import 'package:intl/intl.dart';
 import '../../../core/theme/design_tokens.dart';
 import '../../../core/utils/l10n_extension.dart';
 import '../../../domain/entities/client.dart';
+import '../../../core/services/notification_service.dart';
 import '../../providers/client_provider.dart';
 import '../../providers/repository_providers.dart';
 
@@ -560,6 +561,11 @@ class _ClientInfoTabState extends ConsumerState<ClientInfoTab> {
 
     final repo = ref.read(clientRepositoryProvider);
     await repo.updateClient(widget.client.id, nextFollowUp: dateTime);
+    await NotificationService().scheduleFollowUpReminder(
+      clientId: widget.client.id,
+      clientName: widget.client.name,
+      followUpDate: dateTime,
+    );
     await ref.read(clientsProvider.notifier).refresh();
 
     if (mounted) {
@@ -572,6 +578,7 @@ class _ClientInfoTabState extends ConsumerState<ClientInfoTab> {
   Future<void> _clearFollowUp(BuildContext context) async {
     final repo = ref.read(clientRepositoryProvider);
     await repo.updateClient(widget.client.id, clearFollowUp: true);
+    await NotificationService().cancelFollowUpReminder(widget.client.id);
     await ref.read(clientsProvider.notifier).refresh();
 
     if (mounted) {

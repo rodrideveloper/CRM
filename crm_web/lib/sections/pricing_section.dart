@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:url_launcher/url_launcher.dart';
 
 import '../core/theme/web_theme.dart';
 
@@ -247,8 +248,12 @@ class _PricingCardState extends State<_PricingCard> {
               width: double.infinity,
               child: plan.highlighted
                   ? ElevatedButton(
-                      onPressed: () =>
-                          Navigator.pushNamed(context, '/register'),
+                      onPressed: () => launchUrl(
+                        Uri.parse(
+                          'https://www.mercadopago.com.ar/subscriptions/checkout?preapproval_plan_id=269ccf0d9e694490913c8caa9fad4698',
+                        ),
+                        mode: LaunchMode.externalApplication,
+                      ),
                       child: Text(plan.cta),
                     )
                   : OutlinedButton(

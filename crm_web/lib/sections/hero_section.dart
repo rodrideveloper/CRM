@@ -89,7 +89,7 @@ class HeroSection extends StatelessWidget {
               ElevatedButton.icon(
                 onPressed: () => Navigator.pushNamed(context, '/register'),
                 icon: const Icon(Icons.rocket_launch, size: 20),
-                label: const Text('Probá 14 días gratis'),
+                label: const Text('Empezá gratis'),
                 style: ElevatedButton.styleFrom(
                   minimumSize: const Size(240, 56),
                 ),
@@ -97,7 +97,7 @@ class HeroSection extends StatelessWidget {
               OutlinedButton.icon(
                 onPressed: onDemo,
                 icon: const Icon(Icons.play_circle_outline, size: 20),
-                label: const Text('Ver demo'),
+                label: const Text('Ver cómo funciona'),
               ),
             ],
           ),

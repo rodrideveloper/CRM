@@ -39,7 +39,7 @@ class CtaSection extends StatelessWidget {
             ConstrainedBox(
               constraints: const BoxConstraints(maxWidth: 500),
               child: const Text(
-                'Empezá hoy gratis y llevá tu seguimiento comercial al siguiente nivel.',
+                'Empezá hoy gratis con hasta 15 clientes. Sin tarjeta de crédito.',
                 textAlign: TextAlign.center,
                 style: TextStyle(
                   color: Colors.white70,
@@ -52,7 +52,7 @@ class CtaSection extends StatelessWidget {
             ElevatedButton.icon(
               onPressed: () => Navigator.pushNamed(context, '/register'),
               icon: const Icon(Icons.rocket_launch, size: 20),
-              label: const Text('Empezar mi prueba gratis'),
+              label: const Text('Crear cuenta gratis'),
               style: ElevatedButton.styleFrom(
                 backgroundColor: Colors.white,
                 foregroundColor: WebTheme.gradientEnd,
@@ -61,7 +61,7 @@ class CtaSection extends StatelessWidget {
             ),
             const SizedBox(height: 16),
             const Text(
-              '14 días gratis · Sin tarjeta de crédito · Cancelá cuando quieras',
+              'Gratis para siempre · Sin tarjeta de crédito · Upgrade cuando quieras',
               style: TextStyle(color: Colors.white60, fontSize: 13),
             ),
           ],

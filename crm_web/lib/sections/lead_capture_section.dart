@@ -1,68 +1,9 @@
 import 'package:flutter/material.dart';
-import 'package:supabase_flutter/supabase_flutter.dart';
 
 import '../core/theme/web_theme.dart';
 
-class LeadCaptureSection extends StatefulWidget {
+class LeadCaptureSection extends StatelessWidget {
   const LeadCaptureSection({super.key});
-
-  @override
-  State<LeadCaptureSection> createState() => _LeadCaptureSectionState();
-}
-
-class _LeadCaptureSectionState extends State<LeadCaptureSection> {
-  final _nameController = TextEditingController();
-  final _phoneController = TextEditingController();
-  bool _loading = false;
-  bool _submitted = false;
-  String? _error;
-
-  @override
-  void dispose() {
-    _nameController.dispose();
-    _phoneController.dispose();
-    super.dispose();
-  }
-
-  Future<void> _submit() async {
-    final phone = _phoneController.text.trim();
-    if (phone.isEmpty) {
-      setState(() => _error = 'Ingresá tu número de teléfono');
-      return;
-    }
-
-    setState(() {
-      _loading = true;
-      _error = null;
-    });
-
-    try {
-      const formToken = String.fromEnvironment(
-        'FORM_TOKEN',
-        defaultValue: 'c91eda2c-c647-4c52-a0b0-28ffb3d044d3',
-      );
-
-      await Supabase.instance.client.rpc(
-        'submit_lead',
-        params: {
-          'p_form_token': formToken,
-          'p_name': _nameController.text.trim().isEmpty
-              ? null
-              : _nameController.text.trim(),
-          'p_phone': phone,
-        },
-      );
-      setState(() {
-        _submitted = true;
-        _loading = false;
-      });
-    } catch (e) {
-      setState(() {
-        _error = 'Hubo un error. Intentá de nuevo.';
-        _loading = false;
-      });
-    }
-  }
 
   @override
   Widget build(BuildContext context) {
@@ -84,10 +25,34 @@ class _LeadCaptureSectionState extends State<LeadCaptureSection> {
       ),
       child: Column(
         children: [
-          Icon(Icons.chat_bubble_outline, color: WebTheme.teal, size: 40),
-          const SizedBox(height: 20),
+          // Section badge
+          Container(
+            padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 6),
+            decoration: BoxDecoration(
+              color: WebTheme.teal.withValues(alpha: 0.1),
+              borderRadius: BorderRadius.circular(20),
+              border: Border.all(color: WebTheme.teal.withValues(alpha: 0.3)),
+            ),
+            child: Row(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                Icon(Icons.auto_awesome, color: WebTheme.teal, size: 16),
+                const SizedBox(width: 6),
+                Text(
+                  'PLAN PRO',
+                  style: TextStyle(
+                    color: WebTheme.teal,
+                    fontSize: 12,
+                    fontWeight: FontWeight.w700,
+                    letterSpacing: 1.2,
+                  ),
+                ),
+              ],
+            ),
+          ),
+          const SizedBox(height: 24),
           Text(
-            '¿Querés ver cómo funciona?',
+            'Captá leads desde tu web',
             textAlign: TextAlign.center,
             style: TextStyle(
               color: Colors.white,
@@ -96,129 +61,256 @@ class _LeadCaptureSectionState extends State<LeadCaptureSection> {
             ),
           ),
           const SizedBox(height: 12),
-          const Text(
-            'Dejanos tu teléfono y te hacemos una demo personalizada',
-            textAlign: TextAlign.center,
-            style: TextStyle(color: Colors.white54, fontSize: 17),
-          ),
-          const SizedBox(height: 40),
           ConstrainedBox(
-            constraints: const BoxConstraints(maxWidth: 480),
-            child: _submitted ? _buildSuccess() : _buildForm(isMobile),
+            constraints: const BoxConstraints(maxWidth: 560),
+            child: const Text(
+              'Con el plan Pro, generás un formulario embebible para tu '
+              'sitio web. Cada contacto cae directo a tu pipeline como '
+              'cliente nuevo, listo para que lo gestiones.',
+              textAlign: TextAlign.center,
+              style: TextStyle(
+                color: Colors.white54,
+                fontSize: 17,
+                height: 1.5,
+              ),
+            ),
+          ),
+          const SizedBox(height: 48),
+          // Two-column layout: mockup + features
+          ConstrainedBox(
+            constraints: const BoxConstraints(maxWidth: 900),
+            child: isMobile
+                ? Column(
+                    children: [
+                      _buildFormMockup(),
+                      const SizedBox(height: 32),
+                      _buildFeatureList(),
+                    ],
+                  )
+                : Row(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Expanded(child: _buildFormMockup()),
+                      const SizedBox(width: 48),
+                      Expanded(child: _buildFeatureList()),
+                    ],
+                  ),
+          ),
+          const SizedBox(height: 48),
+          ElevatedButton.icon(
+            onPressed: () => Navigator.pushNamed(context, '/register'),
+            icon: const Icon(Icons.rocket_launch, size: 20),
+            label: const Text('Empezá gratis'),
+            style: ElevatedButton.styleFrom(minimumSize: const Size(260, 56)),
+          ),
+          const SizedBox(height: 12),
+          const Text(
+            'Gratis para siempre · Upgrade a Pro cuando quieras',
+            style: TextStyle(color: Colors.white38, fontSize: 13),
           ),
         ],
       ),
     );
   }
 
-  Widget _buildSuccess() {
+  /// Visual mockup of the lead capture form (non-interactive).
+  Widget _buildFormMockup() {
     return Container(
-      padding: const EdgeInsets.all(32),
+      padding: const EdgeInsets.all(28),
       decoration: BoxDecoration(
         color: WebTheme.cardBg,
         borderRadius: BorderRadius.circular(20),
-        border: Border.all(color: WebTheme.primaryColor.withValues(alpha: 0.3)),
-      ),
-      child: Column(
-        children: [
-          Container(
-            padding: const EdgeInsets.all(16),
-            decoration: BoxDecoration(
-              color: WebTheme.primaryColor.withValues(alpha: 0.1),
-              shape: BoxShape.circle,
-            ),
-            child: Icon(
-              Icons.check_circle,
-              color: WebTheme.primaryColor,
-              size: 48,
-            ),
-          ),
-          const SizedBox(height: 20),
-          const Text(
-            '¡Listo! Te contactamos pronto',
-            style: TextStyle(
-              color: Colors.white,
-              fontSize: 22,
-              fontWeight: FontWeight.w700,
-            ),
-          ),
-          const SizedBox(height: 8),
-          const Text(
-            'Te vamos a contactar para coordinar la demo.',
-            textAlign: TextAlign.center,
-            style: TextStyle(color: Colors.white54, fontSize: 15),
+        border: Border.all(
+          color: WebTheme.primaryColor.withValues(alpha: 0.25),
+        ),
+        boxShadow: [
+          BoxShadow(
+            color: WebTheme.primaryColor.withValues(alpha: 0.08),
+            blurRadius: 40,
+            offset: const Offset(0, 12),
           ),
         ],
-      ),
-    );
-  }
-
-  Widget _buildForm(bool isMobile) {
-    return Container(
-      padding: const EdgeInsets.all(32),
-      decoration: BoxDecoration(
-        color: WebTheme.cardBg,
-        borderRadius: BorderRadius.circular(20),
-        border: Border.all(color: Colors.white10),
       ),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.stretch,
         children: [
-          TextField(
-            controller: _nameController,
-            style: const TextStyle(color: Colors.white),
-            decoration: const InputDecoration(
-              labelText: 'Tu nombre (opcional)',
-              labelStyle: TextStyle(color: Colors.white38),
-              prefixIcon: Icon(Icons.person_outline, color: Colors.white38),
+          // Form header
+          Row(
+            children: [
+              Container(
+                padding: const EdgeInsets.all(8),
+                decoration: BoxDecoration(
+                  color: WebTheme.primaryColor.withValues(alpha: 0.15),
+                  borderRadius: BorderRadius.circular(10),
+                ),
+                child: Icon(
+                  Icons.description_outlined,
+                  color: WebTheme.primaryColor,
+                  size: 20,
+                ),
+              ),
+              const SizedBox(width: 12),
+              const Text(
+                'Formulario de captación',
+                style: TextStyle(
+                  color: Colors.white,
+                  fontSize: 16,
+                  fontWeight: FontWeight.w700,
+                ),
+              ),
+            ],
+          ),
+          const SizedBox(height: 20),
+          // Fake name field
+          _buildMockField(Icons.person_outline, 'Nombre'),
+          const SizedBox(height: 12),
+          // Fake phone field
+          _buildMockField(Icons.phone_android, 'Teléfono'),
+          const SizedBox(height: 20),
+          // Fake submit button
+          Container(
+            height: 48,
+            decoration: BoxDecoration(
+              gradient: WebTheme.primaryGradient,
+              borderRadius: BorderRadius.circular(12),
+            ),
+            child: const Center(
+              child: Text(
+                'Enviar',
+                style: TextStyle(
+                  color: Colors.white,
+                  fontSize: 15,
+                  fontWeight: FontWeight.w600,
+                ),
+              ),
             ),
           ),
           const SizedBox(height: 16),
-          TextField(
-            controller: _phoneController,
-            style: const TextStyle(color: Colors.white),
-            keyboardType: TextInputType.phone,
-            decoration: const InputDecoration(
-              labelText: 'Tu número de teléfono',
-              labelStyle: TextStyle(color: Colors.white38),
-              hintText: 'Ej: 11 2345-6789',
-              hintStyle: TextStyle(color: Colors.white24),
-              prefixIcon: Icon(Icons.phone_android, color: Colors.white38),
-            ),
-          ),
-          if (_error != null) ...[
-            const SizedBox(height: 12),
-            Text(
-              _error!,
-              style: const TextStyle(color: WebTheme.error, fontSize: 13),
-            ),
-          ],
-          const SizedBox(height: 24),
-          ElevatedButton.icon(
-            onPressed: _loading ? null : _submit,
-            icon: _loading
-                ? const SizedBox(
-                    width: 20,
-                    height: 20,
-                    child: CircularProgressIndicator(
-                      strokeWidth: 2,
-                      color: Colors.white,
-                    ),
-                  )
-                : const Icon(Icons.send, size: 20),
-            label: Text(_loading ? 'Enviando...' : 'Quiero mi demo'),
-            style: ElevatedButton.styleFrom(
-              minimumSize: const Size(double.infinity, 52),
-            ),
-          ),
-          const SizedBox(height: 12),
-          const Text(
-            'No spam. Solo te contactamos para la demo.',
-            textAlign: TextAlign.center,
-            style: TextStyle(color: Colors.white38, fontSize: 12),
+          // Arrow + label showing it goes to pipeline
+          Row(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              Icon(
+                Icons.arrow_downward_rounded,
+                color: WebTheme.primaryColor,
+                size: 18,
+              ),
+              const SizedBox(width: 6),
+              Text(
+                'Cae directo a tu pipeline',
+                style: TextStyle(
+                  color: WebTheme.primaryColor,
+                  fontSize: 13,
+                  fontWeight: FontWeight.w600,
+                ),
+              ),
+            ],
           ),
         ],
       ),
     );
   }
+
+  Widget _buildMockField(IconData icon, String label) {
+    return Container(
+      height: 48,
+      padding: const EdgeInsets.symmetric(horizontal: 14),
+      decoration: BoxDecoration(
+        color: WebTheme.bgDeep,
+        borderRadius: BorderRadius.circular(12),
+        border: Border.all(color: Colors.white12),
+      ),
+      child: Row(
+        children: [
+          Icon(icon, color: Colors.white24, size: 20),
+          const SizedBox(width: 12),
+          Text(
+            label,
+            style: const TextStyle(color: Colors.white24, fontSize: 15),
+          ),
+        ],
+      ),
+    );
+  }
+
+  Widget _buildFeatureList() {
+    const features = [
+      _Feature(
+        Icons.link,
+        'Link único para tu negocio',
+        'Compartilo por WhatsApp, redes o embebelo en tu web.',
+      ),
+      _Feature(
+        Icons.bolt,
+        'Leads automáticos',
+        'Cada contacto se crea como cliente nuevo en tu pipeline.',
+      ),
+      _Feature(
+        Icons.notifications_active_outlined,
+        'Notificación al instante',
+        'Te enterás apenas alguien completa el formulario.',
+      ),
+      _Feature(
+        Icons.shield_outlined,
+        'Sin límite de leads',
+        'Con el plan Pro, recibí todos los contactos que necesites.',
+      ),
+    ];
+
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: features
+          .map(
+            (f) => Padding(
+              padding: const EdgeInsets.only(bottom: 24),
+              child: Row(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Container(
+                    padding: const EdgeInsets.all(10),
+                    decoration: BoxDecoration(
+                      color: WebTheme.primaryColor.withValues(alpha: 0.1),
+                      borderRadius: BorderRadius.circular(12),
+                    ),
+                    child: Icon(f.icon, color: WebTheme.primaryColor, size: 22),
+                  ),
+                  const SizedBox(width: 16),
+                  Expanded(
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Text(
+                          f.title,
+                          style: const TextStyle(
+                            color: Colors.white,
+                            fontSize: 16,
+                            fontWeight: FontWeight.w700,
+                          ),
+                        ),
+                        const SizedBox(height: 4),
+                        Text(
+                          f.description,
+                          style: const TextStyle(
+                            color: Colors.white54,
+                            fontSize: 14,
+                            height: 1.4,
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+                ],
+              ),
+            ),
+          )
+          .toList(),
+    );
+  }
+}
+
+class _Feature {
+  final IconData icon;
+  final String title;
+  final String description;
+  const _Feature(this.icon, this.title, this.description);
 }

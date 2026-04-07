@@ -358,13 +358,19 @@ class _LeadFormCard extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final theme = Theme.of(context);
     final profileAsync = ref.watch(userProfileProvider);
+    final limitsAsync = ref.watch(userLimitsProvider);
+    final isPro = limitsAsync.valueOrNull?.isUnlimited ?? false;
 
     return Container(
       padding: const EdgeInsets.all(20),
       decoration: BoxDecoration(
         color: DesignTokens.surfaceContainer,
         borderRadius: BorderRadius.circular(DesignTokens.radiusL),
-        border: Border.all(color: DesignTokens.primary.withValues(alpha: 0.2)),
+        border: Border.all(
+          color: isPro
+              ? DesignTokens.primary.withValues(alpha: 0.2)
+              : DesignTokens.outlineVariant.withValues(alpha: 0.12),
+        ),
       ),
       child: profileAsync.when(
         loading: () => const Center(
@@ -381,6 +387,91 @@ class _LeadFormCard extends ConsumerWidget {
         ),
         data: (profile) {
           final formUrl = '$_formBaseUrl${profile.formToken}';
+
+          // Free users: show locked preview
+          if (!isPro) {
+            return Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Row(
+                  children: [
+                    Icon(
+                      Icons.assignment_rounded,
+                      color: DesignTokens.onSurfaceVariant,
+                      size: 20,
+                    ),
+                    const SizedBox(width: 8),
+                    Expanded(
+                      child: Text(
+                        context.l10n.myLeadForm,
+                        style: theme.textTheme.titleSmall?.copyWith(
+                          fontWeight: FontWeight.w700,
+                          color: DesignTokens.onSurfaceVariant,
+                        ),
+                      ),
+                    ),
+                    Container(
+                      padding: const EdgeInsets.symmetric(
+                        horizontal: 8,
+                        vertical: 3,
+                      ),
+                      decoration: BoxDecoration(
+                        color: DesignTokens.warning.withValues(alpha: 0.15),
+                        borderRadius: BorderRadius.circular(
+                          DesignTokens.radiusFull,
+                        ),
+                      ),
+                      child: Row(
+                        mainAxisSize: MainAxisSize.min,
+                        children: [
+                          const Icon(
+                            Icons.lock_rounded,
+                            size: 12,
+                            color: DesignTokens.warning,
+                          ),
+                          const SizedBox(width: 4),
+                          Text(
+                            'PRO',
+                            style: theme.textTheme.labelSmall?.copyWith(
+                              color: DesignTokens.warning,
+                              fontWeight: FontWeight.w800,
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
+                  ],
+                ),
+                const SizedBox(height: 12),
+                Text(
+                  context.l10n.leadFormProDescription,
+                  style: theme.textTheme.bodySmall?.copyWith(
+                    color: DesignTokens.onSurfaceVariant,
+                  ),
+                ),
+                const SizedBox(height: 14),
+                SizedBox(
+                  width: double.infinity,
+                  child: OutlinedButton.icon(
+                    onPressed: () => showPaywallBottomSheet(
+                      context,
+                      limits: limitsAsync.valueOrNull,
+                    ),
+                    icon: const Icon(Icons.rocket_launch_rounded, size: 16),
+                    label: Text(context.l10n.upgrade),
+                    style: OutlinedButton.styleFrom(
+                      foregroundColor: DesignTokens.warning,
+                      side: BorderSide(
+                        color: DesignTokens.warning.withValues(alpha: 0.3),
+                      ),
+                    ),
+                  ),
+                ),
+              ],
+            );
+          }
+
+          // Pro users: full form card
           return Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [

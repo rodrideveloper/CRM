@@ -1,10 +1,21 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:url_launcher/url_launcher.dart';
 import '../../core/theme/design_tokens.dart';
 import '../../core/utils/l10n_extension.dart';
 import '../../domain/entities/user_profile.dart';
+import '../providers/auth_provider.dart';
 
-const _mercadoPagoUrl = 'https://www.mercadopago.com.ar';
+const _mercadoPagoPlanId = '269ccf0d9e694490913c8caa9fad4698';
+
+String _buildMercadoPagoUrl({String? email}) {
+  final base =
+      'https://www.mercadopago.com.ar/subscriptions/checkout?preapproval_plan_id=$_mercadoPagoPlanId';
+  if (email != null && email.isNotEmpty) {
+    return '$base&payer_email=${Uri.encodeComponent(email)}';
+  }
+  return base;
+}
 
 void showPaywallBottomSheet(BuildContext context, {UserLimits? limits}) {
   showModalBottomSheet(
@@ -15,13 +26,14 @@ void showPaywallBottomSheet(BuildContext context, {UserLimits? limits}) {
   );
 }
 
-class _PaywallSheet extends StatelessWidget {
+class _PaywallSheet extends ConsumerWidget {
   final UserLimits? limits;
   const _PaywallSheet({this.limits});
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
     final theme = Theme.of(context);
+    final userEmail = ref.watch(authStateProvider).valueOrNull?.email;
 
     return SafeArea(
       child: Padding(
@@ -189,7 +201,7 @@ class _PaywallSheet extends StatelessWidget {
               ),
               child: ElevatedButton.icon(
                 onPressed: () async {
-                  final uri = Uri.parse(_mercadoPagoUrl);
+                  final uri = Uri.parse(_buildMercadoPagoUrl(email: userEmail));
                   if (await canLaunchUrl(uri)) {
                     await launchUrl(uri, mode: LaunchMode.externalApplication);
                   }

@@ -33,9 +33,9 @@ class FaqSection extends StatelessWidget {
             child: const Column(
               children: [
                 _FaqItem(
-                  question: '¿Puedo probarlo gratis?',
+                  question: '¿Es realmente gratis?',
                   answer:
-                      'Sí. Tenés 14 días de prueba gratis con acceso completo a todas las funcionalidades. No necesitás tarjeta de crédito.',
+                      'Sí. El plan Free es gratis para siempre con hasta 15 clientes activos. Cuando necesites más, podés pasar al plan Pro por \$3.999/mes.',
                 ),
                 _FaqItem(
                   question: '¿Se conecta directo a WhatsApp?',

@@ -999,6 +999,12 @@ abstract class AppLocalizations {
   /// In es, this message translates to:
   /// **'Mejorar plan'**
   String get upgrade;
+
+  /// No description provided for @leadFormProDescription.
+  ///
+  /// In es, this message translates to:
+  /// **'Compartí un formulario para que tus clientes se registren solos. Disponible en el plan Pro.'**
+  String get leadFormProDescription;
 }
 
 class _AppLocalizationsDelegate

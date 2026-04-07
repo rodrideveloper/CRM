@@ -474,4 +474,8 @@ class AppLocalizationsPt extends AppLocalizations {
 
   @override
   String get upgrade => 'Melhorar plano';
+
+  @override
+  String get leadFormProDescription =>
+      'Compartilhe um formulário para que seus clientes se cadastrem sozinhos. Disponível no plano Pro.';
 }

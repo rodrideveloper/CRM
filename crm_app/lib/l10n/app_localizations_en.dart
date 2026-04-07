@@ -473,4 +473,8 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get upgrade => 'Upgrade plan';
+
+  @override
+  String get leadFormProDescription =>
+      'Share a form so your clients can sign up on their own. Available on the Pro plan.';
 }

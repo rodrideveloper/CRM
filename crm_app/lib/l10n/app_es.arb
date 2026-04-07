@@ -220,5 +220,6 @@
       "count": {"type": "int"}
     }
   },
-  "upgrade": "Mejorar plan"
+  "upgrade": "Mejorar plan",
+  "leadFormProDescription": "Compartí un formulario para que tus clientes se registren solos. Disponible en el plan Pro."
 }
